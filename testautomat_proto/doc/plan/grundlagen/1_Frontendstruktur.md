@@ -34,3 +34,4 @@ Dokumentiert werden soll:
 - **Mehrsprachigkeit noch nicht eingerichtet:** Es gibt derzeit weder `flutter_localizations` in `pubspec.yaml` noch eine Textressourcendatei. Zu entscheiden ist, ob Texte über ARB-Dateien oder eine schlanke eigene `Map` gepflegt werden.
 - **Umschaltung zur Laufzeit:** Sprach- und Theme-Wechsel müssen ohne Neustart der App greifen; der Zustand ist zentral statt je Bildschirm zu halten.
 - **Reduzierte Bewegung:** Für Menschen mit ADHS oder im Autismus-Spektrum sind Animationen möglichst zu reduzieren und Systemeinstellungen (z. B. „Bewegung reduzieren") zu respektieren.
+- **Platzhalter im Startbildschirm:** Automatennummer und Standort stehen in `start_screen.dart:28-29` noch als Konstanten. Entscheidung E-55: Sie werden beim App-Start über das Repository geladen (`getMachine()`) und über `AppMachine.maschineNotifier` dargestellt; die Umsetzung erfolgt mit dem Datenlayer.

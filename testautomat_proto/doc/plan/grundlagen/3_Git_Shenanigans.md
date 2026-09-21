@@ -40,7 +40,7 @@ Bei jedem Push auf `main` und bei neuen Release-Tags baut eine GitHub-Actions-Pi
    - `android`: `flutter build apk --release` (+ optional AAB)
    - `windows`: `flutter build windows --release`
    - `linux`: `flutter build linux --release`
-   - `web`: `flutter build web --release`
+   - `web`: `flutter build web --release --base-href=/<repo>/` (GitHub-Pages-Projektseite, vgl. E-44)
 4. **Veröffentlichung**
    - Bei Tag: Artefakte über `softprops/action-gh-release` an das GitHub Release anhängen (`GITHUB_TOKEN`, kein PAT nötig).
    - Bei `push` auf `main`: Artefakte als Workflow-Artifacts ablegen (Vorschau, 90 Tage verfügbar).
@@ -57,22 +57,23 @@ Bei jedem Push auf `main` und bei neuen Release-Tags baut eine GitHub-Actions-Pi
 
 ## Hosting
 
-Der Webclient wird als **statische** Seite auf GitHub Pages gehostet. Eine Datenbank kann GitHub Pages nicht bereitstellen – Pages ist ein statischer Host ohne Serverprozesse. Für den Prototypen lädt die App ihre Daten daher aus der lokal abgelegten SQLite-Datei (vgl. `2_Datenbank.md`).
+Der Webclient wird als **statische** Seite auf GitHub Pages gehostet. Eine Datenbank kann GitHub Pages nicht bereitstellen – Pages ist ein statischer Host ohne Serverprozesse. Der Desktop-Prototyp lädt seine Daten daher aus der lokal abgelegten SQLite-Datei, der Web-Build aus dem `InMemoryRepository` mit denselben Seed-Daten (vgl. `2_Datenbank.md`, E-11).
 
 | Komponente | Prototyp | Produktion (Perspektive) |
 |---|---|---|
 | Webclient | GitHub Pages (Deploy-Job aus der CI) | GitHub Pages oder CDN |
-| Daten | SQLite-Datei im Projekt (lokal) | REST-API + gehostete Datenbank (offen) |
+| Daten (Desktop) | SQLite-Datei im Projekt (lokal) | Postgres + REST-API, Token-Authentifizierung (Anbieter offen, E-43) |
+| Daten (Web) | `InMemoryRepository` (ohne Persistenz) | Postgres + REST-API, Token-Authentifizierung (Anbieter offen, E-43) |
 
 **GitHub-Pages-Deployment:** Eigener Job `deploy` im Workflow (z. B. `actions/upload-pages-artifact` + `actions/deploy-pages`), ausgelöst bei Pushes auf `main` und bei Release-Tags.
 
 ## Offene Punkte (Backlog)
 
-- **Signierung:** Wer signiert Android/Windows/Linux-Artefakte (Zertifikate, Kosten)?
-- **Store-Distribution:** Zusätzlich Play Store / MS Store / winget / Flatpak?
-- **DB-Hosting in Produktion:** Welcher Anbieter, wo läuft die REST-API?
-- **Aktualisierung:** Wie kommt die App auf den Automaten (manueller Download, Self-Update)?
-- **Web-Entscheidung:** Flutter Web kann nicht direkt auf SQLite zugreifen – Speicher-/REST-Simulation vor dem Web-Build festlegen (vgl. `2_Datenbank.md`).
+- **Signierung:** abgeschlossen — der Prototyp bleibt un-signiert (E-42).
+- **Store-Distribution:** abgeschlossen — zusätzliche Kanäle erst mit einer Weiterentwicklung (E-30).
+- **DB-Hosting in Produktion:** abgeschlossen — gehostete Postgres-Datenbank mit REST-Schicht und Token-Authentifizierung; Anbieterwahl vor dem ersten Release (E-43).
+- **Aktualisierung:** abgeschlossen — Self-Update (E-31).
+- **Web-Entscheidung:** abgeschlossen — der Web-Build nutzt das `InMemoryRepository` (Entscheidung E-11, vgl. `2_Datenbank.md`).
 
 ## Mögliche Probleme
 
