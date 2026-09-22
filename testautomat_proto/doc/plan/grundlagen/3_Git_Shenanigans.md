@@ -65,6 +65,7 @@ Die Pipeline ist umgesetzt und liegt in `.github/workflows/build.yml`:
 - **Lokales Gate:** `tool/gate.ps1` fuehrt `dart format --set-exit-if-changed lib test`, `flutter analyze` und `flutter test` aus; der Workflow (U-60) nutzt dieselben Schritte (U-52).
 - **Keine Artefakte im Repo:** `build/` sowie erzeugte Installer gehören in `.gitignore`.
 - **Pages-Status nicht vorab abfragen:** `github.token` darf `GET /repos/{owner}/{repo}/pages` nicht lesen (HTTP 403/404) — eine Vorpruefung meldet faelschlich „Pages nicht aktiv“ und laesst den Deploy stillschweigend aus. Stattdessen `actions/configure-pages` mit `continue-on-error: true` und `enablement: true` versuchen und Upload/Deploy an dessen Ergebnis haengen.
+- **Ein Deploy zur Zeit:** Der `deploy`-Job haengt an der Concurrency-Gruppe `pages`. GitHub Pages veroeffentlicht nur eine Version gleichzeitig; ohne die Gruppe verweigert `actions/deploy-pages` den Dienst, sobald zwei Laeufe (z. B. mehrere Pushes kurz hintereinander) parallel deployen wollen.
 - **YAML-Falle in `run:`-Zeilen:** Ein unquoter Skalar darf keinen Doppelpunkt mit Leerzeichen enthalten (`run: echo "... Source: GitHub Actions)"` macht die Workflow-Datei ungueltig; der Lauf bricht nach Sekunden ab). Mehrzeilige Meldungen als Block-Skalar (`run: |`) schreiben und den Workflow nach Aenderungen einmal lokal mit `git push` und Blick auf den ersten Lauf pruefen.
 
 ## Hosting

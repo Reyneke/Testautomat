@@ -183,6 +183,12 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # GitHub Pages vertraegt nur eine Veroeffentlichung gleichzeitig: parallele
+    # Laeufe (z. B. mehrere Pushes kurz hintereinander) warten daher, statt sich
+    # gegenseitig den Deploy zu verweigern.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write
