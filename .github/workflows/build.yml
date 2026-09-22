@@ -210,4 +210,6 @@ jobs:
 
       - name: Deploy uebersprungen melden
         if: steps.pages.outcome != 'success'
-        run: echo "::warning::GitHub Pages ist nicht aktiviert - der Deploy wurde uebersprungen (Settings > Pages > Source: GitHub Actions)"
+        run: |
+          echo "::warning::GitHub Pages ist nicht aktiviert - der Deploy wurde uebersprungen."
+          echo "Bitte in den Repository-Einstellungen unter Pages die Quelle auf GitHub Actions stellen."
