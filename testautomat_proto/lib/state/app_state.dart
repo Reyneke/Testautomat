@@ -129,10 +129,7 @@ class AppState {
 
   /// Wechselt die Sprache, sofern sie unterstuetzt wird (E-08).
   void setLocale(Locale neu) {
-    final unterstuetzt = AppLocale.supportedLocales.any(
-      (sprache) => sprache.languageCode == neu.languageCode,
-    );
-    if (unterstuetzt) {
+    if (AppLocale.unterstuetzt(neu)) {
       locale.value = neu;
     }
   }
