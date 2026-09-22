@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:testautomat_proto/data/belegnummer.dart';
+import 'package:testautomat_proto/logic/belegnummer.dart';
 import 'package:testautomat_proto/data/dto.dart';
 import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/data/repository_exception.dart';

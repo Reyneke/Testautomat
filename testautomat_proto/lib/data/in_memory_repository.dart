@@ -1,4 +1,4 @@
-import 'belegnummer.dart';
+import '../logic/belegnummer.dart';
 import 'dto.dart';
 import 'json_utils.dart';
 import 'parkautomat_repository.dart';
@@ -37,6 +37,9 @@ class InMemoryRepository implements ParkautomatRepository {
   final Map<int, BelegnummerGenerator> _generatoren =
       <int, BelegnummerGenerator>{};
   final DateTime _einschaltzeit;
+
+  /// Anzahl der Versuche, eine freie Belegnummer zu vergeben.
+  static const int maxBelegnummerVersuche = 5;
 
   @override
   Future<Maschine> getMachine() async {
@@ -96,7 +99,7 @@ class InMemoryRepository implements ParkautomatRepository {
       parkdauerMinuten: geprueft.parkdauerMinuten,
       betragCent: geprueft.betragCent,
       zahlungsart: geprueft.zahlungsart,
-      belegnummer: _generatorFuer(maschine).next(),
+      belegnummer: _naechsteBelegnummer(maschine),
     );
     _verkaeufe.add(verkauf);
     return verkauf;
@@ -134,6 +137,19 @@ class InMemoryRepository implements ParkautomatRepository {
       }
     }
     throw RepositoryException('Unbekannte Maschine: $id');
+  }
+
+  /// Vergibt eine noch freie Belegnummer (E-16).
+  int _naechsteBelegnummer(Maschine maschine) {
+    for (var versuch = 0; versuch < maxBelegnummerVersuche; versuch++) {
+      final nummer = _generatorFuer(maschine).next();
+      if (!_verkaeufe.any((verkauf) => verkauf.belegnummer == nummer)) {
+        return nummer;
+      }
+    }
+    throw const RepositoryException(
+      'Es konnte keine freie Belegnummer vergeben werden.',
+    );
   }
 
   int _naechsteVerkaufsId() {

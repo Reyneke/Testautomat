@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:testautomat_proto/data/belegnummer.dart';
+import 'package:testautomat_proto/logic/belegnummer.dart';
 
 void main() {
   group('BelegnummerGenerator (E-16)', () {

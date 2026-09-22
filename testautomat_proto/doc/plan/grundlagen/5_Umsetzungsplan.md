@@ -123,11 +123,11 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-30` | Verkaufszeit-Prüfung: UTC-/GMT-Zeitbasis, optionale Zeitzone, „Aus"-Bildschirm | E-14, E-03 | Offen |
-| `U-31` | Preisbildung: auf volle Takte aufrunden, Beträge als Cent-`INTEGER` | E-15, E-02 | Offen |
-| `U-32` | Belegnummer: Hash aus Geräte-ID, Zähler und Einschaltzeit; Eindeutigkeit absichern | E-16 | Offen |
-| `U-33` | Simulierter Zahlungsablauf: Zahlungsart wählen, Fortschritt, Timeout, Abbruch, Beleg als Anzeige; Anbindung an den atomaren `createSale` | E-51, E-16 | Offen |
-| `U-34` | Unit-Tests für Preis-, Verkaufszeit- und Belegnummernlogik | E-45, F-40 | Offen |
+| `U-30` | Verkaufszeit-Prüfung in `lib/logic/verkaufszeit.dart` (GMT-Basis, optionale Zeitzone, Gültigkeitsfenster); der Einstieg des Automaten folgt der Verkaufszeit | E-14, E-03 | Fertig |
+| `U-31` | Preisbildung in `lib/logic/preis.dart` (Aufrundung auf volle Takte, Cent-`INTEGER`, aktive Preisregel); Betrags- und Parkdaueranzeige | E-15, E-02 | Fertig |
+| `U-32` | Belegnummer (Hash aus Geräte-ID, Zähler und Einschaltzeit) nach `lib/logic/belegnummer.dart` überführt; Eindeutigkeit in beiden Repositories abgesichert | E-16 | Fertig |
+| `U-33` | Simulierter Zahlungsablauf mit Fortschritt, Timeout und Abbruch; Abschluss über das atomare `createSale`, Beleg als Anzeige auf dem Parkinfo-Bildschirm | E-51, E-16 | Fertig |
+| `U-34` | Unit-Tests für Preis-, Verkaufszeit- und Belegnummernlogik sowie für den Zahlungsablauf | E-45, F-40 | Fertig |
 
 **Definition of Done:** Meilenstein M2 erreicht — von Start bis Verabschiedung durchklickbar, ohne Datenbankzugriff aus den Widgets; alle Rechenregeln getestet.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 3 umgesetzt (U-30…U-34): Verkaufszeit-Prüfung mit GMT-Basis und optionaler Zeitzone, Preisbildung auf volle Takte in Cent, Belegnummernlogik in `lib/logic/`, simulierter Zahlungsablauf mit Fortschritt, Timeout, Abbruch und Beleg als Anzeige; Logik- und Ablauftests grün (83 Tests). **Meilenstein M2 erreicht.** |
 | 2026-09-22 | Phase 2 umgesetzt (U-20…U-23): gemeinsame Kopf-/Fußzeile mit `AppClock`, sechs Bildschirm-Gerüste, benannte Routen und Bootstrap mit Maschinendaten (`AppMachine`) samt Fehlerbildschirm; Widget-, Navigations- und Bootstrap-Tests grün (64 Tests). Der „Aus“-Bildschirm ist über seine Route erreichbar; sein Einstieg folgt mit der Verkaufszeit-Prüfung in `U-30`. |
 | 2026-09-22 | Phase 1 umgesetzt (U-10…U-16): Datenlayer mit Drift, DTOs und Repository-Vertrag, `schema_version`-Protokoll, deterministische Seeds, InMemory- und SQLite-Repository sowie Composition Root; Vertrags-, Migrations- und Widget-Tests grün (52 Tests). Meilenstein M1 erreicht. |
 | 2026-09-22 | U-03 abgeschlossen: Übersichtsseite `doc/plan/README.md` angelegt (E-37); die Root-README verweist darauf. Phase 0 (Meilenstein M0) ist damit vollständig. |

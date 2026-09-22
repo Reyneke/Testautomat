@@ -55,11 +55,15 @@ void main() {
     await tester.pumpAndSettle();
     pruefeRahmen();
 
-    await tester.tap(find.text('4 Stunden'));
+    await tester.tap(find.text('4 Stunden \u00b7 2,00 \u20ac'));
     await tester.pumpAndSettle();
     pruefeRahmen();
 
     await tester.tap(find.text('Karte'));
+    await tester.pump(const Duration(milliseconds: 200));
+    pruefeRahmen();
+
+    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
     pruefeRahmen();
 

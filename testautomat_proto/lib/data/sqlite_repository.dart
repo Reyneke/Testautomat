@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:sqlite3/sqlite3.dart' show SqliteException;
 
-import 'belegnummer.dart';
+import '../logic/belegnummer.dart';
 import 'drift/app_database.dart';
 import 'drift/connection.dart';
 import 'drift/mappings.dart';

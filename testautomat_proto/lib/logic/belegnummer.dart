@@ -1,4 +1,4 @@
-import 'json_utils.dart';
+import '../data/json_utils.dart';
 
 /// Vergibt Belegnummern nach E-16: Hash aus Geraete-ID, Zaehler und Einschaltzeit.
 ///

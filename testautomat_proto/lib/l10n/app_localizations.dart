@@ -66,6 +66,16 @@ class AppLocalizations {
       'verabschiedungTitle': 'Auf Wiedersehen',
       'verabschiedungText': 'Vielen Dank und eine gute Fahrt!',
       'neuerVerkauf': 'Neuer Verkauf',
+      'betrag': 'Betrag',
+      'belegTitle': 'Parkschein',
+      'belegnummer': 'Belegnummer',
+      'gueltigBis': 'Gültig bis',
+      'zahlungsart': 'Zahlungsart',
+      'zahlungLaeuft': 'Zahlung wird verarbeitet …',
+      'zahlungAbbrechen': 'Abbrechen',
+      'zahlungAbgebrochen': 'Zahlung abgebrochen',
+      'zahlungFehlgeschlagen': 'Die Zahlung konnte nicht abgeschlossen werden.',
+      'zahlungTimeout': 'Zeitüberschreitung bei der Zahlung',
     },
     'en': {
       'appTitle': 'Parking Meter Weiden',
@@ -104,6 +114,16 @@ class AppLocalizations {
       'verabschiedungTitle': 'Goodbye',
       'verabschiedungText': 'Thank you and have a good trip!',
       'neuerVerkauf': 'New sale',
+      'betrag': 'Amount',
+      'belegTitle': 'Parking ticket',
+      'belegnummer': 'Ticket number',
+      'gueltigBis': 'Valid until',
+      'zahlungsart': 'Payment method',
+      'zahlungLaeuft': 'Processing payment …',
+      'zahlungAbbrechen': 'Cancel',
+      'zahlungAbgebrochen': 'Payment cancelled',
+      'zahlungFehlgeschlagen': 'The payment could not be completed.',
+      'zahlungTimeout': 'Payment timed out',
     },
   };
 
@@ -147,6 +167,27 @@ class AppLocalizations {
   String get verabschiedungTitle => _get('verabschiedungTitle');
   String get verabschiedungText => _get('verabschiedungText');
   String get neuerVerkauf => _get('neuerVerkauf');
+  String get betrag => _get('betrag');
+  String get belegTitle => _get('belegTitle');
+  String get belegnummer => _get('belegnummer');
+  String get gueltigBis => _get('gueltigBis');
+  String get zahlungsart => _get('zahlungsart');
+  String get zahlungLaeuft => _get('zahlungLaeuft');
+  String get zahlungAbbrechen => _get('zahlungAbbrechen');
+  String get zahlungAbgebrochen => _get('zahlungAbgebrochen');
+  String get zahlungFehlgeschlagen => _get('zahlungFehlgeschlagen');
+  String get zahlungTimeout => _get('zahlungTimeout');
+
+  /// Geldbetrag als Text, z. B. `2,00 €` bzw. `€2.00`.
+  String formatBetrag(int cent) {
+    final betrag = cent.abs();
+    final euro = betrag ~/ 100;
+    final rest = (betrag % 100).toString().padLeft(2, '0');
+    final vorzeichen = cent < 0 ? '-' : '';
+    return locale.languageCode == 'en'
+        ? '$vorzeichen\u20ac$euro.$rest'
+        : '$vorzeichen$euro,$rest \u20ac';
+  }
 
   /// Parkdauer als Text, z. B. `4 Stunden` bzw. `4 hours`.
   String formatParkdauer(int minuten) {

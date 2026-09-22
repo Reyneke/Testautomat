@@ -1,4 +1,4 @@
-// Durchstich durch die sechs Bildschirme (DoD Phase 2: alle Uebergaenge erreichbar).
+// Durchstich durch die sechs Bildschirme (DoD Phase 2/3: alle Uebergaenge erreichbar).
 
 import 'dart:async';
 
@@ -12,6 +12,10 @@ import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/state/app_clock.dart';
 import 'package:testautomat_proto/state/app_machine.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
+
+/// Label des Parkzeit-Knopfs, z. B. `4 Stunden \u00b7 2,00 \u20ac`.
+const String parkzeit4Stunden = '4 Stunden \u00b7 2,00 \u20ac';
+const String parkzeit8Stunden = '8 Stunden \u00b7 4,00 \u20ac';
 
 void main() {
   setUp(() {
@@ -41,14 +45,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Parkzeit wählen'), findsOneWidget);
 
-    await tester.tap(find.text('4 Stunden'));
+    await tester.tap(find.text(parkzeit4Stunden));
     await tester.pumpAndSettle();
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
+    expect(find.text(parkzeit4Stunden), findsOneWidget);
 
     await tester.tap(find.text('Karte'));
+    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
-    expect(find.text('Parkinformation'), findsOneWidget);
-    expect(find.text('4 Stunden'), findsOneWidget);
+    expect(find.text('Parkschein'), findsOneWidget);
+    expect(find.textContaining('Belegnummer:'), findsOneWidget);
 
     await tester.tap(find.text('Weiter'));
     await tester.pumpAndSettle();
@@ -66,7 +72,7 @@ void main() {
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('4 Stunden'));
+    await tester.tap(find.text(parkzeit4Stunden));
     await tester.pumpAndSettle();
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
 
@@ -77,22 +83,23 @@ void main() {
     await beendeApp(tester);
   });
 
-  testWidgets('jede Parkzeit fuehrt ueber die Zahlungsauswahl weiter', (
+  testWidgets('jede Parkzeit fuehrt ueber die Zahlung zum Beleg', (
     tester,
   ) async {
     await starteApp(tester);
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('8 Stunden'));
+    await tester.tap(find.text(parkzeit8Stunden));
     await tester.pumpAndSettle();
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
-    expect(find.text('8 Stunden'), findsOneWidget);
+    expect(find.text(parkzeit8Stunden), findsOneWidget);
 
     await tester.tap(find.text('Bar'));
+    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
-    expect(find.text('Parkinformation'), findsOneWidget);
-    expect(find.text('8 Stunden'), findsOneWidget);
+    expect(find.text('Parkschein'), findsOneWidget);
+    expect(find.textContaining('8 Stunden'), findsOneWidget);
 
     await beendeApp(tester);
   });
