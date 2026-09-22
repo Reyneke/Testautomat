@@ -7,6 +7,7 @@ import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/logic/preis.dart';
 import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/screens/kaufablauf.dart';
+import 'package:testautomat_proto/widgets/fortschritts_anzeige.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Auswahl der Parkzeit in Vier-Stunden-Schritten (`0_Einfuehrung.md`).
@@ -42,7 +43,7 @@ class _ParkzeitAuswahlScreenState extends State<ParkzeitAuswahlScreen> {
         future: _preissettings,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: FortschrittsAnzeige());
           }
           final setting = aktivesPreissetting(snapshot.data!, DateTime.now());
           final taktMinuten = setting?.taktMinuten ?? SeedData.parktaktMinuten;

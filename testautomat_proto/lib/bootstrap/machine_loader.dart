@@ -7,6 +7,7 @@ import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/logic/verkaufszeit.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/routes.dart';
+import 'package:testautomat_proto/widgets/fortschritts_anzeige.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Laedt die aktive Maschine und waehlt danach den Einstieg (E-23, E-55).
@@ -112,7 +113,7 @@ class _Ladebildschirm extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(),
+            const FortschrittsAnzeige(),
             const SizedBox(height: 16),
             Text(localizations.ladeMaschine),
           ],

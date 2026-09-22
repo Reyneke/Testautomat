@@ -5,6 +5,7 @@ import 'package:testautomat_proto/data/dto.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/screens/debug_dialogs.dart';
 import 'package:testautomat_proto/state/app_debug.dart';
+import 'package:testautomat_proto/widgets/fortschritts_anzeige.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Debug-Bildschirm des Prototyps (E-22, E-12, E-10, E-04).
@@ -98,9 +99,7 @@ class _DebugScreenState extends State<DebugScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     if (_tagesumsaetze == null && _fehler == null) {
-      return const ScreenShell(
-        child: Center(child: CircularProgressIndicator()),
-      );
+      return const ScreenShell(child: Center(child: FortschrittsAnzeige()));
     }
 
     return ScreenShell(

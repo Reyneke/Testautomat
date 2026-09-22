@@ -9,6 +9,7 @@ import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/logic/verkaufszeit.dart';
 import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/screens/kaufablauf.dart';
+import 'package:testautomat_proto/widgets/fortschritts_anzeige.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Auswahl der Zahlungsart und simulierter Zahlungsablauf (E-51).
@@ -185,7 +186,7 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
               const SizedBox(height: 24),
               SizedBox(
                 width: 320,
-                child: LinearProgressIndicator(value: _fortschritt),
+                child: FortschrittsAnzeige(wert: _fortschritt),
               ),
               const SizedBox(height: 24),
               TextButton(

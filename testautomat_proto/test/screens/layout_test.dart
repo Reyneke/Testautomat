@@ -2,11 +2,13 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:testautomat_proto/widgets/app_footer.dart';
 import 'package:testautomat_proto/widgets/app_header.dart';
 import 'package:testautomat_proto/widgets/language_selector.dart';
+import 'package:testautomat_proto/widgets/screen_shell.dart';
 import 'package:testautomat_proto/widgets/theme_selector.dart';
 
 import '../support/app_test_helpers.dart';
@@ -48,6 +50,41 @@ void main() {
     await tester.tap(find.text('Weiter'));
     await tester.pumpAndSettle();
     pruefeRahmen();
+
+    await beendeApp(tester);
+  });
+
+  testWidgets('der Mittelbereich scrollt bei hohem Inhalt (E-41)', (
+    tester,
+  ) async {
+    await pumpeBildschirm(
+      tester,
+      bildschirm: const ScreenShell(
+        child: Column(
+          children: [
+            SizedBox(height: 40, child: Text('Kopf des Inhalts')),
+            SizedBox(height: 3000),
+          ],
+        ),
+      ),
+    );
+
+    final vorher = tester.getTopLeft(find.text('Kopf des Inhalts')).dy;
+
+    await tester.drag(find.text('Kopf des Inhalts'), const Offset(0, -200));
+    await tester.pumpAndSettle();
+
+    final nachher = tester.getTopLeft(find.text('Kopf des Inhalts')).dy;
+    expect(
+      nachher,
+      lessThan(vorher),
+      reason:
+          'bei stark vergroesserter Schrift muss der Inhalt erreichbar sein',
+    );
+
+    // Kopf- und Fusszeile bleiben dabei fixiert.
+    expect(find.byType(AppHeader), findsOneWidget);
+    expect(find.byType(AppFooter), findsOneWidget);
 
     await beendeApp(tester);
   });

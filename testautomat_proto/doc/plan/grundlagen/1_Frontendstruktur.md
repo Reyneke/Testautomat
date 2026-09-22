@@ -27,10 +27,27 @@ Dokumentiert werden soll:
 - das **gemeinsame Bildschirm-Layout** (Kopf-, Mittel- und Fußzeile) und
 - die **sechs Bildschirme** aus `0_Einfuehrung.md` inklusive ihrer Zustandsübergänge (z. B. Start → Parkzeitauswahl → Zahlungsauswahl).
 
+## Kontrastnachweis (WCAG 2.1 AA, E-40)
+
+Der Seed der Farbpalette ist das dunkle Blau `Color(0xFF0D47A1)` (`AppTheme.seedColor`).
+Die daraus abgeleiteten Material-3-Farben erfüllen in beiden Themes die Anforderung von
+mindestens 4,5:1 für Fließtext. Die Werte sind gemessen: `test/theme/contrast_test.dart`
+rechnet sie bei jedem Testlauf nach und schlägt bei Unterschreitung fehl.
+
+| Farbpaar (Text auf Fläche) | Hell | Dunkel |
+|---|---|---|
+| `onPrimary` auf `primary` | 6,46:1 | 7,77:1 |
+| `onPrimaryContainer` auf `primaryContainer` | 7,27:1 | 7,27:1 |
+| `onSecondary` auf `secondary` | 6,47:1 | 7,74:1 |
+| `onSurface` auf `surface` | 16,32:1 | 14,39:1 |
+| `onError` auf `error` | 6,46:1 | 7,72:1 |
+
 ## Mögliche Probleme
 
-- **Farbkontraste:** Der Seed-Wert `Colors.blue` erzeugt in Hell und Dunkel unterschiedliche Kontraste. Die Kontrastverhältnisse sind zu prüfen (WCAG 2.1 AA, mindestens 4,5:1 für Fließtext); die Verdunkelung des Seeds ist mit E-40 beschlossen und wird in `U-71` umgesetzt.
-- **Mehrsprachigkeit:** `flutter_localizations` ist in `pubspec.yaml` eingebunden, die sichtbaren Texte liegen als schlanke `Map` je Sprache in `lib/l10n/` (E-05). Offen ist nur der Migrationszeitpunkt auf ARB-Dateien mit `l10n.yaml` (F-08/E-17, `U-70`).
-- **Umschaltung zur Laufzeit:** Sprach- und Theme-Wechsel müssen ohne Neustart der App greifen; der Zustand ist zentral statt je Bildschirm zu halten.
-- **Reduzierte Bewegung:** Für Menschen mit ADHS oder im Autismus-Spektrum sind Animationen möglichst zu reduzieren und Systemeinstellungen (z. B. „Bewegung reduzieren") zu respektieren.
+- **Farbkontraste:** Gelöst — der Seed ist das dunkle Blau `Color(0xFF0D47A1)` (E-40); die gemessenen Kontrastverhältnisse stehen oben als Tabelle und werden von `test/theme/contrast_test.dart` geprüft (`U-71`).
+- **Mehrsprachigkeit:** Die sichtbaren Texte liegen als ARB-Dateien in `lib/l10n/arb/` (Deutsch/Englisch); `flutter gen-l10n` erzeugt daraus `lib/l10n/generated/app_localizations.dart`, `AppLocalizations.of(context)!` bleibt die Aufrufstelle (E-05, E-17, `U-70`). Lokales Gate und CI erzeugen die Texte und prüfen sie gegen den eingecheckten Stand; der Paritätstest vergleicht die Schlüssel beider ARB-Dateien (E-39).
+- **Datum und Uhrzeit:** Werden über `intl` formatiert (`AppFormat`, E-18): Englisch erhält das 12-Stunden-Format mit AM/PM, Deutsch die 24-Stunden-Anzeige; das deutsche Datum folgt CLDR ohne führende Nullen (`18.9.2026`).
+- **Umschaltung zur Laufzeit:** Sprach- und Theme-Wechsel greifen ohne Neustart der App; der Zustand ist zentral statt je Bildschirm zu halten.
+- **Reduzierte Bewegung:** Gelöst — `AppMotion` liest die Systemeinstellung; `FortschrittsAnzeige` zeichnet bei „Bewegung reduzieren“ einen stillstehenden Ring bzw. einen ruhigen Balken statt laufender Animationen (E-24, `U-71`).
+- **Anzeigen und Hintergrundbetrieb:** Der mittlere Bereich ist scrollbar, Kopf- und Fußzeile bleiben fixiert (E-41); der Uhr-Takt pausiert, wenn die App im Hintergrund ist, und aktualisiert beim Zurückkommen sofort (E-27).
 - **Platzhalter im Startbildschirm:** Automatennummer und Standort stehen in `start_screen.dart:28-29` noch als Konstanten. Entscheidung E-55: Sie werden beim App-Start über das Repository geladen (`getMachine()`) und über `AppMachine.maschineNotifier` dargestellt; die Umsetzung erfolgt mit dem Datenlayer.

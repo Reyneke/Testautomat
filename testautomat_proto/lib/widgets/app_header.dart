@@ -22,8 +22,14 @@ class AppHeader extends StatefulWidget {
   State<AppHeader> createState() => _AppHeaderState();
 }
 
-class _AppHeaderState extends State<AppHeader> {
+class _AppHeaderState extends State<AppHeader> with WidgetsBindingObserver {
   AppClock? _uhr;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void didChangeDependencies() {
@@ -37,7 +43,23 @@ class _AppHeaderState extends State<AppHeader> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final uhr = _uhr;
+    if (uhr == null) {
+      return;
+    }
+    // Im Hintergrund pausiert der Takt und aktualisiert beim Zurueckkommen
+    // sofort (E-27).
+    if (state == AppLifecycleState.resumed) {
+      uhr.fortsetzen();
+    } else {
+      uhr.pausieren();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _uhr?.stop();
     super.dispose();
   }

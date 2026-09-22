@@ -9,6 +9,15 @@ import 'package:flutter/material.dart';
 /// liegt im `AppState` (E-46).
 /// Siehe `doc/plan/grundlagen/1_Frontendstruktur.md`.
 abstract class AppTheme {
+  /// Seed der Farbpalette (E-40).
+  ///
+  /// Bewusst ein dunkles Blau statt `Colors.blue`: die daraus abgeleiteten
+  /// Material-3-Farben erfuellen in Hell und Dunkel die Kontrastanforderung
+  /// WCAG 2.1 AA (mindestens 4,5:1 fuer Fliesstext). Nachgewiesen wird das in
+  /// `test/theme/contrast_test.dart`, die Messwerte stehen in
+  /// `doc/plan/grundlagen/1_Frontendstruktur.md`.
+  static const Color seedColor = Color(0xFF0D47A1);
+
   /// Schriftfamilie der Überschriften (gebündeltes Asset, E-38).
   static const String ueberschriftFamilie = 'Poppins';
 
@@ -17,7 +26,7 @@ abstract class AppTheme {
   static final lightTheme = ThemeData(
     textTheme: baseTextTheme,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+      seedColor: seedColor,
       brightness: Brightness.light,
     ),
   );
@@ -25,7 +34,7 @@ abstract class AppTheme {
   static final darkTheme = ThemeData(
     textTheme: baseTextTheme,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+      seedColor: seedColor,
       brightness: Brightness.dark,
     ),
   );
