@@ -96,14 +96,16 @@ erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
 | [`4_Offene_Fragen.md`](doc/plan/grundlagen/4_Offene_Fragen.md) | Fragenkatalog (F-01…F-55) und Entscheidungslog (E-01…E-55) |
 | [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) | Arbeitspakete, Meilensteine, Definition of Done |
 
-Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_`.
+Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_` → `6_`.
 
 ## Hinweise (DSGVO)
 
 - Es werden **keine personenbezogenen Daten** erhoben oder gespeichert; Verkäufe sind anonym
   (Zeitstempel, Betrag, Zahlungsart, Belegnummer).
 - Alle **Zahlungen und Parkscheine werden simuliert** — es findet keine echte Zahlung statt.
-- Vorgesehen ist eine Protokollierung, die nur Betriebsdaten enthält und rotiert (E-48); ein
-  Aufbewahrungs- und Purge-Konzept wird dokumentiert, im Prototyp aber nicht umgesetzt (E-54).
+- Protokollierung, Rotation sowie das Aufbewahrungs- und Purge-Konzept sind in
+  [`doc/plan/grundlagen/6_Logging_und_Datenschutz.md`](doc/plan/grundlagen/6_Logging_und_Datenschutz.md)
+  beschrieben (E-48, E-54): Logs enthalten nur Betriebsdaten und rotieren; das Löschkonzept ist
+  festgelegt, im Prototyp aber nicht implementiert.
 - Die Schriften (Poppins/Lato) werden als Assets gebündelt ausgeliefert, damit im Betrieb kein
   Netzabruf nötig ist (E-38; Umsetzung in `U-72`).

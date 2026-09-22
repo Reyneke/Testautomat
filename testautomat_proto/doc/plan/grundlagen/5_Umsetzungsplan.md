@@ -44,8 +44,8 @@ Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *
 | Datenlayer ohne Tests driftet vom REST-Vertrag ab (Contract first, E-04) | Umstieg auf die Produktionsdatenbank wird teuer | `U-15` | Repository-Unit-Tests gegen das Interface gehören zur DoD von Phase 1 — für `InMemoryRepository` und `SqliteRepository`. |
 | Web-Build besitzt keine Persistenz (E-11) | Demo verliert Daten beim Reload — für den Prototyp akzeptiert | `U-14` | Für den Prototyp akzeptiert; falls später nötig: Persistenz über `localStorage`/IndexedDB hinter demselben Repository-Vertrag (vgl. `2_Datenbank.md`). |
 | Globaler Zustand als `static ValueNotifier` (E-46) | parallele Tests unmöglich; Reset-Hilfe nötig | `U-51` | Zustand in ein `AppState`-Objekt bündeln, in `main()` erzeugen und über `InheritedNotifier` (Konstruktor-Parameter für Tests) bereitstellen; statische Felder entfallen. Zwischenlösung: zentrale Reset-Funktion für `setUp` (vgl. `test/widget_test.dart:14-18`). |
-| `Colors.blue`-Seed erfüllt WCAG AA nicht (E-40) | Barrierefreiheitsziel verfehlt | `U-71` | Seed verdunkeln, z. B. `Colors.blue.shade900`/`Color(0xFF0D47A1)`, und Kontrast (WCAG AA ≥ 4,5:1) in Hell und Dunkel als Tabelle plus automatisiertem Check nachweisen. |
-| `google_fonts` lädt Schriften zur Laufzeit (E-38/F-13/F-44) | Offline-Ausfall und DSGVO-Risiko | `U-72` | Poppins/Lato statisch als Assets bündeln (OFL), `fonts:`-Block in `pubspec.yaml`, `GoogleFonts.*` durch `TextStyle(fontFamily: …)` ersetzen, Abhängigkeit entfernen; Offline-Check. |
+| Seed-Farbe `Colors.blue` erfüllt WCAG AA nicht (E-40) | Barrierefreiheitsziel verfehlt | `U-71` | **Erledigt:** Seed ist `Color(0xFF0D47A1)`; die gemessenen Kontrastverhältnisse (hell und dunkel, alle über 4,5:1) stehen als Tabelle in `1_Frontendstruktur.md` und werden von `test/theme/contrast_test.dart` nachgerechnet. |
+| `google_fonts` lädt Schriften zur Laufzeit (E-38/F-13/F-44) | Offline-Ausfall und DSGVO-Risiko | `U-72` | **Erledigt:** Poppins/Lato liegen als Assets bei (OFL), `fonts:`-Block in `pubspec.yaml`, `AppTheme` nutzt `TextStyle(fontFamily: …)`, die Abhängigkeit ist entfernt; der Web-Build bündelt die Schriften (`FontManifest.json`). |
 | Gemischte Zeilenenden CRLF/LF (E-36) | Rausch-Diffs in der Dokumentation | `U-02` | `.gitattributes` (`* text=auto`, `*.md text eol=lf`) ist angelegt; die Grundlagendokumente sind auf LF normalisiert (`git ls-files --eol`), der `git diff` ist rauschfrei. |
 | Gemischte Dateinamen, doppelte Backlogs in `1_`/`3_` (E-35) | Verweise brechen, Inhalte duplizieren | `U-01`, `U-03` | Dateiname an die übrigen Grundlagendokumente angeglichen (`git mv` → `4_Offene_Fragen.md`, E-35) und alle Verweise mitgezogen (Suche leer); doppelte Backlog-Einträge auf einen Verweis je F-/E-ID reduziert. |
 | `1_Frontendstruktur.md` behauptet, `flutter_localizations` fehle — ist vorhanden | veraltete Doku führt zu Fehlentscheidungen | `U-03` (Dokumentationsabgleich) | Punkt am 2026-09-22 in `1_Frontendstruktur.md` korrigiert (E-05: `Map` je Sprache; ARB-Migration folgt mit F-08/E-17) und im Dokumentationsabgleich von `4_Offene_Fragen.md` gestrichen. |
@@ -53,7 +53,7 @@ Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *
 | Flutter-Artefakte sind mehrere 10 MB groß | Repository bläht auf | `U-60` (Artefakte nur bei Tags) | Nichts committen (`build/` bleibt in `.gitignore`); bei `main` als Workflow-Artifact mit `retention-days: 90`, bei Tags als GitHub Release (`softprops/action-gh-release`). |
 | Fehlendes `--base-href` (E-44/F-38) | Web-Build lädt Ressourcen von falscher Wurzel | `U-62` | Im Deploy-Job `flutter build web --release --base-href` mit `/<repo>/` (Slug exakt, z. B. `/Testautomat/`; Wert dynamisch aus `github.event.repository.name`); danach `<base href>` in `build/web/index.html` prüfen. |
 | Preis-/Verkaufszeitlogik ohne Tests (F-40) | Rechenfehler wandern unbemerkt in die Simulation | `U-34` | Logik in reine Klassen (`lib/logic/`) extrahieren; parametrisierte Unit-Tests für Taktraster/Aufrunden und Cent-Werte (E-15/E-02), UTC-Grenzfälle der Verkaufszeit (E-14/E-03) sowie Belegnummern (E-16). |
-| Laufender Uhr-Timer in Tests | hängende Tests | `U-51` | Uhr über eine injizierbare `Clock` statt `Timer.periodic` im Widget-State führen; Tests pinnen die Zeit (`tester.pump`) und räumen über einen zentralen `disposeApp`-Helfer auf; Timer pausiert im Hintergrund (E-26/U-71). |
+| Laufender Uhr-Timer in Tests | hängende Tests | `U-51` | Uhr über eine injizierbare `Clock` statt `Timer.periodic` im Widget-State führen; Tests pinnen die Zeit (`tester.pump`) und räumen über einen zentralen `disposeApp`-Helfer auf; Timer pausiert im Hintergrund (**erledigt mit U-71**: `AppClock.pausieren()`/`fortsetzen()`, angebunden an `AppLifecycleState`). |
 
 ## Der Plan (tm)
 
@@ -72,6 +72,7 @@ Damit ist jeder Eintrag E-01…E-55 mindestens einmal einem Arbeitspaket, einem 
 | M2 | Durchklickbarer Kaufablauf inklusive Fehlerbildschirm | 2–3 |
 | M3 | Debug-Bildschirm liest und schreibt über den Repository-Vertrag | 4 |
 | M4 | CI/CD grün, Erst-Release mit Artefakten, Web auf GitHub Pages | 5–6 |
+| M5 | Barrierefreiheit und Sprache: Schriften offline gebündelt, `intl`-Formatierung, ARB-Texte, Kontrastnachweis, DSGVO-Konzept | 7 |
 
 ### Bestand (bereits umgesetzt)
 
@@ -166,12 +167,14 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-70` | `intl`-Formatierung (12-Stunden-Format für Englisch); System-Locale beim ersten Start; Persistenz von Theme und Sprache; Migrationszeitpunkt für ARB/`l10n.yaml` bestimmen und umsetzen | E-18, E-19, E-20, E-17, F-08, E-05 | Offen |
-| `U-71` | Seed-Farbe verdunkeln und Kontrast gegen WCAG AA prüfen; scrollbarer Mittelbereich; „Bewegung reduzieren" respektieren; Uhr-Timer pausiert im Hintergrund (Takt bleibt 30 s) | E-40, E-41, E-24, E-27, E-26 | Offen |
-| `U-72` | Schriften (Poppins/Lato) als Assets bündeln statt `google_fonts`-Laufzeitbezug | E-38, F-13, F-44 | Offen |
-| `U-73` | DSGVO-konformes Log-Konzept (nur Betriebsdaten, Rotation) und Aufbewahrungs-/Purge-Konzept dokumentieren | E-48, E-54 | Offen |
+| `U-70` | `intl`-Formatierung (`DateFormat.jm`/`yMd`: Englisch 12-Stunden-Format mit AM/PM, Deutsch 24 Stunden, `18.9.2026` nach CLDR); Systemsprache beim ersten Start (E-19); Theme und Sprache als `settings.json` im App-Support-Verzeichnis gemerkt (E-20, Web bewusst Session-only); ARB-Migration umgesetzt (E-17): Texte in `lib/l10n/arb/`, `flutter gen-l10n` erzeugt `lib/l10n/generated/`, Gate und CI prüfen den Stand; Paritätstest liest die ARB-Dateien (E-39) | E-18, E-19, E-20, E-17, F-08, E-05 | Fertig |
+| `U-71` | Seed-Farbe `Color(0xFF0D47A1)`; Kontrastnachweis mit Messwerten (hell 6,46–16,32:1, dunkel 7,27–14,39:1) als Tabelle in `1_Frontendstruktur.md` und als Test (`test/theme/contrast_test.dart`); scrollbarer Mittelbereich mit fixierten Kopf-/Fußzeilen durch Test belegt; „Bewegung reduzieren“ über `AppMotion` samt ruhiger `FortschrittsAnzeige`; Uhr-Takt pausiert im Hintergrund und aktualisiert beim Zurückkommen (Takt bleibt 30 s) | E-40, E-41, E-24, E-27, E-26 | Fertig |
+| `U-72` | Poppins/Lato (400/500/600) liegen mit ihren OFL-Lizenzen unter `assets/fonts/`, eingebunden über den `fonts:`-Block; `AppTheme` nutzt `TextStyle(fontFamily: …)`, `google_fonts` ist entfernt. Web-Build liefert die Schriften als Assets aus (`FontManifest.json`), kein Laufzeitabruf | E-38, F-13, F-44 | Fertig |
+| `U-73` | DSGVO-konformes Log-Konzept (nur Betriebsdaten, Rotation) und Aufbewahrungs-/Purge-Konzept in `6_Logging_und_Datenschutz.md` dokumentiert (Protokollierung nicht implementiert, E-54) | E-48, E-54 | Fertig |
 
 **Definition of Done:** keine Netzzugriffe für Schriften; alle sichtbaren Texte über den i18n-Layer; Kontrastnachweis dokumentiert.
+
+**Stand 2026-09-22: erfüllt.** Der Web-Build enthält Poppins/Lato als Assets (im `FontManifest.json` nachgewiesen), die Texte liegen in ARB-Dateien und werden über `flutter gen-l10n` erzeugt (Gate und CI prüfen den Stand), und die gemessenen Kontrastverhältnisse stehen als Tabelle in `1_Frontendstruktur.md` samt Test. **Meilenstein M5 erreicht.**
 
 ## Reihenfolge und Abhängigkeiten
 
@@ -185,6 +188,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 7 umgesetzt (U-70…U-73): Schriften (Poppins/Lato, OFL-Lizenzen) als Assets gebündelt statt `google_fonts` (E-38, im Web-Build als `FontManifest.json` nachgewiesen); Datum und Uhrzeit über `intl` (E-18, Englisch 12 Stunden mit AM/PM), Systemsprache beim ersten Start (E-19), Theme und Sprache gemerkt (E-20), Texte auf ARB mit `flutter gen-l10n` migriert (E-17, Gate und CI prüfen den erzeugten Stand); Seed `Color(0xFF0D47A1)` mit Kontrastnachweis als Tabelle und Test (E-40), scrollbarer Mittelbereich belegt (E-41), „Bewegung reduzieren“ respektiert (E-24), Uhr pausiert im Hintergrund (E-27); DSGVO-Log- und Aufbewahrungskonzept in `6_Logging_und_Datenschutz.md` (E-48/E-54). 156 Tests grün (lokales Gate inklusive Texterzeugung, Formatierung und Analyse). **Meilenstein M5 erreicht.** |
 | 2026-09-22 | Pages-Deploy live verifiziert: Push-Lauf `35767538896` komplett grün (Gate, vier Builds, Deploy), alle Deploy-Schritte ausgeführt; `https://reyneke.github.io/Testautomat/` liefert HTTP 200 mit korrektem `<base href="/Testautomat/">` und allen Web-Assets (HTTP 200). Zwei CI-Fehler dabei behoben: die Vorprüfung über die Pages-API entfällt (der Actions-Token darf die Konfiguration nicht lesen und meldete fälschlich „nicht aktiv“; jetzt versucht der Job `actions/configure-pages` direkt und überspringt Upload/Deploy nur bei Misserfolg), und ein ungültiger Skalar (Doppelpunkt+Leerzeichen in `run:`) ist durch einen Block-Skalar ersetzt. Der Release-Job bleibt bei `main`-Pushes bewusst übersprungen (nur Tags `v*`). |
 | 2026-09-22 | Phase 6 abgeschlossen: Workflow im Repository-Root mit Gate, Build-Matrix (Android, Windows, Linux, Web) und Release-Job; Tag `v0.1.0` mit vier Artefakten (APK 54,8 MB, Windows-ZIP 13,4 MB, Linux-tar.gz 11,1 MB, Web-ZIP 14,0 MB) veröffentlicht; Web-Build mit `--base-href=/Testautomat/`; GitHub Pages aktiviert, der Pages-Deploy läuft bei jedem Push auf `main`. **Meilenstein M4 erreicht.** |
 | 2026-09-22 | Phase 5 umgesetzt (U-50…U-52): Widget-Tests je Bildschirm, i18n-Paritätstest, Semantik-/Fokus-Tests, globaler Zustand als injizierter `AppState` (statische Felder entfernt, Timer-Hygiene) und lokales Gate `tool/gate.ps1`; 118 Tests grün, Gate vollständig durchlaufen. CI-Grundlage für M4 gelegt. |

@@ -41,7 +41,7 @@ Diese Punkte verhindern, dass aus dem Skelett ein durchklickbarer Prototyp wird.
 
 | ID | Frage | Bezug | Status |
 |---|---|---|---|
-| F-08 | Ab wann wird von der eigenen `Map` auf ARB-Dateien mit `l10n.yaml` migriert? | `lib/l10n/app_localizations.dart`, `1_Frontendstruktur.md` (dort noch als offen geführt) | Entschieden (E-17) |
+| F-08 | Ab wann wird von der eigenen `Map` auf ARB-Dateien mit `l10n.yaml` migriert? | `lib/l10n/arb/`, `l10n.yaml`, `1_Frontendstruktur.md` | Umgesetzt (E-17, `U-70`) |
 | F-09 | Wie wird ein fehlender Übersetzungsschlüssel behandelt? Derzeit liefert `_get()` stillschweigend den Key selbst zurück; zudem können die `de`- und `en`-Maps auseinanderlaufen. | `app_localizations.dart:64-81` | Entschieden (E-39) |
 | F-10 | Datum und Uhrzeit weiterhin mit eigenen Methoden formatieren oder auf `intl` (`DateFormat`) umstellen? Auffällig: `formatDate` liefert für Englisch `09/18/2026`, das 12-Stunden-Format (AM/PM) fehlt. | `app_localizations.dart:84-98`; `intl` ist keine Abhängigkeit | Entschieden (E-18) |
 | F-11 | Folgt die Sprache beim ersten Start der Systemeinstellung des Geräts? Derzeit startet die App fest mit `de`. | `app_locale.dart:15-18` | Entschieden (E-19) |
