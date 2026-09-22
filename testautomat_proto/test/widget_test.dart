@@ -1,4 +1,4 @@
-// Widget-Tests fuer Theme- und Sprachumschaltung sowie die Composition Root.
+// Widget-Tests fuer Theme- und Sprachumschaltung, Composition Root und Bootstrap.
 //
 // Siehe doc/plan/grundlagen/1_Frontendstruktur.md: Standard ist Dunkel, die
 // Sprache muss jederzeit zwischen Deutsch und Englisch wechselbar sein.
@@ -11,13 +11,17 @@ import 'package:testautomat_proto/data/in_memory_repository.dart';
 import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/main.dart';
+import 'package:testautomat_proto/state/app_clock.dart';
+import 'package:testautomat_proto/state/app_machine.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
 
 void main() {
   setUp(() {
-    // Globalen Zustand vor jedem Test zuruecksetzen.
+    // Globalen Zustand vor jedem Test zuruecksetzen (E-46).
     AppTheme.themeModeNotifier.value = ThemeMode.dark;
     AppLocale.setLocale(const Locale('de'));
+    AppMachine.reset();
+    AppClock.reset();
   });
 
   Future<void> pumpApp(
@@ -27,6 +31,9 @@ void main() {
     await tester.pumpWidget(
       TestAutomatApp(repository: repository ?? InMemoryRepository()),
     );
+    // Ladevorgang der Maschine (U-23) abschliessen: der Ladebildschirm weicht
+    // dem Startbildschirm.
+    await tester.pump();
     await tester.pump();
   }
 
@@ -82,6 +89,18 @@ void main() {
 
     final maschine = await scope.repository.getMachine();
     expect(maschine.geraeteId, '4711');
+
+    await disposeApp(tester);
+  });
+
+  testWidgets('Startbildschirm erscheint nach dem Laden der Maschine', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    expect(find.text('Verkauf starten'), findsOneWidget);
+    expect(AppMachine.maschineNotifier.value?.geraeteId, '4711');
+    expect(AppMachine.maschineNotifier.value?.standort, 'Weiden i. d. OPf.');
 
     await disposeApp(tester);
   });

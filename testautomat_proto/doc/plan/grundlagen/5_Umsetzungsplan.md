@@ -112,10 +112,10 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-20` | Kopf-, Mittel- und Fußzeile als wiederverwendbare Widgets extrahieren | E-21 | Offen |
-| `U-21` | `Navigator` mit benannten Routen für die sechs Bildschirme inklusive Zustandsübergängen | E-13 | Offen |
-| `U-22` | Die sechs Screens als Gerüste mit dem gemeinsamen Layout aus `0_Einfuehrung.md` anlegen | E-06, E-07 | Offen |
-| `U-23` | Maschine beim App-Start über `getMachine()` laden und über `AppMachine.maschineNotifier` bereitstellen (aktive Maschine, E-53); Platzhalter `'4711'`/`'Weiden i. d. OPf.'` entfernen; Lade-/Fehlerbildschirm „Automat außer Betrieb" | E-55, F-16, E-23, E-53 | Offen |
+| `U-20` | Kopf-, Mittel- und Fußzeile als wiederverwendbare Widgets extrahiert: `AppHeader`, `AppFooter` und `ScreenShell` samt `AppClock` (30-s-Takt) | E-21 | Fertig |
+| `U-21` | `Navigator` mit benannten Routen für die sechs Bildschirme (`lib/routes.dart`) inklusive Zustandsübergängen | E-13 | Fertig |
+| `U-22` | Die sechs Screens als Gerüste mit dem gemeinsamen Layout aus `0_Einfuehrung.md` angelegt (`lib/screens/`) | E-06, E-07 | Fertig |
+| `U-23` | Maschine beim App-Start über `getMachine()` geladen und über `AppMachine.maschineNotifier` bereitgestellt (E-53); Platzhalter entfernt; Lade- und Fehlerbildschirm „Automat außer Betrieb“ im `MachineLoader` | E-55, F-16, E-23, E-53 | Fertig |
 
 **Definition of Done:** alle Übergänge erreichbar; kein hartkodierter Maschinenzustand; der Fehlerpfad zeigt den Fehlerbildschirm.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 2 umgesetzt (U-20…U-23): gemeinsame Kopf-/Fußzeile mit `AppClock`, sechs Bildschirm-Gerüste, benannte Routen und Bootstrap mit Maschinendaten (`AppMachine`) samt Fehlerbildschirm; Widget-, Navigations- und Bootstrap-Tests grün (64 Tests). Der „Aus“-Bildschirm ist über seine Route erreichbar; sein Einstieg folgt mit der Verkaufszeit-Prüfung in `U-30`. |
 | 2026-09-22 | Phase 1 umgesetzt (U-10…U-16): Datenlayer mit Drift, DTOs und Repository-Vertrag, `schema_version`-Protokoll, deterministische Seeds, InMemory- und SQLite-Repository sowie Composition Root; Vertrags-, Migrations- und Widget-Tests grün (52 Tests). Meilenstein M1 erreicht. |
 | 2026-09-22 | U-03 abgeschlossen: Übersichtsseite `doc/plan/README.md` angelegt (E-37); die Root-README verweist darauf. Phase 0 (Meilenstein M0) ist damit vollständig. |
 | 2026-09-22 | U-04 umgesetzt: README beschreibt Projektzweck, Zielplattformen, Getting Started, Downloads, CI-Status und DSGVO-Hinweise; die Phase-0-DoD ist bis auf die Übersichtsseite in `U-03` erfüllt. |

@@ -59,45 +59,18 @@ abstract class AppTheme {
     ),
 
     // Title Styles - für Komponenten-Titel
-    titleLarge: GoogleFonts.lato(
-      fontSize: 22,
-      fontWeight: FontWeight.w600,
-    ),
-    titleMedium: GoogleFonts.lato(
-      fontSize: 18,
-      fontWeight: FontWeight.w500,
-    ),
-    titleSmall: GoogleFonts.lato(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-    ),
+    titleLarge: GoogleFonts.lato(fontSize: 22, fontWeight: FontWeight.w600),
+    titleMedium: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w500),
+    titleSmall: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w500),
 
     // Body Styles - für Fließtext
-    bodyLarge: GoogleFonts.lato(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-    ),
-    bodyMedium: GoogleFonts.lato(
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-    ),
-    bodySmall: GoogleFonts.lato(
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-    ),
+    bodyLarge: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w400),
+    bodyMedium: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w400),
+    bodySmall: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w400),
 
     // Label Styles - für Beschriftungen
-    labelLarge: GoogleFonts.lato(
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-    ),
-    labelMedium: GoogleFonts.lato(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-    ),
-    labelSmall: GoogleFonts.lato(
-      fontSize: 11,
-      fontWeight: FontWeight.w500,
-    ),
+    labelLarge: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.w500),
+    labelMedium: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.w500),
+    labelSmall: GoogleFonts.lato(fontSize: 11, fontWeight: FontWeight.w500),
   );
 }

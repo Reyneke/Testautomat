@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 /// `doc/plan/grundlagen/1_Frontendstruktur.md`.
 abstract class AppLocale {
   /// Unterstützte Sprachen: Deutsch und Englisch.
-  static const List<Locale> supportedLocales = [
-    Locale('de'),
-    Locale('en'),
-  ];
+  static const List<Locale> supportedLocales = [Locale('de'), Locale('en')];
 
   /// Standardsprache, falls keine gültige Auswahl vorliegt.
   static const Locale fallbackLocale = Locale('de');

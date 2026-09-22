@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:testautomat_proto/app_scope.dart';
+import 'package:testautomat_proto/bootstrap/machine_loader.dart';
 import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/data/repository_factory.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
-import 'package:testautomat_proto/screens/start_screen.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
 
 void main() {
@@ -17,7 +17,9 @@ void main() {
 ///
 /// Bindet den globalen Theme- ([AppTheme.themeModeNotifier]) und Sprachzustand
 /// ([AppLocale.notifier]) an die [MaterialApp] und stellt das Datenlayer ueber
-/// [AppScope] bereit. Siehe `doc/plan/grundlagen/1_Frontendstruktur.md`.
+/// [AppScope] bereit. Den Einstieg bestimmt der [MachineLoader]: er laedt die
+/// aktive Maschine und zeigt danach den Start-, "Aus"- oder Fehlerbildschirm
+/// (E-23, E-53, E-55). Siehe `doc/plan/grundlagen/1_Frontendstruktur.md`.
 class TestAutomatApp extends StatelessWidget {
   const TestAutomatApp({super.key, required this.repository});
 
@@ -49,7 +51,7 @@ class TestAutomatApp extends StatelessWidget {
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
-                home: const StartScreen(),
+                home: const MachineLoader(),
               );
             },
           );

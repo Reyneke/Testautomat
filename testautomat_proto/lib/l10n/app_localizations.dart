@@ -43,6 +43,29 @@ class AppLocalizations {
       'languageEnglish': 'Englisch',
       'debugMachine': 'Automatennummer',
       'debugLocation': 'Standort',
+      'ladeMaschine': 'Automat wird gestartet …',
+      'automatAusserBetrieb': 'Automat außer Betrieb',
+      'automatAusserBetriebHinweis':
+          'Die Daten des Automaten sind derzeit nicht erreichbar. Bitte wenden Sie sich an das Personal.',
+      'erneutVersuchen': 'Erneut versuchen',
+      'ausserhalbVerkaufszeit': 'Der Verkauf ist derzeit nicht möglich.',
+      'ausserhalbVerkaufszeitHinweis':
+          'Bitte nutzen Sie den Automaten innerhalb der Verkaufszeiten.',
+      'neuLaden': 'Neu laden',
+      'parkzeitAuswahlTitle': 'Parkzeit wählen',
+      'parkzeitAuswahlHinweis': 'Bitte wählen Sie die gewünschte Parkdauer.',
+      'laufendeParkdauer': 'Gewählte Parkdauer',
+      'zahlungTitle': 'Zahlungsart wählen',
+      'zahlungHinweis': 'Die Zahlung wird simuliert.',
+      'zahlungsartBar': 'Bar',
+      'zahlungsartKarte': 'Karte',
+      'parkinfoTitle': 'Parkinformation',
+      'parkinfoBelegHinweis': 'Der Parkschein wird nach der Zahlung angezeigt.',
+      'weiter': 'Weiter',
+      'zurueck': 'Zurück',
+      'verabschiedungTitle': 'Auf Wiedersehen',
+      'verabschiedungText': 'Vielen Dank und eine gute Fahrt!',
+      'neuerVerkauf': 'Neuer Verkauf',
     },
     'en': {
       'appTitle': 'Parking Meter Weiden',
@@ -58,6 +81,29 @@ class AppLocalizations {
       'languageEnglish': 'English',
       'debugMachine': 'Machine number',
       'debugLocation': 'Location',
+      'ladeMaschine': 'Starting up …',
+      'automatAusserBetrieb': 'Machine out of service',
+      'automatAusserBetriebHinweis':
+          'The machine data cannot be reached right now. Please contact the staff.',
+      'erneutVersuchen': 'Try again',
+      'ausserhalbVerkaufszeit': 'Sales are currently not possible.',
+      'ausserhalbVerkaufszeitHinweis':
+          'Please use the machine during its business hours.',
+      'neuLaden': 'Reload',
+      'parkzeitAuswahlTitle': 'Choose parking time',
+      'parkzeitAuswahlHinweis': 'Please choose the desired parking duration.',
+      'laufendeParkdauer': 'Selected parking duration',
+      'zahlungTitle': 'Choose payment method',
+      'zahlungHinweis': 'The payment is simulated.',
+      'zahlungsartBar': 'Cash',
+      'zahlungsartKarte': 'Card',
+      'parkinfoTitle': 'Parking information',
+      'parkinfoBelegHinweis': 'The ticket is shown after the payment.',
+      'weiter': 'Continue',
+      'zurueck': 'Back',
+      'verabschiedungTitle': 'Goodbye',
+      'verabschiedungText': 'Thank you and have a good trip!',
+      'neuerVerkauf': 'New sale',
     },
   };
 
@@ -79,6 +125,41 @@ class AppLocalizations {
   String get languageEnglish => _get('languageEnglish');
   String get debugMachine => _get('debugMachine');
   String get debugLocation => _get('debugLocation');
+  String get ladeMaschine => _get('ladeMaschine');
+  String get automatAusserBetrieb => _get('automatAusserBetrieb');
+  String get automatAusserBetriebHinweis => _get('automatAusserBetriebHinweis');
+  String get erneutVersuchen => _get('erneutVersuchen');
+  String get ausserhalbVerkaufszeit => _get('ausserhalbVerkaufszeit');
+  String get ausserhalbVerkaufszeitHinweis =>
+      _get('ausserhalbVerkaufszeitHinweis');
+  String get neuLaden => _get('neuLaden');
+  String get parkzeitAuswahlTitle => _get('parkzeitAuswahlTitle');
+  String get parkzeitAuswahlHinweis => _get('parkzeitAuswahlHinweis');
+  String get laufendeParkdauer => _get('laufendeParkdauer');
+  String get zahlungTitle => _get('zahlungTitle');
+  String get zahlungHinweis => _get('zahlungHinweis');
+  String get zahlungsartBar => _get('zahlungsartBar');
+  String get zahlungsartKarte => _get('zahlungsartKarte');
+  String get parkinfoTitle => _get('parkinfoTitle');
+  String get parkinfoBelegHinweis => _get('parkinfoBelegHinweis');
+  String get weiter => _get('weiter');
+  String get zurueck => _get('zurueck');
+  String get verabschiedungTitle => _get('verabschiedungTitle');
+  String get verabschiedungText => _get('verabschiedungText');
+  String get neuerVerkauf => _get('neuerVerkauf');
+
+  /// Parkdauer als Text, z. B. `4 Stunden` bzw. `4 hours`.
+  String formatParkdauer(int minuten) {
+    final stunden = minuten ~/ 60;
+    final restMinuten = minuten % 60;
+    final String stundenText;
+    if (locale.languageCode == 'en') {
+      stundenText = stunden == 1 ? '1 hour' : '$stunden hours';
+    } else {
+      stundenText = stunden == 1 ? '1 Stunde' : '$stunden Stunden';
+    }
+    return restMinuten == 0 ? stundenText : '$stundenText $restMinuten min';
+  }
 
   /// Uhrzeit im 24-Stunden-Format, z. B. `08:05`.
   String formatTime(DateTime dateTime) {
