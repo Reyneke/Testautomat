@@ -1,26 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// Hält die aktuell gewählte Sprache der App.
+/// Unterstuetzte Sprachen der App (E-06, E-08).
 ///
-/// Die Sprache kann jederzeit zur Laufzeit gewechselt werden, siehe
-/// `doc/plan/grundlagen/1_Frontendstruktur.md`.
+/// Die jeweils aktive Sprache liegt im `AppState` (`AppState.locale`), damit der
+/// Zustand injizierbar bleibt (E-46); hier stehen nur die Konstanten.
 abstract class AppLocale {
-  /// Unterstützte Sprachen: Deutsch und Englisch.
+  /// Unterstuetzte Sprachen: Deutsch und Englisch.
   static const List<Locale> supportedLocales = [Locale('de'), Locale('en')];
 
-  /// Standardsprache, falls keine gültige Auswahl vorliegt.
+  /// Standardsprache, falls keine gueltige Auswahl vorliegt.
   static const Locale fallbackLocale = Locale('de');
-
-  /// Globaler Sprachzustand. Änderungen lösen sofort einen Neuaufbau aus.
-  static final ValueNotifier<Locale> notifier = ValueNotifier(fallbackLocale);
-
-  /// Wechselt die Sprache, sofern sie unterstützt wird.
-  static void setLocale(Locale locale) {
-    final isSupported = supportedLocales.any(
-      (supported) => supported.languageCode == locale.languageCode,
-    );
-    if (isSupported) {
-      notifier.value = locale;
-    }
-  }
 }

@@ -10,9 +10,7 @@ import 'package:testautomat_proto/data/in_memory_repository.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/screens/debug_screen.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
-import 'package:testautomat_proto/state/app_debug.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
+import 'package:testautomat_proto/state/app_state.dart';
 
 /// Repository mit zwei Verkaeufen an bekannten UTC-Tagen.
 InMemoryRepository _repositoryMitVerkaeufen() => InMemoryRepository(
@@ -46,6 +44,7 @@ Future<void> _starteDebug(
 }) async {
   await tester.pumpWidget(
     AppScope(
+      zustand: AppState(),
       repository: repository,
       child: MaterialApp(
         locale: const Locale('de'),
@@ -69,13 +68,6 @@ Future<void> _starteDebug(
 }
 
 void main() {
-  setUp(() {
-    AppLocale.setLocale(const Locale('de'));
-    AppMachine.reset();
-    AppClock.reset();
-    AppDebug.reset();
-  });
-
   Future<void> beende(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox.shrink());
   }

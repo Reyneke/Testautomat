@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:testautomat_proto/app_scope.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
+import 'package:testautomat_proto/state/app_state.dart';
 
 /// Kopfzeile aller Bildschirme (E-21).
 ///
@@ -22,15 +23,22 @@ class AppHeader extends StatefulWidget {
 }
 
 class _AppHeaderState extends State<AppHeader> {
+  AppClock? _uhr;
+
   @override
-  void initState() {
-    super.initState();
-    AppClock.start();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final uhr = AppScope.of(context).zustand.clock;
+    if (!identical(uhr, _uhr)) {
+      _uhr?.stop();
+      _uhr = uhr;
+      uhr.start();
+    }
   }
 
   @override
   void dispose() {
-    AppClock.stop();
+    _uhr?.stop();
     super.dispose();
   }
 
@@ -38,9 +46,10 @@ class _AppHeaderState extends State<AppHeader> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
+    final uhr = AppScope.of(context).zustand.clock;
 
     return ValueListenableBuilder<DateTime>(
-      valueListenable: AppClock.notifier,
+      valueListenable: uhr.notifier,
       builder: (context, jetzt, _) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

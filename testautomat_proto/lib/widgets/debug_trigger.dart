@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:testautomat_proto/app_scope.dart';
 import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/screens/debug_pin_dialog.dart';
 import 'package:testautomat_proto/state/app_debug.dart';
@@ -28,6 +29,7 @@ class _DebugTriggerState extends State<DebugTrigger> {
     }
     _taps = 0;
 
+    final zustand = AppScope.of(context).zustand;
     final angemeldet = await showDialog<bool>(
       context: context,
       builder: (context) => const DebugPinDialog(),
@@ -38,7 +40,7 @@ class _DebugTriggerState extends State<DebugTrigger> {
 
     await Navigator.of(context).pushNamed(AppRoutes.debug);
     // Nach dem Verlassen ist der Zugang wieder gesperrt (E-22: verborgen).
-    AppDebug.abmelden();
+    zustand.debugAbmelden();
   }
 
   @override

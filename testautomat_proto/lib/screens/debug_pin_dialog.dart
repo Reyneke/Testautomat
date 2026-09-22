@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:testautomat_proto/l10n/app_localizations.dart';
-import 'package:testautomat_proto/state/app_debug.dart';
+import 'package:testautomat_proto/app_scope.dart';
 
 /// PIN-Dialog fuer den Debug-Zugang (E-22).
 ///
@@ -25,7 +25,7 @@ class _DebugPinDialogState extends State<DebugPinDialog> {
   }
 
   void _bestaetigen() {
-    if (AppDebug.pruefePin(_eingabe.text)) {
+    if (AppScope.of(context).zustand.pruefeDebugPin(_eingabe.text)) {
       Navigator.of(context).pop(true);
       return;
     }

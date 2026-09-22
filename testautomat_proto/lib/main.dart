@@ -6,35 +6,44 @@ import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/data/repository_factory.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
+import 'package:testautomat_proto/state/app_state.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(TestAutomatApp(repository: createDefaultRepository()));
+  runApp(
+    TestAutomatApp(zustand: AppState(), repository: createDefaultRepository()),
+  );
 }
 
 /// Wurzel-Widget der App.
 ///
-/// Bindet den globalen Theme- ([AppTheme.themeModeNotifier]) und Sprachzustand
-/// ([AppLocale.notifier]) an die [MaterialApp] und stellt das Datenlayer ueber
-/// [AppScope] bereit. Den Einstieg bestimmt der [MachineLoader]: er laedt die
-/// aktive Maschine und zeigt danach den Start-, "Aus"- oder Fehlerbildschirm
-/// (E-23, E-53, E-55). Siehe `doc/plan/grundlagen/1_Frontendstruktur.md`.
+/// Bindet Theme und Sprache an die [MaterialApp], stellt Zustand und Datenlayer
+/// ueber den [AppScope] bereit und ueberlaesst den Einstieg dem [MachineLoader]
+/// (Laedt die Maschine, E-23/E-55). Siehe `1_Frontendstruktur.md`.
 class TestAutomatApp extends StatelessWidget {
-  const TestAutomatApp({super.key, required this.repository});
+  const TestAutomatApp({
+    super.key,
+    required this.zustand,
+    required this.repository,
+  });
 
-  /// Datenzugriff (Composition Root, E-04): pro App-Instanz genau eine Fassung.
+  /// Globaler Zustand der App - eine Instanz pro App (E-46).
+  final AppState zustand;
+
+  /// Datenzugriff (Composition Root, E-04).
   final ParkautomatRepository repository;
 
   @override
   Widget build(BuildContext context) {
     return AppScope(
+      zustand: zustand,
       repository: repository,
       child: ValueListenableBuilder<ThemeMode>(
-        valueListenable: AppTheme.themeModeNotifier,
+        valueListenable: zustand.themeMode,
         builder: (context, themeMode, _) {
           return ValueListenableBuilder<Locale>(
-            valueListenable: AppLocale.notifier,
+            valueListenable: zustand.locale,
             builder: (context, locale, _) {
               return MaterialApp(
                 onGenerateTitle: (context) =>

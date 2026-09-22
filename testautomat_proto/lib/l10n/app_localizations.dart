@@ -191,9 +191,24 @@ class AppLocalizations {
     },
   };
 
+  /// Rohe Schluessel/Wert-Paare einer Sprache (nur fuer Tests, E-39).
+  @visibleForTesting
+  static Map<String, String> werteFuer(String sprache) =>
+      Map<String, String>.of(_values[sprache] ?? const <String, String>{});
+
   String _get(String key) {
     final values = _values[locale.languageCode] ?? _values['de']!;
-    return values[key] ?? key;
+    final wert = values[key];
+    if (wert == null) {
+      // E-39: fehlender Schluessel wird im Debug-Build sichtbar gemeldet;
+      // im Release dient der Schluessel als Notanzeige.
+      assert(() {
+        debugPrint('FEHLENDER i18n-Schluessel: $key (${locale.languageCode})');
+        return true;
+      }());
+      return key;
+    }
+    return wert;
   }
 
   String get appTitle => _get('appTitle');

@@ -11,16 +11,9 @@ import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/screens/parkinfo_screen.dart';
 import 'package:testautomat_proto/screens/zahlungs_auswahl_screen.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
+import 'package:testautomat_proto/state/app_state.dart';
 
 void main() {
-  setUp(() {
-    AppLocale.setLocale(const Locale('de'));
-    AppMachine.reset();
-    AppClock.reset();
-  });
-
   Future<InMemoryRepository> starteZahlung(
     WidgetTester tester, {
     Duration fortschritt = const Duration(seconds: 2),
@@ -31,6 +24,7 @@ void main() {
     );
     await tester.pumpWidget(
       AppScope(
+        zustand: AppState(),
         repository: repository,
         child: MaterialApp(
           locale: const Locale('de'),

@@ -46,6 +46,12 @@ flutter test        # Widget-Tests
 flutter analyze     # Statische Analyse
 ```
 
+**Gate lokal** (Formatierung, Analyse, Tests - Arbeitspaket `U-52`):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tool/gate.ps1
+```
+
 **Aktueller Funktionsumfang:** Startbildschirm mit Uhrzeit/Datum, uhrzeitangemessener
 Begrüßung und Start-Button; Theme (Hell/Dunkel/System, Standard Dunkel) und Sprache
 (Deutsch/Englisch) sind zur Laufzeit umschaltbar. Die Debug-Angaben zeigen noch Platzhalter.

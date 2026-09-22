@@ -7,7 +7,6 @@ import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/logic/verkaufszeit.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/routes.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Laedt die aktive Maschine und waehlt danach den Einstieg (E-23, E-55).
@@ -45,6 +44,7 @@ class _MachineLoaderState extends State<MachineLoader> {
   /// Laedt Maschine und Verkaufszeit; Fehler jeder Art fuehren zum
   /// Fehlerbildschirm (E-23).
   Future<void> _laden(ParkautomatRepository repository) async {
+    final zustand = AppScope.of(context).zustand;
     try {
       final maschine = await repository.getMachine();
       final fenster = await repository.getVerkaufszeiten();
@@ -55,14 +55,14 @@ class _MachineLoaderState extends State<MachineLoader> {
       if (!mounted) {
         return;
       }
-      AppMachine.maschineNotifier.value = maschine;
+      zustand.maschine.value = maschine;
       _verkaufMoeglich = verkaufMoeglich;
       setState(() => _zustand = _Ladezustand.bereit);
     } on Object {
       if (!mounted) {
         return;
       }
-      AppMachine.reset();
+      zustand.maschine.value = null;
       setState(() => _zustand = _Ladezustand.fehler);
     }
   }

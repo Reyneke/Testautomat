@@ -3,15 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Zentrale Theme-Definitionen der App.
 ///
-/// Bündelt die hellen und dunklen [ThemeData], die gemeinsame [TextTheme]-Basis
-/// sowie den globalen [ThemeMode] als [ValueNotifier].
+/// Bündelt die hellen und dunklen [ThemeData] sowie die gemeinsame
+/// [TextTheme]-Basis. Der aktuelle [ThemeMode] liegt im `AppState` (E-46).
 /// Siehe `doc/plan/grundlagen/1_Frontendstruktur.md`.
 abstract class AppTheme {
-  /// Globaler Theme-Zustand. Standard ist der dunkle Modus.
-  static final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(
-    ThemeMode.dark,
-  );
-
   static final lightTheme = ThemeData(
     textTheme: baseTextTheme,
     colorScheme: ColorScheme.fromSeed(

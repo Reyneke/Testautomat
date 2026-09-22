@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+
+import 'package:testautomat_proto/app_scope.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
-import 'package:testautomat_proto/theme/app_theme.dart';
 
 /// Umschalter zwischen *Hell*, *Dunkel* und *System*.
 ///
-/// Bewusst kompakt (nur Icons), damit die Fußzeile auch auf schmalen Geräten
-/// nicht überläuft. Die Tooltips liefern gleichzeitig das Semantik-Label für
-/// Screenreader. Schreibt direkt in [AppTheme.themeModeNotifier]; die Bindung
-/// an die `MaterialApp` erfolgt zentral in `main.dart`.
+/// Bewusst kompakt (nur Icons), damit die Fusszeile auch auf schmalen Geraeten
+/// nicht ueberlaeuft. Die Tooltips liefern gleichzeitig das Semantik-Label fuer
+/// Screenreader. Schreibt in den `AppState`; die Bindung an die `MaterialApp`
+/// erfolgt zentral in `main.dart` (E-06).
 class ThemeModeSelector extends StatelessWidget {
   const ThemeModeSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final zustand = AppScope.of(context).zustand;
+
     return ValueListenableBuilder<ThemeMode>(
-      valueListenable: AppTheme.themeModeNotifier,
+      valueListenable: zustand.themeMode,
       builder: (context, themeMode, _) {
         return SegmentedButton<ThemeMode>(
           showSelectedIcon: false,
@@ -38,7 +41,7 @@ class ThemeModeSelector extends StatelessWidget {
           ],
           selected: {themeMode},
           onSelectionChanged: (selection) {
-            AppTheme.themeModeNotifier.value = selection.first;
+            zustand.themeMode.value = selection.first;
           },
         );
       },

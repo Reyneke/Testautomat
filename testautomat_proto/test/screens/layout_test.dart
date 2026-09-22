@@ -2,42 +2,20 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:testautomat_proto/data/in_memory_repository.dart';
-import 'package:testautomat_proto/l10n/app_locale.dart';
-import 'package:testautomat_proto/main.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
-import 'package:testautomat_proto/theme/app_theme.dart';
 import 'package:testautomat_proto/widgets/app_footer.dart';
 import 'package:testautomat_proto/widgets/app_header.dart';
 import 'package:testautomat_proto/widgets/language_selector.dart';
 import 'package:testautomat_proto/widgets/theme_selector.dart';
 
+import '../support/app_test_helpers.dart';
+
 void main() {
-  setUp(() {
-    AppTheme.themeModeNotifier.value = ThemeMode.dark;
-    AppLocale.setLocale(const Locale('de'));
-    AppMachine.reset();
-    AppClock.reset();
-  });
-
-  Future<void> starteApp(WidgetTester tester) async {
-    await tester.pumpWidget(TestAutomatApp(repository: InMemoryRepository()));
-    await tester.pump();
-    await tester.pump();
-  }
-
-  Future<void> beendeApp(WidgetTester tester) async {
-    await tester.pumpWidget(const SizedBox.shrink());
-  }
-
   testWidgets('Kopf- und Fusszeile begleiten den ganzen Kaufablauf', (
     tester,
   ) async {
-    await starteApp(tester);
+    await pumpeApp(tester);
 
     void pruefeRahmen() {
       expect(find.byType(AppHeader), findsOneWidget);

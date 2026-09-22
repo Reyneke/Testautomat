@@ -53,6 +53,7 @@ Bei jedem Push auf `main` und bei neuen Release-Tags baut eine GitHub-Actions-Pi
 - **Flutter-Setup** über `subosito/flutter-action` mit Caching des Flutter-SDKs und `pub cache` (Buildzeit).
 - **Semantische Versionierung:** Version aus `pubspec.yaml` (`1.0.0+1`), Tags nach `vX.Y.Z`.
 - **Code-Signing:** Für Android/Windows/Linux noch offen; für die Prototyp-Phase reicht un-signierte Auslieferung (Installationswarnung in Kauf nehmen).
+- **Lokales Gate:** `tool/gate.ps1` fuehrt `dart format --set-exit-if-changed lib test`, `flutter analyze` und `flutter test` aus; der Workflow (U-60) nutzt dieselben Schritte (U-52).
 - **Keine Artefakte im Repo:** `build/` sowie erzeugte Installer gehören in `.gitignore`.
 
 ## Hosting

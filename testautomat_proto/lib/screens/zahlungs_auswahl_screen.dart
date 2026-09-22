@@ -9,7 +9,6 @@ import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/logic/verkaufszeit.dart';
 import 'package:testautomat_proto/routes.dart';
 import 'package:testautomat_proto/screens/kaufablauf.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Auswahl der Zahlungsart und simulierter Zahlungsablauf (E-51).
@@ -114,14 +113,15 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
     if (auswahl == null) {
       return;
     }
-    final repository = AppScope.of(context).repository;
+    final scope = AppScope.of(context);
+    final repository = scope.repository;
     final localizations = AppLocalizations.of(context);
 
     Verkauf? verkauf;
     String? fehlermeldung;
     try {
       final maschine =
-          AppMachine.maschineNotifier.value ?? await repository.getMachine();
+          scope.zustand.maschine.value ?? await repository.getMachine();
       final jetzt = DateTime.now();
       final fenster = await repository.getVerkaufszeiten();
       if (!istInVerkaufszeit(fenster: fenster, jetztUtc: jetzt)) {

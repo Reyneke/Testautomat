@@ -146,7 +146,7 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   void _abmelden() {
-    AppDebug.abmelden();
+    AppScope.of(context).zustand.debugAbmelden();
     Navigator.of(context).pop();
   }
 

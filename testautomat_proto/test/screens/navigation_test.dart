@@ -1,44 +1,23 @@
-// Durchstich durch die sechs Bildschirme (DoD Phase 2/3: alle Uebergaenge erreichbar).
+// Durchstich durch die Bildschirme (DoD Phase 2/3: alle Uebergaenge erreichbar).
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:testautomat_proto/data/in_memory_repository.dart';
-import 'package:testautomat_proto/l10n/app_locale.dart';
-import 'package:testautomat_proto/main.dart';
 import 'package:testautomat_proto/routes.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
-import 'package:testautomat_proto/state/app_machine.dart';
-import 'package:testautomat_proto/theme/app_theme.dart';
+
+import '../support/app_test_helpers.dart';
 
 /// Label des Parkzeit-Knopfs, z. B. `4 Stunden \u00b7 2,00 \u20ac`.
 const String parkzeit4Stunden = '4 Stunden \u00b7 2,00 \u20ac';
 const String parkzeit8Stunden = '8 Stunden \u00b7 4,00 \u20ac';
 
 void main() {
-  setUp(() {
-    AppTheme.themeModeNotifier.value = ThemeMode.dark;
-    AppLocale.setLocale(const Locale('de'));
-    AppMachine.reset();
-    AppClock.reset();
-  });
-
-  Future<void> starteApp(WidgetTester tester) async {
-    await tester.pumpWidget(TestAutomatApp(repository: InMemoryRepository()));
-    await tester.pump();
-    await tester.pump();
-  }
-
-  Future<void> beendeApp(WidgetTester tester) async {
-    await tester.pumpWidget(const SizedBox.shrink());
-  }
-
   testWidgets('Kaufablauf ist von Start bis Verabschiedung durchklickbar', (
     tester,
   ) async {
-    await starteApp(tester);
+    await pumpeApp(tester);
     expect(find.text('Verkauf starten'), findsOneWidget);
 
     await tester.tap(find.text('Verkauf starten'));
@@ -68,7 +47,7 @@ void main() {
   });
 
   testWidgets('Zurueck fuehrt auf den vorherigen Bildschirm', (tester) async {
-    await starteApp(tester);
+    await pumpeApp(tester);
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
@@ -86,7 +65,7 @@ void main() {
   testWidgets('jede Parkzeit fuehrt ueber die Zahlung zum Beleg', (
     tester,
   ) async {
-    await starteApp(tester);
+    await pumpeApp(tester);
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
@@ -107,7 +86,7 @@ void main() {
   testWidgets('Aus-Bildschirm ist ueber seine Route erreichbar', (
     tester,
   ) async {
-    await starteApp(tester);
+    await pumpeApp(tester);
 
     final navigator = Navigator.of(tester.element(find.byType(Scaffold)));
     unawaited(navigator.pushNamed(AppRoutes.aus));

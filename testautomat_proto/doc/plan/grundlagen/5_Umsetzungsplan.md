@@ -146,9 +146,9 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-50` | Widget-Tests je Bildschirm; i18n-Paritätstest `de`/`en`; Semantik- und Fokus-Tests | E-45, E-39, E-25 | Offen |
-| `U-51` | Globalen Zustand über `InheritedNotifier`/Injektion testbar machen; bis dahin zentrale Reset-Hilfe; Hintergrund-Timer sauber beenden | E-46, F-41 | Offen |
-| `U-52` | CI-Gate `flutter analyze`, `flutter test`, `dart format --set-exit-if-changed` | E-45, E-47 | Offen |
+| `U-50` | Widget-Tests je Bildschirm (Aus, Start, Parkzeit, Parkinfo, Verabschiedung; dazu Zahlung, Debug und Bootstrap), i18n-Paritätstest `de`/`en` samt sichtbarer Debug-Meldung für fehlende Schlüssel sowie Semantik- und Fokus-Tests | E-45, E-39, E-25 | Fertig |
+| `U-51` | Globaler Zustand in `AppState` gebündelt (Theme, Sprache, Maschine, Debug-Zugang, Uhr) und über den `AppScope` injiziert; statische Felder entfallen, Tests erzeugen eigene Zustände (`pumpeApp`/`pumpeBildschirm`), der Uhr-Takt endet mit dem letzten Nutzer | E-46, F-41 | Fertig |
+| `U-52` | Lokales Gate `tool/gate.ps1` (`dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test`); README und `3_Git_Shenanigans.md` verweisen darauf | E-45, E-47 | Fertig |
 
 **Definition of Done:** Gate lokal reproduzierbar; Coverage-Schwelle folgt erst nach stabiler Basis (E-45).
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 5 umgesetzt (U-50…U-52): Widget-Tests je Bildschirm, i18n-Paritätstest, Semantik-/Fokus-Tests, globaler Zustand als injizierter `AppState` (statische Felder entfernt, Timer-Hygiene) und lokales Gate `tool/gate.ps1`; 118 Tests grün, Gate vollständig durchlaufen. CI-Grundlage für M4 gelegt. |
 | 2026-09-22 | Phase 4 umgesetzt (U-40…U-43): verborgener, PIN-geschützter Debug-Bildschirm mit schreibgeschütztem Produktivmodus, Verkaufs-Zeitreihe (Tabelle und Balken aus derselben Quelle), Telemetrie nur lesend sowie Bearbeiten von Preissettings und Verkaufszeiten über das Repository; Tests grün (93 Tests). **Meilenstein M3 erreicht.** |
 | 2026-09-22 | Phase 3 umgesetzt (U-30…U-34): Verkaufszeit-Prüfung mit GMT-Basis und optionaler Zeitzone, Preisbildung auf volle Takte in Cent, Belegnummernlogik in `lib/logic/`, simulierter Zahlungsablauf mit Fortschritt, Timeout, Abbruch und Beleg als Anzeige; Logik- und Ablauftests grün (83 Tests). **Meilenstein M2 erreicht.** |
 | 2026-09-22 | Phase 2 umgesetzt (U-20…U-23): gemeinsame Kopf-/Fußzeile mit `AppClock`, sechs Bildschirm-Gerüste, benannte Routen und Bootstrap mit Maschinendaten (`AppMachine`) samt Fehlerbildschirm; Widget-, Navigations- und Bootstrap-Tests grün (64 Tests). Der „Aus“-Bildschirm ist über seine Route erreichbar; sein Einstieg folgt mit der Verkaufszeit-Prüfung in `U-30`. |

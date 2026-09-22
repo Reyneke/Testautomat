@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:testautomat_proto/app_scope.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/routes.dart';
-import 'package:testautomat_proto/state/app_clock.dart';
 import 'package:testautomat_proto/widgets/screen_shell.dart';
 
 /// Startbildschirm des Automaten (`0_Einfuehrung.md`).
 ///
-/// Zeigt die uhrzeitangemessene Begruessung (Takt aus [AppClock]) und startet
-/// mit dem Knopf den Verkauf. Automatennummer und Standort kommen in der
-/// Fusszeile aus [AppMachine] (E-55) - keine hartkodierten Werte mehr.
+/// Zeigt die uhrzeitangemessene Begruessung (Takt aus dem `AppState`, E-26) und
+/// startet mit dem Knopf den Verkauf. Automatennummer und Standort kommen in der
+/// Fusszeile aus dem `AppState` (E-55) - keine hartkodierten Werte.
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
@@ -17,10 +17,11 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
+    final uhr = AppScope.of(context).zustand.clock;
 
     return ScreenShell(
       child: ValueListenableBuilder<DateTime>(
-        valueListenable: AppClock.notifier,
+        valueListenable: uhr.notifier,
         builder: (context, jetzt, _) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
