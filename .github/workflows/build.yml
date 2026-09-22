@@ -190,17 +190,28 @@ jobs:
           name: testautomat-web
           path: web
 
+      - name: Pages-Status pruefen
+        id: pages
+        run: |
+          if curl -sf -H "Authorization: Bearer ${{ github.token }}" \
+              "https://api.github.com/repos/${{ github.repository }}/pages" > /dev/null; then
+            echo "aktiv=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "aktiv=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::GitHub Pages ist im Repository nicht aktiviert - der Deploy wird uebersprungen (siehe doc/plan/grundlagen/3_Git_Shenanigans.md)."
+          fi
+
       - name: Pages einrichten
+        if: steps.pages.outputs.aktiv == 'true'
         uses: actions/configure-pages@v5
-        with:
-          # Aktiviert GitHub Pages beim ersten Lauf automatisch.
-          enablement: true
 
       - name: Pages-Artefakt hochladen
+        if: steps.pages.outputs.aktiv == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: web
 
       - name: Deployen
+        if: steps.pages.outputs.aktiv == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
