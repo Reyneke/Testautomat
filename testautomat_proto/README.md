@@ -8,7 +8,7 @@ auf Android, Windows, Linux und im Browser. Alle Zahlungen und Parkscheine werde
 ausschließlich simuliert.
 
 Die fachlichen Grundlagen und der Umsetzungsstand stehen unter [`doc/plan/`](doc/plan/) —
-Einstieg über [`doc/plan/grundlagen/0_Einfuehrung.md`](doc/plan/grundlagen/0_Einfuehrung.md).
+Einstieg über die Übersichtsseite [`doc/plan/README.md`](doc/plan/README.md), die alle Grundlagendokumente kurz beschreibt und die Lesereihenfolge festhält.
 
 ## Status
 
@@ -82,6 +82,7 @@ erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
 
 | Dokument | Inhalt |
 |---|---|
+| [`README.md`](doc/plan/README.md) | Übersicht: Kurzbeschreibung aller Dokumente und empfohlene Lesereihenfolge |
 | [`0_Einfuehrung.md`](doc/plan/grundlagen/0_Einfuehrung.md) | Basisdokument: Bildschirme, Datenbank, Grenzen, Bauziele |
 | [`1_Frontendstruktur.md`](doc/plan/grundlagen/1_Frontendstruktur.md) | Theme, Mehrsprachigkeit, Aufbau der Bildschirme |
 | [`2_Datenbank.md`](doc/plan/grundlagen/2_Datenbank.md) | Schema, Repository-Vertrag, Migrationen, Seed-Daten |
