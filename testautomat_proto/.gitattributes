@@ -1,6 +1,7 @@
 # Einheitliche Zeilenenden (Entscheidung E-36, Arbeitspaket U-02).
 # Textdateien werden auf LF normalisiert; Windows-Skripte bleiben CRLF, Binärdateien bleiben unberührt.
 * text=auto
+*.sql text eol=lf
 /.gitattributes text eol=lf
 *.md text eol=lf
 *.dart text eol=lf
