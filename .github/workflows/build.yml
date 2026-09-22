@@ -192,14 +192,18 @@ jobs:
 
       - name: Pages-Status pruefen
         id: pages
+        continue-on-error: true
         run: |
-          if curl -sf -H "Authorization: Bearer ${{ github.token }}" \
-              "https://api.github.com/repos/${{ github.repository }}/pages" > /dev/null; then
+          set +e
+          status=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/pages")
+          echo "Pages-API antwortet mit HTTP $status"
+          if [ "$status" = "200" ]; then
             echo "aktiv=true" >> "$GITHUB_OUTPUT"
           else
             echo "aktiv=false" >> "$GITHUB_OUTPUT"
             echo "::warning::GitHub Pages ist im Repository nicht aktiviert - der Deploy wird uebersprungen (siehe doc/plan/grundlagen/3_Git_Shenanigans.md)."
           fi
+          exit 0
 
       - name: Pages einrichten
         if: steps.pages.outputs.aktiv == 'true'

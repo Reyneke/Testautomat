@@ -156,9 +156,9 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-60` | `.github/workflows/build.yml` im Repository-Root: Gate-Job (`test`), Build-Matrix (android, windows, linux, web), Artefakte bei `main`, Release bei Tags `v*`; un-signierte Artefakte. Erster CI-Lauf: Gate und alle vier Plattform-Builds grün | E-29, E-33, E-42 | Fertig |
-| `U-61` | Version aus `pubspec.yaml`, annotierter Tag-Prozess `vX.Y.Z` und Changelog über die GitHub-Release-Notes (der Release-Job hängt alle Pakete an); erster Tag `v0.1.0` steht noch aus | E-33 | In Arbeit |
-| `U-62` | Web-Build mit `--base-href=/<repo>/` (E-44) und Pages-Deploy über `actions/deploy-pages`; Pages wird per `enablement` automatisch aktiviert; README verweist auf `/releases/latest`, E-43 ist dokumentiert-offen | E-44, F-38, E-43 | In Arbeit |
+| `U-60` | `.github/workflows/build.yml` im Repository-Root: Gate-Job (`test`), Build-Matrix (android, windows, linux, web), Artefakte bei `main`, Release bei Tags `v*`; un-signierte Artefakte. In mehreren CI-Läufen sind Gate und alle vier Plattform-Builds grün | E-29, E-33, E-42 | Fertig |
+| `U-61` | Version aus `pubspec.yaml`, annotierter Tag `v0.1.0` gesetzt; der Tag-Lauf hat alle vier Artefakte an das Release gehängt (Changelog = Release-Notes, E-33) | E-33 | Fertig |
+| `U-62` | Web-Build mit `--base-href=/<repo>/` (E-44) und Pages-Deploy-Job, der ohne aktiviertes Pages sauber mit Warnung überspringt; README verweist auf `/releases/latest`, E-43 ist dokumentiert-offen. Offen bleibt die einmalige Pages-Aktivierung in den Repository-Einstellungen | E-44, F-38, E-43 | In Arbeit |
 
 **Definition of Done:** Release-Artefakte hängen an Tags; Web-Build online unter `/<repo>/`; CI grün.
 
@@ -185,7 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
-| 2026-09-22 | Phase 6 umgesetzt (U-60…U-62): Workflow im Repository-Root mit Gate-Job, Build-Matrix (Android, Windows, Linux, Web), Release-Job für Tags und Pages-Deploy; erster CI-Lauf: Gate und alle vier Plattform-Builds grün. Version-/Tag-/Changelog-Prozess dokumentiert, E-43 als dokumentiert-offen geführt. Offen: erster Tag `v0.1.0` und der Pages-Deploy (Aktivierung). |
+| 2026-09-22 | Phase 6 abgeschlossen bis auf die einmalige Pages-Aktivierung: Workflow im Repository-Root mit Gate, Build-Matrix (Android, Windows, Linux, Web) und Release-Job; Tag `v0.1.0` gesetzt, Release mit APK (54,8 MB), Windows-ZIP (13,4 MB), Linux-tar.gz (11,1 MB) und Web-ZIP (14,0 MB) erstellt. Der Web-Deploy startet automatisch, sobald Pages in den Repository-Einstellungen auf „GitHub Actions“ gestellt ist. |
 | 2026-09-22 | Phase 5 umgesetzt (U-50…U-52): Widget-Tests je Bildschirm, i18n-Paritätstest, Semantik-/Fokus-Tests, globaler Zustand als injizierter `AppState` (statische Felder entfernt, Timer-Hygiene) und lokales Gate `tool/gate.ps1`; 118 Tests grün, Gate vollständig durchlaufen. CI-Grundlage für M4 gelegt. |
 | 2026-09-22 | Phase 4 umgesetzt (U-40…U-43): verborgener, PIN-geschützter Debug-Bildschirm mit schreibgeschütztem Produktivmodus, Verkaufs-Zeitreihe (Tabelle und Balken aus derselben Quelle), Telemetrie nur lesend sowie Bearbeiten von Preissettings und Verkaufszeiten über das Repository; Tests grün (93 Tests). **Meilenstein M3 erreicht.** |
 | 2026-09-22 | Phase 3 umgesetzt (U-30…U-34): Verkaufszeit-Prüfung mit GMT-Basis und optionaler Zeitzone, Preisbildung auf volle Takte in Cent, Belegnummernlogik in `lib/logic/`, simulierter Zahlungsablauf mit Fortschritt, Timeout, Abbruch und Beleg als Anzeige; Logik- und Ablauftests grün (83 Tests). **Meilenstein M2 erreicht.** |
