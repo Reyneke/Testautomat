@@ -13,7 +13,7 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final zustand = AppScope.of(context).zustand;
 
     return ValueListenableBuilder<Locale>(

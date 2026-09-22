@@ -29,12 +29,12 @@ class _DebugPinDialogState extends State<DebugPinDialog> {
       Navigator.of(context).pop(true);
       return;
     }
-    setState(() => _fehler = AppLocalizations.of(context).debugPinFalsch);
+    setState(() => _fehler = AppLocalizations.of(context)!.debugPinFalsch);
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Text(localizations.debugPinTitel),

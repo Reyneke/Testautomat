@@ -106,7 +106,7 @@ class _Ladebildschirm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     return ScreenShell(
       child: Center(
         child: Column(
@@ -129,7 +129,7 @@ class _Fehlerbildschirm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     return ScreenShell(
       child: Center(

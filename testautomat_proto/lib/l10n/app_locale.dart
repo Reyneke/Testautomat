@@ -10,4 +10,24 @@ abstract class AppLocale {
 
   /// Standardsprache, falls keine gueltige Auswahl vorliegt.
   static const Locale fallbackLocale = Locale('de');
+
+  /// Ist die Sprache unterstuetzt (E-08)?
+  static bool unterstuetzt(Locale locale) => supportedLocales.any(
+    (sprache) => sprache.languageCode == locale.languageCode,
+  );
+
+  /// Ist die Sprache Englisch?
+  static bool istEnglisch(Locale locale) => locale.languageCode == 'en';
+
+  /// Ordnet die Systemeinstellung des Geraets einer unterstuetzten Sprache zu
+  /// (E-19).
+  ///
+  /// Beim ersten Start folgt die App der Systemsprache; alles, was nicht
+  /// unterstuetzt wird, faellt auf [fallbackLocale] zurueck.
+  static Locale vomSystem(Locale? system) {
+    if (system != null && unterstuetzt(system)) {
+      return Locale(system.languageCode);
+    }
+    return fallbackLocale;
+  }
 }

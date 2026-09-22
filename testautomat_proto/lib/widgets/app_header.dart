@@ -44,7 +44,7 @@ class _AppHeaderState extends State<AppHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final uhr = AppScope.of(context).zustand.clock;
 

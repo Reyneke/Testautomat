@@ -18,7 +18,7 @@ class AppFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final zustand = AppScope.of(context).zustand;
 

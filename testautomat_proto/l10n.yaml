@@ -1,0 +1,10 @@
+# ARB-Konfiguration der App (E-17, U-70).
+#
+# `flutter gen-l10n` erzeugt aus lib/l10n/arb/ die Klassen in lib/l10n/generated/;
+# `generate: true` in der pubspec.yaml laesst den Lauf bei `flutter pub get`
+# automatisch mitlaufen (auch in der CI).
+arb-dir: lib/l10n/arb
+template-arb-file: app_de.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/l10n/generated

@@ -91,6 +91,9 @@ class AppState {
   /// Uhrzeit der Kopfzeile (E-26).
   final AppClock clock = AppClock();
 
+  /// Wechselt den Darstellungsmodus (E-07).
+  void setzeThemeMode(ThemeMode neu) => themeMode.value = neu;
+
   /// Wechselt die Sprache, sofern sie unterstuetzt wird (E-08).
   void setLocale(Locale neu) {
     final unterstuetzt = AppLocale.supportedLocales.any(

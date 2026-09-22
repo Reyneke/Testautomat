@@ -14,7 +14,7 @@ class ParkinformationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final argumente = ModalRoute.of(context)?.settings.arguments;
     final verkauf = argumente is Verkauf ? argumente : null;

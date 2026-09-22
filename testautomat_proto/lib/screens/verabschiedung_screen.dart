@@ -10,7 +10,7 @@ class VerabschiedungScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return ScreenShell(

@@ -14,7 +14,7 @@ class ThemeModeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final zustand = AppScope.of(context).zustand;
 
     return ValueListenableBuilder<ThemeMode>(
@@ -41,7 +41,7 @@ class ThemeModeSelector extends StatelessWidget {
           ],
           selected: {themeMode},
           onSelectionChanged: (selection) {
-            zustand.themeMode.value = selection.first;
+            zustand.setzeThemeMode(selection.first);
           },
         );
       },

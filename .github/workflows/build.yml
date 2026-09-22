@@ -47,6 +47,12 @@ jobs:
       - name: Abhaengigkeiten laden
         run: flutter pub get
 
+      - name: Lokalisierungstexte erzeugen
+        run: flutter gen-l10n
+
+      - name: Erzeugte Texte mit dem Repository abgleichen (U-70)
+        run: git diff --exit-code -- lib/l10n/generated
+
       - name: Formatierung pruefen
         run: dart format --set-exit-if-changed lib test
 

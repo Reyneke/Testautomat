@@ -62,7 +62,7 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   Future<void> _lade() async {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final repository = AppScope.of(context).repository;
     try {
       final tagesumsaetze = await repository.getTagesumsaetze(_von, _bis);
@@ -94,7 +94,7 @@ class _DebugScreenState extends State<DebugScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     if (_tagesumsaetze == null && _fehler == null) {
@@ -323,7 +323,7 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   Future<void> _bearbeitePreissetting(Preissetting setting) async {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final repository = AppScope.of(context).repository;
     final neu = await showDialog<Preissetting>(
       context: context,
@@ -344,7 +344,7 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   Future<void> _bearbeiteVerkaufszeit(Verkaufszeit zeit) async {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final repository = AppScope.of(context).repository;
     final neu = await showDialog<Verkaufszeit>(
       context: context,

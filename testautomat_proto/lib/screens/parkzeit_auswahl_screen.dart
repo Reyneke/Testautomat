@@ -34,7 +34,7 @@ class _ParkzeitAuswahlScreenState extends State<ParkzeitAuswahlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return ScreenShell(

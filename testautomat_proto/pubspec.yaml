@@ -34,6 +34,10 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  # Datum, Uhrzeit und Betraege werden lokalisiert formatiert (E-18/U-70).
+  intl: ^0.20.2
+  # Verzeichnis fuer die gemerkten Einstellungen (E-20/U-70).
+  path_provider: ^2.1.5
   # Provides the localized Material/Cupertino widget strings (de/en).
   flutter_localizations:
     sdk: flutter
@@ -56,6 +60,9 @@ dev_dependencies:
   drift_dev: ^2.35.0
   build_runner: ^2.15.1
 flutter:
+
+  # Erzeugt die Lokalisierungsklassen aus den ARB-Dateien (U-70, E-17).
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

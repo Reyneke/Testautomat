@@ -93,7 +93,7 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
       _stoppeTimer();
       setState(() {
         _phase = _Phase.fehler;
-        _fehlermeldung = AppLocalizations.of(context).zahlungTimeout;
+        _fehlermeldung = AppLocalizations.of(context)!.zahlungTimeout;
       });
     });
   }
@@ -115,7 +115,7 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
     }
     final scope = AppScope.of(context);
     final repository = scope.repository;
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     Verkauf? verkauf;
     String? fehlermeldung;
@@ -162,7 +162,7 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final auswahl = KaufAuswahl.aus(
       ModalRoute.of(context)?.settings.arguments,

@@ -5,14 +5,35 @@ import 'package:testautomat_proto/bootstrap/machine_loader.dart';
 import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/data/repository_factory.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
+import 'package:testautomat_proto/l10n/app_format.dart';
 import 'package:testautomat_proto/l10n/app_localizations.dart';
 import 'package:testautomat_proto/state/app_state.dart';
+import 'package:testautomat_proto/state/settings_store.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Die Datums-Sprachdaten stehen damit vor dem ersten Bild bereit (E-18).
+  AppFormat.sicherstellen();
+
+  final einstellungen = SettingsStore();
+  final gemerkt = await einstellungen.lade();
+
+  final zustand = AppState();
+  if (gemerkt != null) {
+    // Theme und Sprache wurden zuletzt bewusst gewaehlt (E-20).
+    zustand.setzeThemeMode(gemerkt.themeMode);
+    zustand.setLocale(gemerkt.locale);
+  } else {
+    // Beim ersten Start folgt die Sprache der Systemeinstellung (E-19).
+    zustand.setLocale(
+      AppLocale.vomSystem(WidgetsBinding.instance.platformDispatcher.locale),
+    );
+  }
+  einstellungen.binde(zustand);
+
   runApp(
-    TestAutomatApp(zustand: AppState(), repository: createDefaultRepository()),
+    TestAutomatApp(zustand: zustand, repository: createDefaultRepository()),
   );
 }
 
@@ -47,7 +68,7 @@ class TestAutomatApp extends StatelessWidget {
             builder: (context, locale, _) {
               return MaterialApp(
                 onGenerateTitle: (context) =>
-                    AppLocalizations.of(context).appTitle,
+                    AppLocalizations.of(context)!.appTitle,
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,
                 darkTheme: AppTheme.darkTheme,

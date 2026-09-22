@@ -39,7 +39,7 @@ class _PreissettingDialogState extends State<PreissettingDialog> {
   }
 
   void _speichern() {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final takt = int.tryParse(_takt.text.trim());
     final preis = int.tryParse(_preis.text.trim());
     if (takt == null || takt <= 0 || preis == null || preis < 0) {
@@ -60,7 +60,7 @@ class _PreissettingDialogState extends State<PreissettingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Text(localizations.debugPreissettings),
@@ -145,7 +145,7 @@ class _VerkaufszeitDialogState extends State<VerkaufszeitDialog> {
   }
 
   void _speichern() {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final wochentag = int.tryParse(_wochentag.text.trim());
     final beginn = _beginn.text.trim();
     final ende = _ende.text.trim();
@@ -172,7 +172,7 @@ class _VerkaufszeitDialogState extends State<VerkaufszeitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
       title: Text(localizations.debugVerkaufszeiten),
