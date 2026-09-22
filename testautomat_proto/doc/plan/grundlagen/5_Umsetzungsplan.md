@@ -90,7 +90,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 | `U-01` | Dateinamen an die übrigen Grundlagendokumente angeglichen (`4_Offene_Fragen.md`, E-35); alle eingehenden Verweise gezogen und geprüft | E-35 | Fertig |
 | `U-02` | `.gitattributes` für einheitliche Zeilenenden angelegt; Zeilenenden der Grundlagendokumente einmalig vereinheitlicht | E-36 | Fertig |
 | `U-03` | *Dokumentationsabgleich* aus `4_Offene_Fragen.md` abgearbeitet (2026-09-22); die `doc/plan/`-Übersichtsseite (Index, Kurzbeschreibung, Lesereihenfolge) steht noch aus | E-37 | In Arbeit |
-| `U-04` | README auf Projektzweck, Zielplattformen, Getting Started, Downloads, Status (CI-Badge) und DSGVO-Hinweis umstellen | E-34 | Offen |
+| `U-04` | README auf Projektzweck, Zielplattformen, Getting Started, Downloads, Status (CI-Badge) und DSGVO-Hinweis umgestellt | E-34 | Fertig |
 
 **Definition of Done:** keine Verweise auf alte Dateinamen mehr (Suche leer); `git diff` nach der Normalisierung rauschfrei; README ohne Boilerplate-Texte.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | U-04 umgesetzt: README beschreibt Projektzweck, Zielplattformen, Getting Started, Downloads, CI-Status und DSGVO-Hinweise; die Phase-0-DoD ist bis auf die Übersichtsseite in `U-03` erfüllt. |
 | 2026-09-22 | Phase 0 fortgesetzt: U-01 (Umbenennung und Verweise) und U-02 (`.gitattributes`, Zeilenenden) abgeschlossen; *Dokumentationsabgleich* bereinigt (`0_`, `1_`, `3_`, `4_`); U-03 teilweise erledigt (Übersichtsseite offen). |
 | 2026-09-22 | Problem-Tabelle um die Spalte *Lösungsansatz* ergänzt; alle „Lösungsvorschläge?“-Markierungen durch konkrete Ansätze ersetzt. |
 | 2026-09-21 | Dokument aus dem Stub `# Umsetzungsplan` aufgebaut: Ziel/Nicht-Ziele, Meilensteine M0–M4, Arbeitspakete U-01…U-73 nach Phasen, Zuordnung von Restfragen und Risiken, Abdeckung E-01…E-55. |
