@@ -98,13 +98,13 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-10` | `drift` (und nötige Plattform-Abhängigkeiten) in `pubspec.yaml` aufnehmen; `lib/data/` anlegen | E-49 | Offen |
-| `U-11` | Unveränderliche DTOs (`Maschine`, `Preissetting`, `Verkaufszeit`, `Telemetrie`, `Verkauf`, `VerkaufDraft`, `Tagesumsatz`) mit `fromJson`/`toJson` und `snake_case`-Mapping; Interface `ParkautomatRepository` | E-04 | Offen |
-| `U-12` | Migrationsmechanik: `lib/data/migrations/` + `schema_version` (`onCreate`/`onUpgrade`, Checksumme) | E-50 | Offen |
-| `U-13` | Deterministische, idempotente Seed-Daten, identisch für Demo, Tests und CI | E-52 | Offen |
-| `U-14` | `InMemoryRepository` (Web-Build und Tests) | E-11 | Offen |
-| `U-15` | `SqliteRepository` (Desktop) auf Drift-Basis inklusive atomarem `createSale` (Transaktion/`WAL`, Validierung, Belegnummern-Vergabe) | E-49, E-04, E-16 | Offen |
-| `U-16` | Composition Root in `main.dart`: Implementierung an genau einer Stelle wählen | E-11, E-04 | Offen |
+| `U-10` | `drift`, `drift_flutter` und `sqlite3` in `pubspec.yaml` aufgenommen; `lib/data/` angelegt | E-49 | Fertig |
+| `U-11` | Unveränderliche DTOs (`Maschine`, `Preissetting`, `Verkaufszeit`, `Telemetrie`, `Verkauf`, `VerkaufDraft`, `Tagesumsatz`) mit `fromJson`/`toJson` und `snake_case`-Mapping; Interface `ParkautomatRepository` erstellt | E-04 | Fertig |
+| `U-12` | Migrationsmechanik: Drift-Schema in `lib/data/drift/app_database.dart`; `schema_version` protokolliert Version, Name, Zeitpunkt und SHA-256-Prüfsumme; dokumentierte DDL in `lib/data/migrations/0001_initial.sql` | E-50 | Fertig |
+| `U-13` | Deterministische, idempotente Seed-Daten (`lib/data/seed_data.dart`), identisch für Demo, Tests und CI | E-52 | Fertig |
+| `U-14` | `InMemoryRepository` (Web-Build und Tests) | E-11 | Fertig |
+| `U-15` | `SqliteRepository` (Desktop) auf Drift-Basis inklusive atomarem `createSale` (Transaktion, Validierung, Belegnummern-Vergabe) | E-49, E-04, E-16 | Fertig |
+| `U-16` | Composition Root in `main.dart` (`createDefaultRepository` per Conditional Import: Web → InMemory, Desktop → SQLite) und `AppScope` für den Widget-Baum | E-11, E-04 | Fertig |
 
 **Definition of Done:** alle Vertragsmethoden in beiden Implementierungen; Repository-Unit-Tests gegen das Interface; Migration von Version 0 auf aktuell reproduzierbar; `flutter test` grün.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 1 umgesetzt (U-10…U-16): Datenlayer mit Drift, DTOs und Repository-Vertrag, `schema_version`-Protokoll, deterministische Seeds, InMemory- und SQLite-Repository sowie Composition Root; Vertrags-, Migrations- und Widget-Tests grün (52 Tests). Meilenstein M1 erreicht. |
 | 2026-09-22 | U-03 abgeschlossen: Übersichtsseite `doc/plan/README.md` angelegt (E-37); die Root-README verweist darauf. Phase 0 (Meilenstein M0) ist damit vollständig. |
 | 2026-09-22 | U-04 umgesetzt: README beschreibt Projektzweck, Zielplattformen, Getting Started, Downloads, CI-Status und DSGVO-Hinweise; die Phase-0-DoD ist bis auf die Übersichtsseite in `U-03` erfüllt. |
 | 2026-09-22 | Phase 0 fortgesetzt: U-01 (Umbenennung und Verweise) und U-02 (`.gitattributes`, Zeilenenden) abgeschlossen; *Dokumentationsabgleich* bereinigt (`0_`, `1_`, `3_`, `4_`); U-03 teilweise erledigt (Übersichtsseite offen). |

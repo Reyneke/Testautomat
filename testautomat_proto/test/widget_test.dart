@@ -1,4 +1,4 @@
-// Widget-Tests für Theme- und Sprachumschaltung.
+// Widget-Tests fuer Theme- und Sprachumschaltung sowie die Composition Root.
 //
 // Siehe doc/plan/grundlagen/1_Frontendstruktur.md: Standard ist Dunkel, die
 // Sprache muss jederzeit zwischen Deutsch und Englisch wechselbar sein.
@@ -6,24 +6,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:testautomat_proto/app_scope.dart';
+import 'package:testautomat_proto/data/in_memory_repository.dart';
+import 'package:testautomat_proto/data/parkautomat_repository.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/main.dart';
 import 'package:testautomat_proto/theme/app_theme.dart';
 
 void main() {
   setUp(() {
-    // Globalen Zustand vor jedem Test zurücksetzen.
+    // Globalen Zustand vor jedem Test zuruecksetzen.
     AppTheme.themeModeNotifier.value = ThemeMode.dark;
     AppLocale.setLocale(const Locale('de'));
   });
 
-  Future<void> pumpApp(WidgetTester tester) async {
-    await tester.pumpWidget(const TestAutomatApp());
+  Future<void> pumpApp(
+    WidgetTester tester, {
+    ParkautomatRepository? repository,
+  }) async {
+    await tester.pumpWidget(
+      TestAutomatApp(repository: repository ?? InMemoryRepository()),
+    );
     await tester.pump();
   }
 
   Future<void> disposeApp(WidgetTester tester) async {
-    // Bildschirm abräumen, damit der Uhr-Timer sauber beendet wird.
+    // Bildschirm abraeumen, damit der Uhr-Timer sauber beendet wird.
     await tester.pumpWidget(const SizedBox.shrink());
   }
 
@@ -37,7 +45,7 @@ void main() {
     await disposeApp(tester);
   });
 
-  testWidgets('Theme lässt sich auf Hell umschalten', (tester) async {
+  testWidgets('Theme laesst sich auf Hell umschalten', (tester) async {
     await pumpApp(tester);
 
     await tester.tap(find.byIcon(Icons.light_mode));
@@ -50,7 +58,7 @@ void main() {
     await disposeApp(tester);
   });
 
-  testWidgets('Sprache lässt sich auf Englisch umschalten', (tester) async {
+  testWidgets('Sprache laesst sich auf Englisch umschalten', (tester) async {
     await pumpApp(tester);
 
     expect(find.text('Verkauf starten'), findsOneWidget);
@@ -61,6 +69,19 @@ void main() {
     expect(find.text('Start sale'), findsOneWidget);
     expect(find.text('Verkauf starten'), findsNothing);
     expect(AppLocale.notifier.value.languageCode, 'en');
+
+    await disposeApp(tester);
+  });
+
+  testWidgets('AppScope stellt das Repository bereit', (tester) async {
+    final repository = InMemoryRepository();
+    await pumpApp(tester, repository: repository);
+
+    final scope = AppScope.of(tester.element(find.byType(MaterialApp)));
+    expect(scope.repository, same(repository));
+
+    final maschine = await scope.repository.getMachine();
+    expect(maschine.geraeteId, '4711');
 
     await disposeApp(tester);
   });
