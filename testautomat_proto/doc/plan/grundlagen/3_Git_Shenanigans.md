@@ -43,10 +43,13 @@ Die Pipeline ist umgesetzt und liegt in `.github/workflows/build.yml`:
    - `web`: `flutter build web --release --base-href="$BASE_HREF"` mit `BASE_HREF=/<repo>/` (E-44)
 4. **Artefakte:** jeder Matrix-Job legt sein Paket als Workflow-Artefakt ab (Vorschau, 90 Tage); der Web-Inhalt wird zusaetzlich unverpackt fuer Pages abgelegt. `build/` bleibt in `.gitignore`.
 5. **`release`:** Bei Tags `v*` laedt ein eigener Job alle Pakete und haengt sie mit generierten Release-Notes an das GitHub-Release (`softprops/action-gh-release`, `GITHUB_TOKEN`). Das Release ist zugleich das Changelog (E-33).
-6. **`deploy`:** Bei `push` auf `main` veroeffentlicht ein Job den Web-Build ueber `actions/deploy-pages`; der Web-Build bringt die Basis-URL der Projektseite bereits mit.
+6. **`deploy`:** Bei `push` auf `main` veroeffentlicht ein Job den Web-Build ueber `actions/configure-pages` + `actions/upload-pages-artifact` + `actions/deploy-pages`; der Web-Build bringt die Basis-URL der Projektseite bereits mit.
+
 7. **README-Links:** Abschnitt „Downloads“ verlinkt auf `/releases/latest`; das CI-Badge zeigt den Stand des Workflows.
 
-> **Einmalige Einrichtung:** In den Repository-Einstellungen unter *Pages* muss als Quelle **„GitHub Actions“** gewaehlt sein, sonst ueberspringt der Workflow den Deploy mit einer Warnung (der uebrige Lauf bleibt gruen). Pages ist inzwischen aktiviert; der Job prueft den Status bei jedem Lauf selbst.
+> **Einmalige Einrichtung:** In den Repository-Einstellungen unter *Pages* muss als Quelle **„GitHub Actions“** gewaehlt sein (Pages ist inzwischen aktiviert). Der Job **prueft den Status nicht vorab**: `github.token` darf die Pages-Konfiguration nicht lesen (die API antwortet mit HTTP 403/404), eine Vorpruefung meldet daher faelschlich „nicht aktiv“. Stattdessen versucht der Job `actions/configure-pages` mit `continue-on-error` und `enablement: true`; nur bei Erfolg folgen Upload und Deploy, andernfalls bleibt der Lauf gruen und gibt eine Warnung aus.
+
+> **Live-Stand (2026-09-22):** Push-Lauf `35767538896` komplett gruen (Gate, Android, Windows, Linux, Web, Deploy). `https://reyneke.github.io/Testautomat/` antwortet mit HTTP 200, `<base href="/Testautomat/">` und allen Assets (`flutter_bootstrap.js`, `flutter.js`, `manifest.json`, `favicon.png`). Der `release`-Job bleibt bei `main`-Pushes bewusst uebersprungen — er laeuft nur bei Tags `v*`.
 
 ### Versionierung, Tags und Changelog
 
@@ -61,6 +64,8 @@ Die Pipeline ist umgesetzt und liegt in `.github/workflows/build.yml`:
 - **Code-Signing:** Für Android/Windows/Linux noch offen; für die Prototyp-Phase reicht un-signierte Auslieferung (Installationswarnung in Kauf nehmen).
 - **Lokales Gate:** `tool/gate.ps1` fuehrt `dart format --set-exit-if-changed lib test`, `flutter analyze` und `flutter test` aus; der Workflow (U-60) nutzt dieselben Schritte (U-52).
 - **Keine Artefakte im Repo:** `build/` sowie erzeugte Installer gehören in `.gitignore`.
+- **Pages-Status nicht vorab abfragen:** `github.token` darf `GET /repos/{owner}/{repo}/pages` nicht lesen (HTTP 403/404) — eine Vorpruefung meldet faelschlich „Pages nicht aktiv“ und laesst den Deploy stillschweigend aus. Stattdessen `actions/configure-pages` mit `continue-on-error: true` und `enablement: true` versuchen und Upload/Deploy an dessen Ergebnis haengen.
+- **YAML-Falle in `run:`-Zeilen:** Ein unquoter Skalar darf keinen Doppelpunkt mit Leerzeichen enthalten (`run: echo "... Source: GitHub Actions)"` macht die Workflow-Datei ungueltig; der Lauf bricht nach Sekunden ab). Mehrzeilige Meldungen als Block-Skalar (`run: |`) schreiben und den Workflow nach Aenderungen einmal lokal mit `git push` und Blick auf den ersten Lauf pruefen.
 
 ## Hosting
 

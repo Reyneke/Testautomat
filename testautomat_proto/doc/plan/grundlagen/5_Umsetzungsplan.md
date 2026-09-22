@@ -158,7 +158,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 |---|---|---|---|
 | `U-60` | `.github/workflows/build.yml` im Repository-Root: Gate-Job (`test`), Build-Matrix (android, windows, linux, web), Artefakte bei `main`, Release bei Tags `v*`; un-signierte Artefakte. In mehreren CI-Läufen sind Gate und alle vier Plattform-Builds grün | E-29, E-33, E-42 | Fertig |
 | `U-61` | Version aus `pubspec.yaml`, annotierter Tag `v0.1.0` gesetzt; der Tag-Lauf hat alle vier Artefakte an das Release gehängt (Changelog = Release-Notes, E-33) | E-33 | Fertig |
-| `U-62` | Web-Build mit `--base-href=/<repo>/` (E-44) und Pages-Deploy über `actions/deploy-pages`; GitHub Pages ist aktiviert, der Deploy läuft bei jedem Push auf `main`; README verweist auf `/releases/latest`, E-43 ist dokumentiert-offen | E-44, F-38, E-43 | Fertig |
+| `U-62` | Web-Build mit `--base-href=/<repo>/` (E-44) und Pages-Deploy über `actions/deploy-pages`; GitHub Pages ist aktiviert, der Deploy läuft bei jedem Push auf `main`; live verifiziert: `https://reyneke.github.io/Testautomat/` liefert HTTP 200 mit `<base href="/Testautomat/">` und allen Assets (`flutter_bootstrap.js`, `flutter.js`, `manifest.json`, `favicon.png`); README verweist auf `/releases/latest`, E-43 ist dokumentiert-offen | E-44, F-38, E-43 | Fertig |
 
 **Definition of Done:** Release-Artefakte hängen an Tags; Web-Build online unter `/<repo>/`; CI grün.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Pages-Deploy live verifiziert: Push-Lauf `35767538896` komplett grün (Gate, vier Builds, Deploy), alle Deploy-Schritte ausgeführt; `https://reyneke.github.io/Testautomat/` liefert HTTP 200 mit korrektem `<base href="/Testautomat/">` und allen Web-Assets (HTTP 200). Zwei CI-Fehler dabei behoben: die Vorprüfung über die Pages-API entfällt (der Actions-Token darf die Konfiguration nicht lesen und meldete fälschlich „nicht aktiv“; jetzt versucht der Job `actions/configure-pages` direkt und überspringt Upload/Deploy nur bei Misserfolg), und ein ungültiger Skalar (Doppelpunkt+Leerzeichen in `run:`) ist durch einen Block-Skalar ersetzt. Der Release-Job bleibt bei `main`-Pushes bewusst übersprungen (nur Tags `v*`). |
 | 2026-09-22 | Phase 6 abgeschlossen: Workflow im Repository-Root mit Gate, Build-Matrix (Android, Windows, Linux, Web) und Release-Job; Tag `v0.1.0` mit vier Artefakten (APK 54,8 MB, Windows-ZIP 13,4 MB, Linux-tar.gz 11,1 MB, Web-ZIP 14,0 MB) veröffentlicht; Web-Build mit `--base-href=/Testautomat/`; GitHub Pages aktiviert, der Pages-Deploy läuft bei jedem Push auf `main`. **Meilenstein M4 erreicht.** |
 | 2026-09-22 | Phase 5 umgesetzt (U-50…U-52): Widget-Tests je Bildschirm, i18n-Paritätstest, Semantik-/Fokus-Tests, globaler Zustand als injizierter `AppState` (statische Felder entfernt, Timer-Hygiene) und lokales Gate `tool/gate.ps1`; 118 Tests grün, Gate vollständig durchlaufen. CI-Grundlage für M4 gelegt. |
 | 2026-09-22 | Phase 4 umgesetzt (U-40…U-43): verborgener, PIN-geschützter Debug-Bildschirm mit schreibgeschütztem Produktivmodus, Verkaufs-Zeitreihe (Tabelle und Balken aus derselben Quelle), Telemetrie nur lesend sowie Bearbeiten von Preissettings und Verkaufszeiten über das Repository; Tests grün (93 Tests). **Meilenstein M3 erreicht.** |
