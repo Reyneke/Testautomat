@@ -46,7 +46,7 @@ Die Pipeline ist umgesetzt und liegt in `.github/workflows/build.yml`:
 6. **`deploy`:** Bei `push` auf `main` veroeffentlicht ein Job den Web-Build ueber `actions/deploy-pages`; der Web-Build bringt die Basis-URL der Projektseite bereits mit.
 7. **README-Links:** Abschnitt „Downloads“ verlinkt auf `/releases/latest`; das CI-Badge zeigt den Stand des Workflows.
 
-> **Einmalige Einrichtung:** In den Repository-Einstellungen unter *Pages* muss als Quelle **„GitHub Actions“** gewaehlt sein, sonst ueberspringt der Workflow den Deploy mit einer Warnung (der uebrige Lauf bleibt gruen). Im ersten CI-Lauf konnte Pages nicht per `GITHUB_TOKEN` aktiviert werden, daher prueft der Job den Status selbst.
+> **Einmalige Einrichtung:** In den Repository-Einstellungen unter *Pages* muss als Quelle **„GitHub Actions“** gewaehlt sein, sonst ueberspringt der Workflow den Deploy mit einer Warnung (der uebrige Lauf bleibt gruen). Pages ist inzwischen aktiviert; der Job prueft den Status bei jedem Lauf selbst.
 
 ### Versionierung, Tags und Changelog
 
