@@ -190,32 +190,24 @@ jobs:
           name: testautomat-web
           path: web
 
-      - name: Pages-Status pruefen
+      - name: Pages einrichten
         id: pages
         continue-on-error: true
-        run: |
-          set +e
-          status=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/pages")
-          echo "Pages-API antwortet mit HTTP $status"
-          if [ "$status" = "200" ]; then
-            echo "aktiv=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "aktiv=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::GitHub Pages ist im Repository nicht aktiviert - der Deploy wird uebersprungen (siehe doc/plan/grundlagen/3_Git_Shenanigans.md)."
-          fi
-          exit 0
-
-      - name: Pages einrichten
-        if: steps.pages.outputs.aktiv == 'true'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Pages-Artefakt hochladen
-        if: steps.pages.outputs.aktiv == 'true'
+        if: steps.pages.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: web
 
       - name: Deployen
-        if: steps.pages.outputs.aktiv == 'true'
+        if: steps.pages.outcome == 'success'
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deploy uebersprungen melden
+        if: steps.pages.outcome != 'success'
+        run: echo "::warning::GitHub Pages ist nicht aktiviert - der Deploy wurde uebersprungen (Settings > Pages > Source: GitHub Actions)"
