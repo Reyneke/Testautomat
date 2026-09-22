@@ -42,4 +42,4 @@ Alles soll möglichst DSGVO-konform ablaufen. Alle Zahlungen, inklusive der Ausg
 
 ## Bauziele
 
-Die App soll für alle Betriebssysteme, inklusive Web, entwickelt werden. Die Webanwendung soll dabei auf GitHub selbst gehostet werden und ihre Daten aus einer ebenfalls gehosteten Datenbank beziehen.
+Die App soll für Android, Windows, Linux und Web entwickelt werden. macOS und iOS bleiben Perspektive und werden im Prototyp nicht aktiv ausgebaut (E-01, E-28; vgl. `3_Git_Shenanigans.md`). Die Webanwendung wird auf GitHub gehostet; im Prototyp bezieht sie ihre Daten aus dem `InMemoryRepository` mit denselben Seed-Daten (E-11), in der Produktion per REST aus einer gehosteten Datenbank (E-43; vgl. `2_Datenbank.md`).

@@ -73,11 +73,9 @@ Der Webclient wird als **statische** Seite auf GitHub Pages gehostet. Eine Daten
 - **Store-Distribution:** abgeschlossen — zusätzliche Kanäle erst mit einer Weiterentwicklung (E-30).
 - **DB-Hosting in Produktion:** abgeschlossen — gehostete Postgres-Datenbank mit REST-Schicht und Token-Authentifizierung; Anbieterwahl vor dem ersten Release (E-43).
 - **Aktualisierung:** abgeschlossen — Self-Update (E-31).
-- **Web-Entscheidung:** abgeschlossen — der Web-Build nutzt das `InMemoryRepository` (Entscheidung E-11, vgl. `2_Datenbank.md`).
 
 ## Mögliche Probleme
 
-- **Runner-Beschränkungen:** Android-Builds brauchen Java/Android-SDK – Konfiguration über `subosito/flutter-action`, Build-Umgebung im Workflow fixieren.
+- **Runner-Beschränkungen:** Die GitHub-Runner bringen das Android-SDK mit; für den Android-Build fehlen in der Standardkonfiguration nur das passende JDK und die Lizenzabnahme. Im Workflow daher `actions/setup-java@v4` (Temurin 17) vor `subosito/flutter-action@v2` ausführen, die Flutter-Version pinnen und die SDK-Lizenzen einmalig mit `flutter doctor --android-licenses` akzeptieren.
 - **Link-Pflege:** Feste „latest“-Links brechen nicht; automatisch generierte Download-Tabellen in der README würden bei jedem Release einen zusätzlichen Commit erzeugen (bewusst vermieden).
 - **Artefaktgrößen:** Flutter-Releases sind mehrere 10 MB groß – Artefakte nur bei Tags als Release veröffentlichen, nicht bei jedem Push.
-- **Widerspruch zu `0_Einfuehrung.md`:** Dort heißt es unter „Bauziele“ „alle Betriebssysteme, inklusive Web“ – mit den Nicht-Zielplattformen macOS/iOS abgleichen und das Basisdokument ggf. präzisieren.

@@ -1,8 +1,8 @@
 # Umsetzungsplan
 
-Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) übersetzt dieses Dokument die Entscheidungen aus `4_Offene Fragen.md` (Fragenkatalog F-01…F-55, Entscheidungslog E-01…E-55) in eine ausführbare Reihenfolge von Arbeitspaketen. Es ist **keine** neue Fachspezifikation: Die Details stehen in `1_Frontendstruktur.md`, `2_Datenbank.md` und `3_Git_Shenanigans.md`; dieses Dokument legt fest, *was in welcher Reihenfolge gebaut wird* und *wann ein Arbeitspaket fertig ist*.
+Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) übersetzt dieses Dokument die Entscheidungen aus `4_Offene_Fragen.md` (Fragenkatalog F-01…F-55, Entscheidungslog E-01…E-55) in eine ausführbare Reihenfolge von Arbeitspaketen. Es ist **keine** neue Fachspezifikation: Die Details stehen in `1_Frontendstruktur.md`, `2_Datenbank.md` und `3_Git_Shenanigans.md`; dieses Dokument legt fest, *was in welcher Reihenfolge gebaut wird* und *wann ein Arbeitspaket fertig ist*.
 
-> Ein Eintrag ohne Arbeitspaket ist kein Plan. Jedes Arbeitspaket erhält eine ID (`U-xx`), einen Status und eine *Definition of Done*; umgesetzte Entscheidungen aus `4_Offene Fragen.md` werden über ihre E-ID referenziert. Der Fortschritt wird in den Statusspalten sichtbar gehalten, Abweichungen kommen in die *Änderungshistorie*.
+> Ein Eintrag ohne Arbeitspaket ist kein Plan. Jedes Arbeitspaket erhält eine ID (`U-xx`), einen Status und eine *Definition of Done*; umgesetzte Entscheidungen aus `4_Offene_Fragen.md` werden über ihre E-ID referenziert. Der Fortschritt wird in den Statusspalten sichtbar gehalten, Abweichungen kommen in die *Änderungshistorie*.
 
 ## Aufbau und Pflege
 
@@ -12,20 +12,20 @@ Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) übersetzt dieses Dokume
 | `Phase` | Abschnitt aus *Der Plan (tm)*; Phasen laufen grundsätzlich in der angegebenen Reihenfolge |
 | `Status` | `Offen`, `In Arbeit`, `Fertig` |
 | `Bezug` | Fundstelle in Dokument oder Code |
-| `E-IDs` | Umgesetzte Entscheidungen aus `4_Offene Fragen.md` |
+| `E-IDs` | Umgesetzte Entscheidungen aus `4_Offene_Fragen.md` |
 
 Regeln für die Pflege:
 
 - Ein Arbeitspaket gilt erst als „fertig", wenn alle Punkte der *Definition of Done* der zugehörigen Phase abgehakt sind.
-- Jedes Arbeitspaket schließt mindestens eine `F-`-Frage oder einen `E-`-Eintrag ab; ein neuer Eintrag in `4_Offene Fragen.md` erzeugt hier ein neues Arbeitspaket.
+- Jedes Arbeitspaket schließt mindestens eine `F-`-Frage oder einen `E-`-Eintrag ab; ein neuer Eintrag in `4_Offene_Fragen.md` erzeugt hier ein neues Arbeitspaket.
 - Wird ein `E-`-Eintrag überholt, kehrt das Arbeitspaket auf `In Arbeit` zurück; Begründung und Datum kommen in die *Änderungshistorie*.
 - Ein „Durchstich" ist ein durchklickbarer End-to-End-Verkauf (Start → … → Verabschiedung); er ist zugleich das maßgebliche Abnahmekriterium des Prototyps.
 
-Stand der letzten Durchsicht: **2026-09-21**.
+Stand der letzten Durchsicht: **2026-09-22**.
 
 ## Offene Fragen
 
-Alle Fragen aus `4_Offene Fragen.md` sind entschieden (E-01…E-55); es gibt **keine P0-Frage mehr**. Verbleibend sind nur Festlegungstermine und Dokumentationsaufgaben, die hier einem Arbeitspaket zugeordnet werden:
+Alle Fragen aus `4_Offene_Fragen.md` sind entschieden (E-01…E-55); es gibt **keine P0-Frage mehr**. Verbleibend sind nur Festlegungstermine und Dokumentationsaufgaben, die hier einem Arbeitspaket zugeordnet werden:
 
 | ID | Restfrage | Behandlung | Festlegung in |
 |---|---|---|---|
@@ -37,23 +37,23 @@ Alle Fragen aus `4_Offene Fragen.md` sind entschieden (E-01…E-55); es gibt **k
 
 ## Mögliche, noch zu lösende Probleme
 
-Zusammengeführt aus den *Risiken* in `4_Offene Fragen.md` und den Abschnitten *Mögliche Probleme* der Detaildokumente. Jedes Problem ist dem Arbeitspaket zugeordnet, in dem es aufgelöst oder entschieden wird.
+Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *Mögliche Probleme* der Detaildokumente. Jedes Problem ist dem Arbeitspaket zugeordnet, in dem es aufgelöst oder entschieden wird.
 
-| Problem | Auswirkung | Auflösung in |
-|---|---|---|
-| Datenlayer ohne Tests driftet vom REST-Vertrag ab (Contract first, E-04) | Umstieg auf die Produktionsdatenbank wird teuer | `U-15` |
-| Web-Build besitzt keine Persistenz (E-11) | Demo verliert Daten beim Reload — für den Prototyp akzeptiert | `U-14` |
-| Globaler Zustand als `static ValueNotifier` (E-46) | parallele Tests unmöglich; Reset-Hilfe nötig | `U-51` |
-| `Colors.blue`-Seed erfüllt WCAG AA nicht (E-40) | Barrierefreiheitsziel verfehlt | `U-71` |
-| `google_fonts` lädt Schriften zur Laufzeit (E-38/F-13/F-44) | Offline-Ausfall und DSGVO-Risiko | `U-72` |
-| Gemischte Zeilenenden CRLF/LF (E-36) | Rausch-Diffs in der Dokumentation | `U-02` |
-| Gemischte Dateinamen, doppelte Backlogs in `1_`/`3_` (E-35) | Verweise brechen, Inhalte duplizieren | `U-01`, `U-03` |
-| `1_Frontendstruktur.md` behauptet, `flutter_localizations` fehle — ist vorhanden | veraltete Doku führt zu Fehlentscheidungen | `U-03` (Dokumentationsabgleich) |
-| CI-Runner ohne Android-SDK/Java (F-32) | Android-Build bricht | `U-60` |
-| Flutter-Artefakte sind mehrere 10 MB groß | Repository bläht auf | `U-60` (Artefakte nur bei Tags) |
-| Fehlendes `--base-href` (E-44/F-38) | Web-Build lädt Ressourcen von falscher Wurzel | `U-62` |
-| Preis-/Verkaufszeitlogik ohne Tests (F-40) | Rechenfehler wandern unbemerkt in die Simulation | `U-34` |
-| Laufender Uhr-Timer in Tests | hängende Tests | `U-51` |
+| Problem | Auswirkung | Auflösung in | Lösungsansatz |
+|---|---|---|---|
+| Datenlayer ohne Tests driftet vom REST-Vertrag ab (Contract first, E-04) | Umstieg auf die Produktionsdatenbank wird teuer | `U-15` | Repository-Unit-Tests gegen das Interface gehören zur DoD von Phase 1 — für `InMemoryRepository` und `SqliteRepository`. |
+| Web-Build besitzt keine Persistenz (E-11) | Demo verliert Daten beim Reload — für den Prototyp akzeptiert | `U-14` | Für den Prototyp akzeptiert; falls später nötig: Persistenz über `localStorage`/IndexedDB hinter demselben Repository-Vertrag (vgl. `2_Datenbank.md`). |
+| Globaler Zustand als `static ValueNotifier` (E-46) | parallele Tests unmöglich; Reset-Hilfe nötig | `U-51` | Zustand in ein `AppState`-Objekt bündeln, in `main()` erzeugen und über `InheritedNotifier` (Konstruktor-Parameter für Tests) bereitstellen; statische Felder entfallen. Zwischenlösung: zentrale Reset-Funktion für `setUp` (vgl. `test/widget_test.dart:14-18`). |
+| `Colors.blue`-Seed erfüllt WCAG AA nicht (E-40) | Barrierefreiheitsziel verfehlt | `U-71` | Seed verdunkeln, z. B. `Colors.blue.shade900`/`Color(0xFF0D47A1)`, und Kontrast (WCAG AA ≥ 4,5:1) in Hell und Dunkel als Tabelle plus automatisiertem Check nachweisen. |
+| `google_fonts` lädt Schriften zur Laufzeit (E-38/F-13/F-44) | Offline-Ausfall und DSGVO-Risiko | `U-72` | Poppins/Lato statisch als Assets bündeln (OFL), `fonts:`-Block in `pubspec.yaml`, `GoogleFonts.*` durch `TextStyle(fontFamily: …)` ersetzen, Abhängigkeit entfernen; Offline-Check. |
+| Gemischte Zeilenenden CRLF/LF (E-36) | Rausch-Diffs in der Dokumentation | `U-02` | `.gitattributes` (`* text=auto`, `*.md text eol=lf`) ist angelegt; die Grundlagendokumente sind auf LF normalisiert (`git ls-files --eol`), der `git diff` ist rauschfrei. |
+| Gemischte Dateinamen, doppelte Backlogs in `1_`/`3_` (E-35) | Verweise brechen, Inhalte duplizieren | `U-01`, `U-03` | Dateiname an die übrigen Grundlagendokumente angeglichen (`git mv` → `4_Offene_Fragen.md`, E-35) und alle Verweise mitgezogen (Suche leer); doppelte Backlog-Einträge auf einen Verweis je F-/E-ID reduziert. |
+| `1_Frontendstruktur.md` behauptet, `flutter_localizations` fehle — ist vorhanden | veraltete Doku führt zu Fehlentscheidungen | `U-03` (Dokumentationsabgleich) | Punkt am 2026-09-22 in `1_Frontendstruktur.md` korrigiert (E-05: `Map` je Sprache; ARB-Migration folgt mit F-08/E-17) und im Dokumentationsabgleich von `4_Offene_Fragen.md` gestrichen. |
+| CI-Runner ohne Android-SDK/Java (F-32) | Android-Build bricht | `U-60` | GitHub-Runner liefern das Android-SDK bereits; im Workflow `actions/setup-java@v4` (Temurin 17) vor `subosito/flutter-action@v2`, Lizenzen via `flutter doctor --android-licenses` akzeptieren. |
+| Flutter-Artefakte sind mehrere 10 MB groß | Repository bläht auf | `U-60` (Artefakte nur bei Tags) | Nichts committen (`build/` bleibt in `.gitignore`); bei `main` als Workflow-Artifact mit `retention-days: 90`, bei Tags als GitHub Release (`softprops/action-gh-release`). |
+| Fehlendes `--base-href` (E-44/F-38) | Web-Build lädt Ressourcen von falscher Wurzel | `U-62` | Im Deploy-Job `flutter build web --release --base-href` mit `/<repo>/` (Slug exakt, z. B. `/Testautomat/`; Wert dynamisch aus `github.event.repository.name`); danach `<base href>` in `build/web/index.html` prüfen. |
+| Preis-/Verkaufszeitlogik ohne Tests (F-40) | Rechenfehler wandern unbemerkt in die Simulation | `U-34` | Logik in reine Klassen (`lib/logic/`) extrahieren; parametrisierte Unit-Tests für Taktraster/Aufrunden und Cent-Werte (E-15/E-02), UTC-Grenzfälle der Verkaufszeit (E-14/E-03) sowie Belegnummern (E-16). |
+| Laufender Uhr-Timer in Tests | hängende Tests | `U-51` | Uhr über eine injizierbare `Clock` statt `Timer.periodic` im Widget-State führen; Tests pinnen die Zeit (`tester.pump`) und räumen über einen zentralen `disposeApp`-Helfer auf; Timer pausiert im Hintergrund (E-26/U-71). |
 
 ## Der Plan (tm)
 
@@ -87,9 +87,9 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-01` | `4_Offene Fragen.md` → `4_Offene_Fragen.md` umbenennen; alle eingehenden Verweise mitziehen und prüfen | E-35 | Offen |
-| `U-02` | `.gitattributes` für einheitliche Zeilenenden anlegen; Doku-Dateien einmalig normalisieren | E-36 | Offen |
-| `U-03` | `doc/plan/`-Übersichtsseite (Index, Kurzbeschreibung, Lesereihenfolge) anlegen; *Dokumentationsabgleich* aus `4_Offene Fragen.md` abarbeiten | E-37 | Offen |
+| `U-01` | Dateinamen an die übrigen Grundlagendokumente angeglichen (`4_Offene_Fragen.md`, E-35); alle eingehenden Verweise gezogen und geprüft | E-35 | Fertig |
+| `U-02` | `.gitattributes` für einheitliche Zeilenenden angelegt; Zeilenenden der Grundlagendokumente einmalig vereinheitlicht | E-36 | Fertig |
+| `U-03` | *Dokumentationsabgleich* aus `4_Offene_Fragen.md` abgearbeitet (2026-09-22); die `doc/plan/`-Übersichtsseite (Index, Kurzbeschreibung, Lesereihenfolge) steht noch aus | E-37 | In Arbeit |
 | `U-04` | README auf Projektzweck, Zielplattformen, Getting Started, Downloads, Status (CI-Badge) und DSGVO-Hinweis umstellen | E-34 | Offen |
 
 **Definition of Done:** keine Verweise auf alte Dateinamen mehr (Suche leer); `git diff` nach der Normalisierung rauschfrei; README ohne Boilerplate-Texte.
@@ -185,4 +185,6 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 0 fortgesetzt: U-01 (Umbenennung und Verweise) und U-02 (`.gitattributes`, Zeilenenden) abgeschlossen; *Dokumentationsabgleich* bereinigt (`0_`, `1_`, `3_`, `4_`); U-03 teilweise erledigt (Übersichtsseite offen). |
+| 2026-09-22 | Problem-Tabelle um die Spalte *Lösungsansatz* ergänzt; alle „Lösungsvorschläge?“-Markierungen durch konkrete Ansätze ersetzt. |
 | 2026-09-21 | Dokument aus dem Stub `# Umsetzungsplan` aufgebaut: Ziel/Nicht-Ziele, Meilensteine M0–M4, Arbeitspakete U-01…U-73 nach Phasen, Zuordnung von Restfragen und Risiken, Abdeckung E-01…E-55. |

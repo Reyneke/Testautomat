@@ -29,9 +29,8 @@ Dokumentiert werden soll:
 
 ## Mögliche Probleme
 
-- **Abweichung vom Standard-Theme:** Die Vorgabe lautet „Dunkel als Standard", `AppTheme.themeModeNotifier` startet im Code jedoch mit `ThemeMode.light`. Beides ist zu synchronisieren.
-- **Farbkontraste:** Der Seed-Wert `Colors.blue` erzeugt in Hell und Dunkel unterschiedliche Kontraste. Die Kontrastverhältnisse sind zu prüfen (WCAG 2.1 AA, mindestens 4,5:1 für Fließtext).
-- **Mehrsprachigkeit noch nicht eingerichtet:** Es gibt derzeit weder `flutter_localizations` in `pubspec.yaml` noch eine Textressourcendatei. Zu entscheiden ist, ob Texte über ARB-Dateien oder eine schlanke eigene `Map` gepflegt werden.
+- **Farbkontraste:** Der Seed-Wert `Colors.blue` erzeugt in Hell und Dunkel unterschiedliche Kontraste. Die Kontrastverhältnisse sind zu prüfen (WCAG 2.1 AA, mindestens 4,5:1 für Fließtext); die Verdunkelung des Seeds ist mit E-40 beschlossen und wird in `U-71` umgesetzt.
+- **Mehrsprachigkeit:** `flutter_localizations` ist in `pubspec.yaml` eingebunden, die sichtbaren Texte liegen als schlanke `Map` je Sprache in `lib/l10n/` (E-05). Offen ist nur der Migrationszeitpunkt auf ARB-Dateien mit `l10n.yaml` (F-08/E-17, `U-70`).
 - **Umschaltung zur Laufzeit:** Sprach- und Theme-Wechsel müssen ohne Neustart der App greifen; der Zustand ist zentral statt je Bildschirm zu halten.
 - **Reduzierte Bewegung:** Für Menschen mit ADHS oder im Autismus-Spektrum sind Animationen möglichst zu reduzieren und Systemeinstellungen (z. B. „Bewegung reduzieren") zu respektieren.
 - **Platzhalter im Startbildschirm:** Automatennummer und Standort stehen in `start_screen.dart:28-29` noch als Konstanten. Entscheidung E-55: Sie werden beim App-Start über das Repository geladen (`getMachine()`) und über `AppMachine.maschineNotifier` dargestellt; die Umsetzung erfolgt mit dem Datenlayer.

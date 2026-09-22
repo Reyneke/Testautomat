@@ -21,7 +21,7 @@ Regeln für die Pflege:
 - Widersprüche zwischen Doku und Code gehören in den Abschnitt *Dokumentationsabgleich*, nicht in die Detaildokumente.
 - Ist eine Frage entschieden, wird das Ergebnis **zusätzlich** im jeweiligen Detaildokument eingetragen; dieses Dokument verweist dann nur noch darauf.
 
-Stand der letzten Durchsicht: **2026-09-21**.
+Stand der letzten Durchsicht: **2026-09-22**.
 
 ## Blockierende Fragen (P0)
 
@@ -104,7 +104,7 @@ Diese Punkte verhindern, dass aus dem Skelett ein durchklickbarer Prototyp wird.
 |---|---|---|---|
 | F-44 | Ist der Abruf der Schriften über `google_fonts` datenschutzrechtlich vertretbar (IP-Übertragung an Dritte), oder werden die Schriften aus diesem Grund gebündelt? | `app_theme.dart`, `0_Einfuehrung.md` (DSGVO) | Entschieden (E-38) |
 | F-45 | Wann wird die README vom Flutter-Boilerplate auf den Projektzweck, die Zielplattformen und einen Verweis auf `doc/plan/` umgestellt? | `README.md`, `3_Git_Shenanigans.md` | Entschieden (E-34) |
-| F-46 | Soll der Dateiname `4_Offene Fragen.md` an die übrigen Dateien (`0_Einfuehrung.md`, `1_Frontendstruktur.md`) angeglichen werden? Bei einer Umbenennung sind alle eingehenden Verweise mitzuziehen. | `doc/plan/grundlagen/` | Entschieden (E-35) |
+| F-46 | Soll der Dateiname (bisher mit Leerzeichen) an die übrigen Dateien (`0_Einfuehrung.md`, `1_Frontendstruktur.md`) angeglichen werden? Bei einer Umbenennung sind alle eingehenden Verweise mitzuziehen. | `doc/plan/grundlagen/` | Entschieden (E-35) |
 | F-47 | Werden die gemischten Zeilenenden (CRLF in `0_`, `1_`, `3_`; LF in `2_`) per `.gitattributes` vereinheitlicht, damit Diffs sauber bleiben? | `doc/plan/grundlagen/` | Entschieden (E-36) |
 | F-48 | Erhält `doc/plan/` eine Übersichtsseite (Index mit Kurzbeschreibung und empfohlener Lesereihenfolge), damit Einsteiger die Dokumente in der richtigen Reihenfolge finden? | `doc/plan/` | Entschieden (E-37) |
 
@@ -148,7 +148,7 @@ Bereits getroffene Entscheidungen, die dieses Dokument nur noch nachhält. Sie s
 | E-32 | 2026-09-21 | Ein Kiosk-Betrieb (Autostart, Vollbild, unterdrückter Ruhezustand) ist vorgesehen. | Passt zum Einsatz als Automaten-Frontend im Dauerbetrieb. | `3_Git_Shenanigans.md` |
 | E-33 | 2026-09-21 | Versionen stammen aus `pubspec.yaml`, Tags setzen die Entwickler, das Changelog basiert auf den GitHub-Releases. | Eine Quelle der Wahrheit für die Version; das Changelog wird noch erstellt. | `pubspec.yaml`, `3_Git_Shenanigans.md` |
 | E-34 | 2026-09-21 | Die README wird möglichst bald auf Projektzweck, Zielplattformen und `doc/plan/` umgestellt. | Erster Eindruck für Besucher; die Abschnittsliste steht in `3_Git_Shenanigans.md`. | `README.md`, `3_Git_Shenanigans.md` |
-| E-35 | 2026-09-21 | `4_Offene Fragen.md` wird an die übrigen Dateinamen angeglichen (`4_Offene_Fragen.md`); alle eingehenden Verweise werden mitgezogen. | Einheitliche Dateinamen; die Umbenennung erfolgt in einem eigenen Schritt inklusive Verweisprüfung. | `doc/plan/grundlagen/` |
+| E-35 | 2026-09-21 | Der Dateiname wird an die übrigen Grundlagendokumente angeglichen (`4_Offene_Fragen.md`); alle eingehenden Verweise werden mitgezogen. | Einheitliche Dateinamen; die Umbenennung erfolgte in einem eigenen Schritt inklusive Verweisprüfung. | `doc/plan/grundlagen/` |
 | E-36 | 2026-09-21 | Die Zeilenenden der Grundlagendokumente werden per `.gitattributes` vereinheitlicht. | Gemischte Zeilenenden erzeugen Rausch-Diffs; die Vereinheitlichung erfolgt einmalig. | `doc/plan/grundlagen/` |
 | E-37 | 2026-09-21 | `doc/plan/` erhält eine Übersichtsseite mit Kurzbeschreibung und empfohlener Lesereihenfolge. | Erleichtert den Einstieg in die Grundlagendokumente. | `doc/plan/` |
 | E-38 | 2026-09-21 | Die Schriften (Poppins/Lato) werden als Assets gebündelt statt zur Laufzeit geladen. | Kein Netzabruf nötig (Offline-Betrieb, F-13) und keine IP-Übertragung an Dritte (DSGVO, F-44). | `app_theme.dart:33-101` |
@@ -174,12 +174,8 @@ Bereits getroffene Entscheidungen, die dieses Dokument nur noch nachhält. Sie s
 
 Beim Schreiben dieses Dokuments aufgefallene Widersprüche zwischen Doku und Code. Jeder Punkt ist zu bereinigen und danach hier zu streichen.
 
-- `1_Frontendstruktur.md` führt unter *Mögliche Probleme* an, es gebe kein `flutter_localizations` und keine Textressourcendatei. Beides ist inzwischen vorhanden (`pubspec.yaml:39-40`, `lib/l10n/`); offen bleibt nur der Migrationszeitpunkt (F-08).
-- `1_Frontendstruktur.md` nennt `ThemeMode.light` als Startwert von `AppTheme.themeModeNotifier`. Der Code startet mit `ThemeMode.dark` — der Punkt ist durch E-07 geschlossen.
-- `1_Frontendstruktur.md` und `3_Git_Shenanigans.md` führen ihre Backlogs unter derselben Überschrift *Offene Punkte (Backlog)* mit teils doppelten Einträgen (der Web-Speicher steht in beiden). Künftig: Details im jeweiligen Dokument, dieses Dokument verweist über die ID.
-- `3_Git_Shenanigans.md` verweist auf den Widerspruch zu den Bauzielen in `0_Einfuehrung.md` (F-31); das Basisdokument ist bislang unverändert.
+- Die am 2026-09-22 bereinigten Punkte sind erledigt und hier gestrichen: `flutter_localizations` und `ThemeMode.light` in `1_Frontendstruktur.md`, die doppelten Backlog-Einträge in `1_`/`3_`, der Widerspruch zu den Bauzielen in `0_Einfuehrung.md` und der Dateiname mit Leerzeichen (F-46).
 - `2_Datenbank.md` nennt die Platzhalter `'4711'` und `'Weiden i. d. OPf.'` im Startbildschirm — das trifft weiterhin zu (F-16).
-- Die übrigen Grundlagendokumente verwenden im Dateinamen einen Unterstrich, dieses Dokument enthält ein Leerzeichen (F-46).
 
 ## Risiken
 
@@ -207,4 +203,5 @@ Beim Schreiben dieses Dokuments aufgefallene Widersprüche zwischen Doku und Cod
 | 2026-09-21 | F-03, F-26 und F-27 entschieden (E-10 bis E-12); Risiken und empfohlene Reihenfolge entsprechend aktualisiert. |
 | 2026-09-21 | Alle verbleibenden Fragen entschieden (E-13 bis E-54): Backlog-Antworten formalisiert, Empfehlungen für die Vorschlagsfragen festgehalten und die Grundsatzfragen (Speicherpaket, Zahlungsablauf, Seeds, Maschinen, Aufbewahrung) festgelegt. Offen bleibt nur der Umsetzungspunkt F-16. |
 | 2026-09-21 | F-16 entschieden (E-55): Automatennummer und Standort werden beim App-Start über das Repository geladen und im `StartScreen` über `AppMachine.maschineNotifier` dargestellt. |
+| 2026-09-22 | Dokumentationsabgleich bereinigt (`1_Frontendstruktur.md`, `0_Einfuehrung.md`, `3_Git_Shenanigans.md`), Dateiname auf `4_Offene_Fragen.md` vereinheitlicht (E-35) und Zeilenenden per `.gitattributes` festgelegt (E-36). |
 
