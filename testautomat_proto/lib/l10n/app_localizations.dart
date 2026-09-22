@@ -75,6 +75,38 @@ class AppLocalizations {
       'zahlungAbbrechen': 'Abbrechen',
       'zahlungAbgebrochen': 'Zahlung abgebrochen',
       'zahlungFehlgeschlagen': 'Die Zahlung konnte nicht abgeschlossen werden.',
+      'debugTitle': 'Debug',
+      'debugPinTitel': 'Debug-Zugang',
+      'debugPinFeld': 'PIN',
+      'debugPinFalsch': 'PIN ist falsch.',
+      'debugAnmelden': 'Anmelden',
+      'debugAbmelden': 'Abmelden',
+      'debugAbbrechen': 'Abbrechen',
+      'debugSchreibgeschuetzt': 'Im Produktivbuild sind Änderungen gesperrt.',
+      'debugVerkaeufe': 'Verkäufe je Tag (UTC-Tage, lokal angezeigt)',
+      'debugKeineVerkaeufe': 'Keine Verkäufe im Zeitraum.',
+      'debugTelemetrie': 'Telemetrie (letzte 24 Stunden)',
+      'debugZeitpunkt': 'Zeitpunkt',
+      'debugStromverbrauch': 'Stromverbrauch',
+      'debugBatterie': 'Batterie',
+      'debugSignal': 'Signal',
+      'debugPacketloss': 'Packetloss',
+      'debugPreissettings': 'Preissettings',
+      'debugVerkaufszeiten': 'Verkaufszeiten',
+      'debugAendern': 'Ändern',
+      'debugSpeichern': 'Speichern',
+      'debugTaktMinuten': 'Takt (Minuten)',
+      'debugPreisProTaktCent': 'Preis je Takt (Cent)',
+      'debugWaehrung': 'Währung',
+      'debugWochentag': 'Wochentag',
+      'debugBeginn': 'Beginn (HH:MM)',
+      'debugEnde': 'Ende (HH:MM)',
+      'debugUngueltigeEingabe': 'Ungültige Eingabe.',
+      'debugGueltigVon': 'Gültig von',
+      'debugGueltigBis': 'Gültig bis',
+      'debugKeineDaten': 'Keine Daten vorhanden.',
+      'debugLadefehler': 'Daten konnten nicht geladen werden.',
+      'debugSpeicherfehler': 'Speichern fehlgeschlagen.',
       'zahlungTimeout': 'Zeitüberschreitung bei der Zahlung',
     },
     'en': {
@@ -123,6 +155,38 @@ class AppLocalizations {
       'zahlungAbbrechen': 'Cancel',
       'zahlungAbgebrochen': 'Payment cancelled',
       'zahlungFehlgeschlagen': 'The payment could not be completed.',
+      'debugTitle': 'Debug',
+      'debugPinTitel': 'Debug access',
+      'debugPinFeld': 'PIN',
+      'debugPinFalsch': 'PIN is wrong.',
+      'debugAnmelden': 'Sign in',
+      'debugAbmelden': 'Sign out',
+      'debugAbbrechen': 'Cancel',
+      'debugSchreibgeschuetzt': 'Changes are locked in the production build.',
+      'debugVerkaeufe': 'Sales per day (UTC days, shown locally)',
+      'debugKeineVerkaeufe': 'No sales in the period.',
+      'debugTelemetrie': 'Telemetry (last 24 hours)',
+      'debugZeitpunkt': 'Timestamp',
+      'debugStromverbrauch': 'Power',
+      'debugBatterie': 'Battery',
+      'debugSignal': 'Signal',
+      'debugPacketloss': 'Packet loss',
+      'debugPreissettings': 'Price settings',
+      'debugVerkaufszeiten': 'Selling hours',
+      'debugAendern': 'Edit',
+      'debugSpeichern': 'Save',
+      'debugTaktMinuten': 'Interval (minutes)',
+      'debugPreisProTaktCent': 'Price per interval (cent)',
+      'debugWaehrung': 'Currency',
+      'debugWochentag': 'Weekday',
+      'debugBeginn': 'Start (HH:MM)',
+      'debugEnde': 'End (HH:MM)',
+      'debugUngueltigeEingabe': 'Invalid input.',
+      'debugGueltigVon': 'Valid from',
+      'debugGueltigBis': 'Valid until',
+      'debugKeineDaten': 'No data available.',
+      'debugLadefehler': 'Data could not be loaded.',
+      'debugSpeicherfehler': 'Saving failed.',
       'zahlungTimeout': 'Payment timed out',
     },
   };
@@ -176,6 +240,38 @@ class AppLocalizations {
   String get zahlungAbbrechen => _get('zahlungAbbrechen');
   String get zahlungAbgebrochen => _get('zahlungAbgebrochen');
   String get zahlungFehlgeschlagen => _get('zahlungFehlgeschlagen');
+  String get debugTitle => _get('debugTitle');
+  String get debugPinTitel => _get('debugPinTitel');
+  String get debugPinFeld => _get('debugPinFeld');
+  String get debugPinFalsch => _get('debugPinFalsch');
+  String get debugAnmelden => _get('debugAnmelden');
+  String get debugAbmelden => _get('debugAbmelden');
+  String get debugAbbrechen => _get('debugAbbrechen');
+  String get debugSchreibgeschuetzt => _get('debugSchreibgeschuetzt');
+  String get debugVerkaeufe => _get('debugVerkaeufe');
+  String get debugKeineVerkaeufe => _get('debugKeineVerkaeufe');
+  String get debugTelemetrie => _get('debugTelemetrie');
+  String get debugZeitpunkt => _get('debugZeitpunkt');
+  String get debugStromverbrauch => _get('debugStromverbrauch');
+  String get debugBatterie => _get('debugBatterie');
+  String get debugSignal => _get('debugSignal');
+  String get debugPacketloss => _get('debugPacketloss');
+  String get debugPreissettings => _get('debugPreissettings');
+  String get debugVerkaufszeiten => _get('debugVerkaufszeiten');
+  String get debugAendern => _get('debugAendern');
+  String get debugSpeichern => _get('debugSpeichern');
+  String get debugTaktMinuten => _get('debugTaktMinuten');
+  String get debugPreisProTaktCent => _get('debugPreisProTaktCent');
+  String get debugWaehrung => _get('debugWaehrung');
+  String get debugWochentag => _get('debugWochentag');
+  String get debugBeginn => _get('debugBeginn');
+  String get debugEnde => _get('debugEnde');
+  String get debugUngueltigeEingabe => _get('debugUngueltigeEingabe');
+  String get debugGueltigVon => _get('debugGueltigVon');
+  String get debugGueltigBis => _get('debugGueltigBis');
+  String get debugKeineDaten => _get('debugKeineDaten');
+  String get debugLadefehler => _get('debugLadefehler');
+  String get debugSpeicherfehler => _get('debugSpeicherfehler');
   String get zahlungTimeout => _get('zahlungTimeout');
 
   /// Geldbetrag als Text, z. B. `2,00 €` bzw. `€2.00`.

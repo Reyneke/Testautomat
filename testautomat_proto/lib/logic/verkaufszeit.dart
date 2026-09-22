@@ -54,6 +54,26 @@ String alsStundenMinuten(DateTime zeitpunkt) =>
     '${zeitpunkt.hour.toString().padLeft(2, '0')}:'
     '${zeitpunkt.minute.toString().padLeft(2, '0')}';
 
+/// Prüft eine Uhrzeit im Format `HH:MM` (`00:00` bis `24:00`).
+///
+/// Nur so ist der lexikografische Vergleich der Verkaufszeit-Fenster korrekt
+/// (siehe `2_Datenbank.md`).
+bool istGueltigesHhMm(String wert) {
+  final treffer = RegExp(r'^(\d{2}):(\d{2})$').firstMatch(wert);
+  if (treffer == null) {
+    return false;
+  }
+  final stunden = int.parse(treffer.group(1)!);
+  final minuten = int.parse(treffer.group(2)!);
+  if (minuten > 59) {
+    return false;
+  }
+  if (stunden == 24) {
+    return minuten == 0;
+  }
+  return stunden <= 23;
+}
+
 bool _liegtImFenster(String uhrzeit, String beginn, String ende) =>
     uhrzeit.compareTo(beginn) >= 0 && uhrzeit.compareTo(ende) < 0;
 

@@ -135,10 +135,10 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | ID | Arbeitspaket | E-IDs | Status |
 |---|---|---|---|
-| `U-40` | Zugang im Produktivbuild nur per Login, schreibgeschützt und verborgen | E-22, F-15, F-30 | Offen |
-| `U-41` | Verkäufe als Tabelle und Zeitreihe aus `getTagesumsaetze` (Gruppierung an den UTC-Tagesgrenzen, Anzeige lokal) | E-12, E-03 | Offen |
-| `U-42` | Telemetrie nur lesend anzeigen | E-10 | Offen |
-| `U-43` | Preissettings und Verkaufszeiten ausschließlich über das Repository bearbeiten | E-04 | Offen |
+| `U-40` | Zugang über verborgene Geste (5× Tap auf die Fußzeilen-Debugangabe) und PIN (`AppDebug`); im Produktivbuild sind Änderungen gesperrt (schreibgeschützt, `kReleaseMode`) | E-22, F-15, F-30 | Fertig |
+| `U-41` | Verkäufe als Tabelle und Balken aus derselben Zeitreihe von `getTagesumsaetze` (Gruppierung an den UTC-Tagesgrenzen, Anzeige lokal) | E-12, E-03 | Fertig |
+| `U-42` | Telemetrie nur lesend als Tabelle (jüngste Messpunkte) | E-10 | Fertig |
+| `U-43` | Preissettings und Verkaufszeiten über Dialoge bearbeiten — ausschließlich über `updatePreissetting`/`updateVerkaufszeit` | E-04 | Fertig |
 
 **Definition of Done:** Akzeptanzkriterien aus `2_Datenbank.md` (Abschnitt *Debug-Bildschirm*) erfüllt; keine Widgets mit direktem Datenbankzugriff.
 
@@ -185,6 +185,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-22 | Phase 4 umgesetzt (U-40…U-43): verborgener, PIN-geschützter Debug-Bildschirm mit schreibgeschütztem Produktivmodus, Verkaufs-Zeitreihe (Tabelle und Balken aus derselben Quelle), Telemetrie nur lesend sowie Bearbeiten von Preissettings und Verkaufszeiten über das Repository; Tests grün (93 Tests). **Meilenstein M3 erreicht.** |
 | 2026-09-22 | Phase 3 umgesetzt (U-30…U-34): Verkaufszeit-Prüfung mit GMT-Basis und optionaler Zeitzone, Preisbildung auf volle Takte in Cent, Belegnummernlogik in `lib/logic/`, simulierter Zahlungsablauf mit Fortschritt, Timeout, Abbruch und Beleg als Anzeige; Logik- und Ablauftests grün (83 Tests). **Meilenstein M2 erreicht.** |
 | 2026-09-22 | Phase 2 umgesetzt (U-20…U-23): gemeinsame Kopf-/Fußzeile mit `AppClock`, sechs Bildschirm-Gerüste, benannte Routen und Bootstrap mit Maschinendaten (`AppMachine`) samt Fehlerbildschirm; Widget-, Navigations- und Bootstrap-Tests grün (64 Tests). Der „Aus“-Bildschirm ist über seine Route erreichbar; sein Einstieg folgt mit der Verkaufszeit-Prüfung in `U-30`. |
 | 2026-09-22 | Phase 1 umgesetzt (U-10…U-16): Datenlayer mit Drift, DTOs und Repository-Vertrag, `schema_version`-Protokoll, deterministische Seeds, InMemory- und SQLite-Repository sowie Composition Root; Vertrags-, Migrations- und Widget-Tests grün (52 Tests). Meilenstein M1 erreicht. |

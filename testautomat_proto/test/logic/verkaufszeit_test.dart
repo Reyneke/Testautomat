@@ -177,6 +177,23 @@ void main() {
     });
   });
 
+  group('istGueltigesHhMm', () {
+    test('akzeptiert gueltige Uhrzeiten', () {
+      expect(istGueltigesHhMm('00:00'), isTrue);
+      expect(istGueltigesHhMm('08:00'), isTrue);
+      expect(istGueltigesHhMm('23:59'), isTrue);
+      expect(istGueltigesHhMm('24:00'), isTrue);
+    });
+
+    test('lehnt ungueltige Uhrzeiten ab', () {
+      expect(istGueltigesHhMm('8:00'), isFalse);
+      expect(istGueltigesHhMm('24:01'), isFalse);
+      expect(istGueltigesHhMm('25:00'), isFalse);
+      expect(istGueltigesHhMm('12:60'), isFalse);
+      expect(istGueltigesHhMm(''), isFalse);
+      expect(istGueltigesHhMm('abends'), isFalse);
+    });
+  });
   group('ortszeitIn', () {
     test('laesst GMT unveraendert', () {
       final zeit = DateTime.utc(2026, 1, 5, 9, 30);
