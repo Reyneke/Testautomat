@@ -1,0 +1,198 @@
+# CI/CD des Prototyps (U-60 bis U-62, E-29/E-33/E-42/E-44).
+#
+# - test:   Gate wie lokal: dart format, flutter analyze, flutter test (U-52)
+# - build:  Matrix fuer Android, Windows, Linux und Web; Artefakte bei main,
+#           zusaetzlich Release bei Tags v*
+# - release: haengt alle Artefakte an das GitHub-Release (Changelog aus den
+#           Release-Notes, E-33)
+# - deploy:  Web-Build auf GitHub Pages (nur main); GitHub Pages muss in den
+#           Repository-Einstellungen auf "GitHub Actions" gestellt sein
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: '3.44.7'
+  # GitHub-Pages-Projektseite liegt unter /<repo>/ (E-44).
+  BASE_HREF: /${{ github.event.repository.name }}/
+
+jobs:
+  test:
+    name: Gate (Format, Analyse, Tests)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Flutter einrichten
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Abhaengigkeiten laden
+        run: flutter pub get
+
+      - name: Formatierung pruefen
+        run: dart format --set-exit-if-changed lib test
+
+      - name: Statische Analyse
+        run: flutter analyze
+
+      - name: Tests
+        run: flutter test
+
+  build:
+    name: Build (${{ matrix.platform }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: android
+            os: ubuntu-latest
+            paket: keine
+            befehl: flutter build apk --release
+            datei: testautomat-android.apk
+          - platform: windows
+            os: windows-latest
+            paket: zip
+            befehl: flutter build windows --release
+            pfad: build/windows/x64/runner/Release
+            datei: testautomat-windows-x64.zip
+          - platform: linux
+            os: ubuntu-latest
+            paket: tar
+            befehl: flutter build linux --release
+            pfad: build/linux/x64/release/bundle
+            datei: testautomat-linux-x64.tar.gz
+          - platform: web
+            os: ubuntu-latest
+            paket: zip
+            befehl: flutter build web --release --base-href="$BASE_HREF"
+            pfad: build/web
+            datei: testautomat-web.zip
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Linux-Abhaengigkeiten (GTK)
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libgtk-3-dev clang cmake pkg-config liblzma-dev
+
+      - name: Java fuer Android
+        if: matrix.platform == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Flutter einrichten
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Abhaengigkeiten laden
+        run: flutter pub get
+
+      - name: Android-Lizenzen akzeptieren
+        if: matrix.platform == 'android'
+        run: yes | flutter doctor --android-licenses
+
+      - name: Bauen
+        run: ${{ matrix.befehl }}
+
+      - name: APK bereitstellen
+        if: matrix.platform == 'android'
+        run: cp build/app/outputs/flutter-apk/app-release.apk ${{ matrix.datei }}
+
+      - name: Artefakt verpacken (ZIP)
+        if: matrix.paket == 'zip'
+        shell: pwsh
+        run: Compress-Archive -Path '${{ matrix.pfad }}' -DestinationPath '${{ matrix.datei }}'
+
+      - name: Artefakt verpacken (tar.gz)
+        if: matrix.paket == 'tar'
+        run: tar -czf ${{ matrix.datei }} -C ${{ matrix.pfad }} .
+
+      - name: Artefakt ablegen
+        uses: actions/upload-artifact@v4
+        with:
+          name: testautomat-${{ matrix.platform }}-paket
+          path: ${{ matrix.datei }}
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Web-Inhalt ablegen (fuer Pages)
+        if: matrix.platform == 'web'
+        uses: actions/upload-artifact@v4
+        with:
+          name: testautomat-web
+          path: build/web
+          if-no-files-found: error
+          retention-days: 90
+
+  release:
+    name: Release (Artefakte an Tag)
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Artefakte laden
+        uses: actions/download-artifact@v4
+        with:
+          pattern: testautomat-*-paket
+          merge-multiple: true
+          path: artefakte
+
+      - name: Release anlegen und Artefakte anhaengen
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artefakte/*
+
+  deploy:
+    name: Pages-Deploy (Web)
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Web-Inhalt laden
+        uses: actions/download-artifact@v4
+        with:
+          name: testautomat-web
+          path: web
+
+      - name: Pages einrichten
+        uses: actions/configure-pages@v5
+
+      - name: Pages-Artefakt hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Deployen
+        id: deployment
+        uses: actions/deploy-pages@v4

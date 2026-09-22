@@ -32,22 +32,28 @@ Bei jedem Push auf `main` und bei neuen Release-Tags baut eine GitHub-Actions-Pi
 
 ### Pipelinedesign (`build.yml`)
 
-1. **Trigger**
-   - `push` auf `main` – Vorschau-/Testlauf für alle Plattformen
-   - `push` auf Tags `v*` – finales Release (semantische Versionierung)
-2. **Gate:** Job `test` mit `flutter analyze` und `flutter test`, bevor gebaut wird.
-3. **Build-Jobs** (Matrix):
-   - `android`: `flutter build apk --release` (+ optional AAB)
-   - `windows`: `flutter build windows --release`
-   - `linux`: `flutter build linux --release`
-   - `web`: `flutter build web --release --base-href=/<repo>/` (GitHub-Pages-Projektseite, vgl. E-44)
-4. **Veröffentlichung**
-   - Bei Tag: Artefakte über `softprops/action-gh-release` an das GitHub Release anhängen (`GITHUB_TOKEN`, kein PAT nötig).
-   - Bei `push` auf `main`: Artefakte als Workflow-Artifacts ablegen (Vorschau, 90 Tage verfügbar).
-5. **README-Links**
-   - Abschnitt „Downloads“ verlinkt auf die neueste Release-Version (`https://github.com/<owner>/<repo>/releases/latest`) – der Link bricht bei neuen Releases nicht.
-   - CI-Badge macht fehlgeschlagene Builds sofort sichtbar.
+Die Pipeline ist umgesetzt und liegt in `.github/workflows/build.yml`:
 
+1. **Trigger:** `push` auf `main` (Vorschau), `push` auf Tags `v*` (Release) sowie manueller Start.
+2. **Gate `test`:** `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` - dieselben Schritte wie das lokale Gate (`tool/gate.ps1`, U-52).
+3. **Build-Matrix `build`** (erst nach dem Gate):
+   - `android`: `flutter build apk --release` (Java 17 ueber `actions/setup-java`, Android-Lizenzen ueber `flutter doctor --android-licenses`)
+   - `windows`: `flutter build windows --release` (ZIP des Release-Ordners)
+   - `linux`: `flutter build linux --release` (tar.gz des Bundles; GTK-Abhaengigkeiten werden vorher installiert)
+   - `web`: `flutter build web --release --base-href="$BASE_HREF"` mit `BASE_HREF=/<repo>/` (E-44)
+4. **Artefakte:** jeder Matrix-Job legt sein Paket als Workflow-Artefakt ab (Vorschau, 90 Tage); der Web-Inhalt wird zusaetzlich unverpackt fuer Pages abgelegt. `build/` bleibt in `.gitignore`.
+5. **`release`:** Bei Tags `v*` laedt ein eigener Job alle Pakete und haengt sie mit generierten Release-Notes an das GitHub-Release (`softprops/action-gh-release`, `GITHUB_TOKEN`). Das Release ist zugleich das Changelog (E-33).
+6. **`deploy`:** Bei `push` auf `main` veroeffentlicht ein Job den Web-Build ueber `actions/deploy-pages`; der Web-Build bringt die Basis-URL der Projektseite bereits mit.
+7. **README-Links:** Abschnitt „Downloads“ verlinkt auf `/releases/latest`; das CI-Badge zeigt den Stand des Workflows.
+
+> **Einmalige Einrichtung:** In den Repository-Einstellungen unter *Pages* muss als Quelle **„GitHub Actions“** gewaehlt sein, sonst laeuft der Deploy-Job nicht.
+
+### Versionierung, Tags und Changelog
+
+- **Version:** Eine Quelle der Wahrheit ist `pubspec.yaml` (`1.0.0+1`); die Artefakte uebernehmen sie automatisch.
+- **Tag:** Nach einem gruenen `main`-Lauf wird ein annotierter Tag `vX.Y.Z` gesetzt (`git tag -a v0.1.0 -m "Erstes Release"`).
+- **Release und Changelog:** Der Tag-Lauf baut alle Plattformen und legt das Release mit generierten Notes an (GitHub Releases); ein eigener `CHANGELOG.md` entfaellt (E-33).
+- **Un-signierte Artefakte:** Der Prototyp bleibt un-signiert (E-42); die Installationswarnung ist in der README benannt.
 ### Umsetzungshinweise
 
 - **Flutter-Setup** über `subosito/flutter-action` mit Caching des Flutter-SDKs und `pub cache` (Buildzeit).
