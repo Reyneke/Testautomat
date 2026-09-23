@@ -1,6 +1,6 @@
 # Umsetzungsplan
 
-Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) übersetzt dieses Dokument die Entscheidungen aus `4_Offene_Fragen.md` (Fragenkatalog F-01…F-55, Entscheidungslog E-01…E-55) in eine ausführbare Reihenfolge von Arbeitspaketen. Es ist **keine** neue Fachspezifikation: Die Details stehen in `1_Frontendstruktur.md`, `2_Datenbank.md` und `3_Git_Shenanigans.md`; dieses Dokument legt fest, *was in welcher Reihenfolge gebaut wird* und *wann ein Arbeitspaket fertig ist*.
+Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) übersetzt dieses Dokument die Entscheidungen aus `4_Offene_Fragen.md` (Fragenkatalog F-01…F-60, Entscheidungslog E-01…E-60) in eine ausführbare Reihenfolge von Arbeitspaketen. Es ist **keine** neue Fachspezifikation: Die Details stehen in `1_Frontendstruktur.md`, `2_Datenbank.md` und `3_Git_Shenanigans.md`; dieses Dokument legt fest, *was in welcher Reihenfolge gebaut wird* und *wann ein Arbeitspaket fertig ist*.
 
 > Ein Eintrag ohne Arbeitspaket ist kein Plan. Jedes Arbeitspaket erhält eine ID (`U-xx`), einen Status und eine *Definition of Done*; umgesetzte Entscheidungen aus `4_Offene_Fragen.md` werden über ihre E-ID referenziert. Der Fortschritt wird in den Statusspalten sichtbar gehalten, Abweichungen kommen in die *Änderungshistorie*.
 
@@ -25,7 +25,7 @@ Stand der letzten Durchsicht: **2026-09-23**.
 
 ## Offene Fragen
 
-Alle Fragen aus `4_Offene_Fragen.md` sind entschieden (E-01…E-55); es gibt **keine P0-Frage mehr**. Verbleibend sind nur Festlegungstermine und Dokumentationsaufgaben, die hier einem Arbeitspaket zugeordnet werden:
+Alle Fragen aus `4_Offene_Fragen.md` sind entschieden (E-01…E-60); es gibt **keine P0-Frage mehr**. Verbleibend sind nur Festlegungstermine und Dokumentationsaufgaben, die hier einem Arbeitspaket zugeordnet werden:
 
 | ID | Restfrage | Behandlung | Festlegung in |
 |---|---|---|---|
@@ -35,6 +35,7 @@ Alle Fragen aus `4_Offene_Fragen.md` sind entschieden (E-01…E-55); es gibt **k
 | E-42 | Signierung Android/Windows/Linux | bewusst aufgeschoben (Nicht-Ziel, s. u.) | – |
 | E-54 | Aufbewahrungs-/Purge-Konzept | wird dokumentiert, nicht implementiert | `U-73` |
 | F-56…F-59 | Neue Zahlungsarten, PDF-Beleg, Kennzeichen und Parkzonen aus `7_Neue_Zahlmoeglichkeiten.md` | in Phase 8 umgesetzt | `U-74`…`U-77` |
+| F-60 / E-60 | Umstieg auf echte Zahlungen (Schritte, Module, Aufwand) | analysiert und dokumentiert; Provider-Anbindung erst mit der Produktionsentscheidung (E-43) | `U-78` |
 
 ## Mögliche, noch zu lösende Probleme
 
@@ -59,11 +60,11 @@ Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *
 
 ## Der Plan (tm)
 
-**Ziel:** Ein durchklickbarer Prototyp (sechs Bildschirme, simulierte Zahlung, Debug-Bildschirm, CI/CD, Web-Hosting), der die Entscheidungen E-01…E-59 nachweist.
+**Ziel:** Ein durchklickbarer Prototyp (sechs Bildschirme, simulierte Zahlung, Debug-Bildschirm, CI/CD, Web-Hosting), der die Entscheidungen E-01…E-60 nachweist.
 
 **Nicht-Ziele** (bewusst nicht im Prototyp): Store-Distribution (E-30), Signierung (E-42), macOS/iOS (E-01/E-28), Self-Update-Rollout (E-31), Kiosk-Betrieb (E-32), Löschung von Verkaufsdaten (E-54).
 
-Damit ist jeder Eintrag E-01…E-55 mindestens einmal einem Arbeitspaket, einem Nicht-Ziel oder dem Abschnitt *Bestand* zugeordnet.
+Damit ist jeder Eintrag E-01…E-60 mindestens einmal einem Arbeitspaket, einem Nicht-Ziel oder dem Abschnitt *Bestand* zugeordnet.
 
 ### Meilensteine
 
@@ -186,8 +187,9 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 | `U-75` | Parkschein als PDF: reine Erzeugungsfunktion (`lib/logic/parkschein_pdf.dart`, Paket `pdf`), Download-Dienst mit Plattformtrennung (`lib/services/beleg_download*.dart`), Knopf im Beleg-Bildschirm; damit ist der PDF-Ausschluss aus E-51 überholt | E-57, E-38 | Fertig |
 | `U-76` | Kennzeicheneingabe: optionale, normalisierte Eingabe (`lib/logic/kennzeichen.dart`), Spalte `verkaeufe.kennzeichen`, Doppelkauf-Prüfung (`lib/logic/doppelkauf.dart` plus neuer Vertragspunkt `getVerkaeufeZuKennzeichen`) in beiden Repository-Implementierungen, Anzeige auf dem Beleg | E-58, E-04 | Fertig |
 | `U-77` | Parkzonen: Tabelle `parkzonen` mit vier Seed-Zonen, neuer Vertragspunkt `getParkzonen()`, Auswahl vor der Parkzeit, Zonenwechsel verwirft die Parkzeit, Zone im Zahlungsbildschirm | E-59, E-52 | Fertig |
+| `U-78` | Umstieg auf echte Zahlungen analysiert und dokumentiert (Abschnitt *Umstieg auf echte Zahlungen* in `7_Neue_Zahlmoeglichkeiten.md`): serverseitige Zahlungsschicht über die REST-Schicht (E-43), erweiterter Repository-Vertrag mit Zahlungsstatus, Tabelle `zahlungen` (Migration `0003`), Statusmaschine, Sicherheits- und DSGVO-Anforderungen sowie Hardware für Bar/Karte. Die Provider-Anbindung selbst bleibt bewusst Nicht-Ziel des Prototyps | E-60, E-43, E-04 | Fertig |
 
-**Definition of Done:** Die neuen Zahlungsarten, der PDF-Beleg sowie Kennzeichen- und Zonenauswahl sind durchklickbar; Kennzeichen- und Zonenregeln sind durch Logik-, Vertrags- und Widget-Tests belegt; `tool/gate.ps1` läuft vollständig grün (Ergebnis: 178 Tests grün).
+**Definition of Done:** Die neuen Zahlungsarten, der PDF-Beleg sowie Kennzeichen- und Zonenauswahl sind durchklickbar; Kennzeichen- und Zonenregeln sind durch Logik-, Vertrags- und Widget-Tests belegt; der Umstiegspfad auf echte Zahlungen ist analysiert und dokumentiert (`U-78`); `tool/gate.ps1` läuft vollständig grün (Ergebnis: 178 Tests grün).
 
 ## Reihenfolge und Abhängigkeiten
 
@@ -201,6 +203,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-23 | U-78 (Dokumentation): Umstiegspfad auf echte Zahlungen analysiert und als Abschnitt *Umstieg auf echte Zahlungen* in `7_Neue_Zahlmoeglichkeiten.md` dokumentiert; F-60/E-60 ergänzt. Ergebnis: In der App sind nur wenige Stellen betroffen (Zahlungsbildschirm, Repository-Vertrag, Datenlayer mit Migration `0003`, Texte); der Kern ist eine serverseitige Zahlungsdienst-Anbindung über die REST-Schicht (E-43), Bar und Karte erfordern zusätzlich Hardware. Kein Code geändert. |
 | 2026-09-23 | Phase 8 umgesetzt (U-74…U-77) aus `7_Neue_Zahlmoeglichkeiten.md`: fünf Zahlungsarten (PayPal, Google Wallet, Google Pay zusätzlich) über explizite Datenbankwerte, Parkschein als PDF in allen Varianten mit plattformabhängigem Download, optionales Kennzeichen samt Doppelkauf-Prüfung in beiden Repository-Implementierungen und vier Seed-Parkzonen mit vorgeschalteter Zonenwahl; Schema-Version 2 (Migration `0002`) und neue Vertragspunkte `getParkzonen`/`getVerkaeufeZuKennzeichen`; E-51 ist im PDF-Teil überholt (E-57). |
 | 2026-09-23 | Lokaler Android-Build (Debug/Release Candidate) verifiziert: Die Meldung „kein Java SDK gefunden" bezog sich nur auf `PATH`/`JAVA_HOME` (beide leer, kein eigenständiges JDK); Flutter nutzt das in Android Studio gebündelte JBR (`…\Android Studio\jbr`, OpenJDK 25.0.3) automatisch. `flutter doctor --android-licenses` läuft mit Exit-Code 0 („The --licenses option is no longer needed", neue Android-CLI), der doctor-Hinweis `Android license status unknown` ist damit reine Anzeige und blockiert den Build nicht. Nachweis: `flutter build apk --debug` → 159,2 MB in 313 s, `flutter build apk --release` → 55,5 MB in 166 s, Signatur per `apksigner verify` bestätigt (APK Signature Scheme v2, Zertifikat „CN=Android Debug"); Font-/Asset-Manifest im APK enthalten (E-38, E-17). Signierung bleibt Nicht-Ziel (E-42). |
 | 2026-09-22 | Phase 7 umgesetzt (U-70…U-73): Schriften (Poppins/Lato, OFL-Lizenzen) als Assets gebündelt statt `google_fonts` (E-38, im Web-Build als `FontManifest.json` nachgewiesen); Datum und Uhrzeit über `intl` (E-18, Englisch 12 Stunden mit AM/PM), Systemsprache beim ersten Start (E-19), Theme und Sprache gemerkt (E-20), Texte auf ARB mit `flutter gen-l10n` migriert (E-17, Gate und CI prüfen den erzeugten Stand); Seed `Color(0xFF0D47A1)` mit Kontrastnachweis als Tabelle und Test (E-40), scrollbarer Mittelbereich belegt (E-41), „Bewegung reduzieren“ respektiert (E-24), Uhr pausiert im Hintergrund (E-27); DSGVO-Log- und Aufbewahrungskonzept in `6_Logging_und_Datenschutz.md` (E-48/E-54). 156 Tests grün (lokales Gate inklusive Texterzeugung, Formatierung und Analyse). **Meilenstein M5 erreicht.** |

@@ -21,7 +21,7 @@ Regeln für die Pflege:
 - Widersprüche zwischen Doku und Code gehören in den Abschnitt *Dokumentationsabgleich*, nicht in die Detaildokumente.
 - Ist eine Frage entschieden, wird das Ergebnis **zusätzlich** im jeweiligen Detaildokument eingetragen; dieses Dokument verweist dann nur noch darauf.
 
-Stand der letzten Durchsicht: **2026-09-22**.
+Stand der letzten Durchsicht: **2026-09-23**.
 
 ## Blockierende Fragen (P0)
 
@@ -116,6 +116,7 @@ Diese Punkte verhindern, dass aus dem Skelett ein durchklickbarer Prototyp wird.
 | F-57 | Was bedeutet „Parkticket in allen Varianten als PDF", und wie wird der Download im Web- und im Desktop-Build bereitgestellt? Der bisherige Beschluss E-51 schließt ein PDF ausdrücklich aus. | `7_Neue_Zahlmoeglichkeiten.md`, `start_screen.dart` | Entschieden (E-57) |
 | F-58 | Ist das Kennzeichen Pflicht oder optional, welches Format gilt, wann liegt ein Doppelkauf vor, und wie verträgt sich das mit der Anonymitätszusage (DSGVO)? | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md`, `6_Logging_und_Datenschutz.md` | Entschieden (E-58) |
 | F-59 | Woher kommen die Parkzonen im Prototyp, ist die Zone Voraussetzung für die Parkzeitwahl, wird sie am Verkauf gespeichert, und hat sie eigene Preise? | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` | Entschieden (E-59) |
+| F-60 | Wie leicht lassen sich die simulierten Zahlungsarten in echte umwandeln, welche Schritte sind nötig, und welche Module müssten ergänzt werden? | `7_Neue_Zahlmoeglichkeiten.md` (Abschnitt *Umstieg auf echte Zahlungen*) | Entschieden (E-60) |
 
 ## Entscheidungslog
 
@@ -182,6 +183,7 @@ Bereits getroffene Entscheidungen, die dieses Dokument nur noch nachhält. Sie s
 | E-57 | 2026-09-23 | Der Parkschein wird in allen Varianten clientseitig als PDF erzeugt und herunterladbar gemacht (Web: Browser-Download, Desktop/Android: Ablage im Download-Verzeichnis). Damit ist der PDF-Ausschluss in E-51 überholt. | Erfüllt die Anforderung ohne serverseitige Ablage und ohne Netzzugriff (vgl. E-38); die PDF-Erzeugung bleibt eine reine Funktion. | `7_Neue_Zahlmoeglichkeiten.md`, `6_Logging_und_Datenschutz.md` |
 | E-58 | 2026-09-23 | Das Kennzeichen ist optional, wird in Normalform gespeichert (Großbuchstaben, ohne Trenner) und gegen ein großzügiges deutsches Muster geprüft. Läuft für dasselbe Kennzeichen noch eine Parkzeit, lehnen **beide** Repository-Implementierungen den zweiten Verkauf ab (Zeitbasis ist der Verkaufszeitpunkt). Das Kennzeichen wird nie protokolliert. | Vermeidet Doppelkäufe ohne zusätzliche Zustandshaltung; die Prüfung liegt im Datenlayer und greift damit unabhängig von der Oberfläche. | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` |
 | E-59 | 2026-09-23 | Der Prototyp zeigt vier Seed-Parkzonen über den neuen Vertragspunkt `getParkzonen()`; die Zone ist Voraussetzung für die Parkzeitwahl und wird bei einem Wechsel verworfen. Die Zone wird **nicht** am Verkauf gespeichert und hat keinen eigenen Preis. | Hält den Prototyp schlank und die spätere Datenquelle austauschbar; Zonenpreise und eine Zonenspalte bleiben als offener Punkt für die Produktionsdatenquelle (F-59). | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` |
+| E-60 | 2026-09-23 | Echte Zahlungen sind eine **serverseitige** Erweiterung über die REST-Schicht (E-43): Der Zahlungsdienstleister (PSP) wird im Backend angebunden — Secrets und Webhooks nur dort —, der Client behält Auswahl- und Statusablauf, `createSale` wird erst nach bestätigter Zahlung geschrieben, und der Umstieg erfolgt je Zahlungsart im Sandbox-Modus über denselben Vertrag. Bis zur Produktionsentscheidung bleibt der Prototyp simuliert (E-51, E-56). | Eine Flutter-App kann keine Module zur Laufzeit nachladen und darf keine Zahlungsgeheimnisse halten; dank Contract first (E-04) bleiben die Änderungen in der App auf Zahlungsbildschirm, Repository-Vertrag, Datenlayer (Migration `0003`) und Texte begrenzt. Der Aufwand liegt bei Server und Provider-Verträgen; Bar/Karte brauchen zusätzlich Hardware. | `7_Neue_Zahlmoeglichkeiten.md` (Abschnitt *Umstieg auf echte Zahlungen*) |
 
 ## Dokumentationsabgleich
 

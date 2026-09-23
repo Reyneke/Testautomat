@@ -15,10 +15,10 @@ Stand: 2026-09-23.
 | [`grundlagen/1_Frontendstruktur.md`](grundlagen/1_Frontendstruktur.md) | Detail | Theme (Standard Dunkel), Mehrsprachigkeit (Deutsch/Englisch), gemeinsames Bildschirm-Layout, Barrierefreiheit |
 | [`grundlagen/2_Datenbank.md`](grundlagen/2_Datenbank.md) | Detail | Schema (SQLite-DDL), Repository-Vertrag mit DTOs, Debug-Bildschirm, Migrationen und Seed-Daten |
 | [`grundlagen/3_Git_Shenanigans.md`](grundlagen/3_Git_Shenanigans.md) | Detail | Zielplattformen, CI/CD-Workflows (`build.yml`), Release-Prozess und Hosting |
-| [`grundlagen/4_Offene_Fragen.md`](grundlagen/4_Offene_Fragen.md) | Steuerung | Fragenkatalog (`F-01`…`F-55`), Entscheidungslog (`E-01`…`E-55`), Dokumentationsabgleich, Risiken |
-| [`grundlagen/5_Umsetzungsplan.md`](grundlagen/5_Umsetzungsplan.md) | Steuerung | Meilensteine (`M0`–`M5`), Arbeitspakete (`U-01`…`U-73`) mit Status und Definition of Done |
+| [`grundlagen/4_Offene_Fragen.md`](grundlagen/4_Offene_Fragen.md) | Steuerung | Fragenkatalog (`F-01`…`F-60`), Entscheidungslog (`E-01`…`E-60`), Dokumentationsabgleich, Risiken |
+| [`grundlagen/5_Umsetzungsplan.md`](grundlagen/5_Umsetzungsplan.md) | Steuerung | Meilensteine (`M0`–`M5`), Arbeitspakete (`U-01`…`U-78`) mit Status und Definition of Done |
 | [`grundlagen/6_Logging_und_Datenschutz.md`](grundlagen/6_Logging_und_Datenschutz.md) | Detail | Protokollierung nur mit Betriebsdaten, Rotation, Aufbewahrungs- und Purge-Konzept (E-48, E-54) |
-| [`grundlagen/7_Neue_Zahlmoeglichkeiten.md`](grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Detail | Neue Zahlungsarten (PayPal, Google Wallet, Google Pay), Parkticket als PDF, Kennzeicheneingabe und Parkzonen (E-56…E-59, U-74…U-77) |
+| [`grundlagen/7_Neue_Zahlmoeglichkeiten.md`](grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Detail | Neue Zahlungsarten (PayPal, Google Wallet, Google Pay), Parkticket als PDF, Kennzeicheneingabe, Parkzonen und der Umstiegspfad auf echte Zahlungen (E-56…E-60, U-74…U-78) |
 
 ## Empfohlene Lesereihenfolge
 
@@ -41,6 +41,7 @@ Stand: 2026-09-23.
 | Build, Release, Hosting, CI/CD | `3_Git_Shenanigans.md` |
 | Theme, Sprache, Layout, Barrierefreiheit | `1_Frontendstruktur.md` |
 | Zahlungsarten, PDF-Beleg, Kennzeichen, Parkzonen | `7_Neue_Zahlmoeglichkeiten.md` |
+| Bedeutung von „PSP" und Weg zu echten Zahlungen | `7_Neue_Zahlmoeglichkeiten.md` (*Begriff: PSP*, *Umstieg auf echte Zahlungen*) |
 
 ## Kennungen
 

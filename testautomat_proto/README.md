@@ -14,7 +14,7 @@ Einstieg über die Übersichtsseite [`doc/plan/README.md`](doc/plan/README.md), 
 
 [![Build](https://github.com/Reyneke/Testautomat/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Reyneke/Testautomat/actions/workflows/build.yml)
 
-- **Umsetzungsstand:** [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) (Meilensteine M0–M5, Arbeitspakete U-01…U-77)
+- **Umsetzungsstand:** [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) (Meilensteine M0–M5, Arbeitspakete U-01…U-78)
 - **Letztes Release:** [Releases](https://github.com/Reyneke/Testautomat/releases/latest)
 - **Version:** aus `pubspec.yaml` (`1.0.0+1`), Tags nach `vX.Y.Z` (E-33)
 
@@ -93,7 +93,7 @@ erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
 | [`1_Frontendstruktur.md`](doc/plan/grundlagen/1_Frontendstruktur.md) | Theme, Mehrsprachigkeit, Aufbau der Bildschirme |
 | [`2_Datenbank.md`](doc/plan/grundlagen/2_Datenbank.md) | Schema, Repository-Vertrag, Migrationen, Seed-Daten |
 | [`3_Git_Shenanigans.md`](doc/plan/grundlagen/3_Git_Shenanigans.md) | Build, Release und Hosting (CI/CD) |
-| [`4_Offene_Fragen.md`](doc/plan/grundlagen/4_Offene_Fragen.md) | Fragenkatalog (F-01…F-59) und Entscheidungslog (E-01…E-59) |
+| [`4_Offene_Fragen.md`](doc/plan/grundlagen/4_Offene_Fragen.md) | Fragenkatalog (F-01…F-60) und Entscheidungslog (E-01…E-60) |
 | [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) | Arbeitspakete, Meilensteine, Definition of Done |
 | [`6_Logging_und_Datenschutz.md`](doc/plan/grundlagen/6_Logging_und_Datenschutz.md) | Protokollierung, Rotation und Aufbewahrung |
 | [`7_Neue_Zahlmoeglichkeiten.md`](doc/plan/grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Zahlungsarten, PDF-Beleg, Kennzeichen und Parkzonen |
