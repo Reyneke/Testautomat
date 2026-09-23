@@ -21,7 +21,7 @@ Die Bildschirme im Einzelnen:
 1. **"Aus"-Bildschirm** – wird angezeigt, wenn der Automat außerhalb der Verkaufszeit ist.
 2. **Startbildschirm** – enthält einen Button zum Starten des Verkaufs.
 3. **Parkzeitauswahl** – Auswahl der Parkzeit in Vier-Stunden-Schritten.
-4. **Zahlungsauswahl** – bietet mehrere, ebenfalls simulierte Zahlungsoptionen (Bar/Karte).
+4. **Zahlungsauswahl** – bietet mehrere, ebenfalls simulierte Zahlungsoptionen (Bar, Karte, PayPal, Google Wallet, Google Pay; E-51, E-56).
 5. **Parkinformation** – informiert den Nutzer darüber, wie lange er parken darf.
 6. **Verabschiedung** – verabschiedet den Nutzer freundlich.
 

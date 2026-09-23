@@ -195,6 +195,88 @@ void runRepositoryContractTests({
       expect(nachher.ende, '18:00');
     });
 
+    test('getParkzonen liefert die vier Seed-Zonen', () async {
+      final zonen = await repository.getParkzonen();
+
+      expect(zonen, hasLength(SeedData.parkzonen().length));
+      expect(zonen.map((zone) => zone.name), contains('Zone A'));
+    });
+
+    test('createSale speichert Zahlungsart und Kennzeichen', () async {
+      final maschine = await repository.getMachine();
+
+      final verkauf = await repository.createSale(
+        VerkaufDraft(
+          maschineId: maschine.id,
+          timestamp: DateTime.utc(2026, 2, 3, 9, 15),
+          parkdauerMinuten: 240,
+          betragCent: 200,
+          zahlungsart: Zahlungsart.paypal,
+          kennzeichen: 'WENAB123',
+        ),
+      );
+
+      expect(verkauf.zahlungsart, Zahlungsart.paypal);
+      expect(verkauf.kennzeichen, 'WENAB123');
+
+      final gefunden = await repository.getVerkaeufeZuKennzeichen('WENAB123');
+      expect(
+        gefunden.map((eintrag) => eintrag.belegnummer),
+        contains(verkauf.belegnummer),
+      );
+    });
+
+    test(
+      'createSale lehnt den Doppelkauf auf ein gueltiges Kennzeichen ab',
+      () async {
+        final maschine = await repository.getMachine();
+        VerkaufDraft entwurfMitKennzeichen(DateTime zeit) => VerkaufDraft(
+          maschineId: maschine.id,
+          timestamp: zeit,
+          parkdauerMinuten: 240,
+          betragCent: 200,
+          zahlungsart: Zahlungsart.googlePay,
+          kennzeichen: 'AB123',
+        );
+
+        await repository.createSale(
+          entwurfMitKennzeichen(DateTime.utc(2026, 4, 1, 8)),
+        );
+
+        // Innerhalb der laufenden Parkzeit (bis 12:00): Doppelkauf.
+        await expectLater(
+          repository.createSale(
+            entwurfMitKennzeichen(DateTime.utc(2026, 4, 1, 10)),
+          ),
+          throwsA(isA<RepositoryException>()),
+        );
+
+        // Nach Ablauf der Parkzeit wieder erlaubt.
+        final danach = await repository.createSale(
+          entwurfMitKennzeichen(DateTime.utc(2026, 4, 1, 12)),
+        );
+        expect(danach.kennzeichen, 'AB123');
+      },
+    );
+
+    test('createSale lehnt ein ungueltiges Kennzeichen ab', () async {
+      final maschine = await repository.getMachine();
+
+      await expectLater(
+        repository.createSale(
+          VerkaufDraft(
+            maschineId: maschine.id,
+            timestamp: DateTime.utc(2026, 2, 3, 9, 15),
+            parkdauerMinuten: 240,
+            betragCent: 200,
+            zahlungsart: Zahlungsart.bar,
+            kennzeichen: '123',
+          ),
+        ),
+        throwsA(isA<RepositoryException>()),
+      );
+    });
+
     test('updatePreissetting meldet unbekannte Datensaetze', () async {
       final vorher = (await repository.getPreissettings()).first;
 

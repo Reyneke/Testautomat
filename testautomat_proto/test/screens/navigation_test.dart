@@ -13,6 +13,13 @@ import '../support/app_test_helpers.dart';
 const String parkzeit4Stunden = '4 Stunden \u00b7 2,00 \u20ac';
 const String parkzeit8Stunden = '8 Stunden \u00b7 4,00 \u20ac';
 
+/// Durchläuft die Parkzeitauswahl: erst Zone, dann Parkzeit, dann „Weiter“.
+Future<void> waehleZoneUndParkzeit(WidgetTester tester, String parkzeit) async {
+  await tippeSichtbar(tester, find.text('Zone A'));
+  await tippeSichtbar(tester, find.text(parkzeit));
+  await tippeSichtbar(tester, find.text('Weiter'));
+}
+
 void main() {
   testWidgets('Kaufablauf ist von Start bis Verabschiedung durchklickbar', (
     tester,
@@ -24,19 +31,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Parkzeit wählen'), findsOneWidget);
 
-    await tester.tap(find.text(parkzeit4Stunden));
-    await tester.pumpAndSettle();
+    await waehleZoneUndParkzeit(tester, parkzeit4Stunden);
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
     expect(find.text(parkzeit4Stunden), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Karte'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Karte'));
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
     expect(find.text('Parkschein'), findsOneWidget);
     expect(find.textContaining('Belegnummer:'), findsOneWidget);
 
-    await tester.tap(find.text('Weiter'));
-    await tester.pumpAndSettle();
+    await tippeSichtbar(tester, find.text('Weiter'));
     expect(find.text('Auf Wiedersehen'), findsOneWidget);
 
     await tester.tap(find.text('Neuer Verkauf'));
@@ -51,11 +58,10 @@ void main() {
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text(parkzeit4Stunden));
-    await tester.pumpAndSettle();
+    await waehleZoneUndParkzeit(tester, parkzeit4Stunden);
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
 
-    await tester.tap(find.text('Zurück'));
+    await tippeSichtbar(tester, find.text('Zurück'));
     await tester.pumpAndSettle();
     expect(find.text('Parkzeit wählen'), findsOneWidget);
 
@@ -69,11 +75,12 @@ void main() {
 
     await tester.tap(find.text('Verkauf starten'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text(parkzeit8Stunden));
-    await tester.pumpAndSettle();
+    await waehleZoneUndParkzeit(tester, parkzeit8Stunden);
     expect(find.text('Zahlungsart wählen'), findsOneWidget);
     expect(find.text(parkzeit8Stunden), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Bar'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Bar'));
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();

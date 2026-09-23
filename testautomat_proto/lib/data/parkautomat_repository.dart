@@ -16,6 +16,17 @@ abstract class ParkautomatRepository {
   /// Liefert die Verkaufszeiten je Wochentag.
   Future<List<Verkaufszeit>> getVerkaufszeiten();
 
+  /// Liefert die verfuegbaren Parkzonen.
+  ///
+  /// Der Prototyp liefert vier Seed-Zonen; spaeter uebernimmt die
+  /// Datenquelle diese Liste (`7_Neue_Zahlmoeglichkeiten.md`).
+  Future<List<Parkzone>> getParkzonen();
+
+  /// Liefert alle Verkaeufe zu einem Kennzeichen (Doppelkauf-Pruefung).
+  ///
+  /// Das Kennzeichen wird in Normalform erwartet (`normalisiereKennzeichen`).
+  Future<List<Verkauf>> getVerkaeufeZuKennzeichen(String kennzeichen);
+
   /// Liefert Betriebsdaten im Zeitraum `[von, bis)`; `null` bedeutet offen.
   Future<List<Telemetrie>> getTelemetrie({DateTime? von, DateTime? bis});
 

@@ -1,4 +1,5 @@
 import '../logic/belegnummer.dart';
+import '../logic/doppelkauf.dart';
 import 'dto.dart';
 import 'json_utils.dart';
 import 'parkautomat_repository.dart';
@@ -15,6 +16,7 @@ class InMemoryRepository implements ParkautomatRepository {
     List<Maschine>? maschinen,
     List<Preissetting>? preissettings,
     List<Verkaufszeit>? verkaufszeiten,
+    List<Parkzone>? parkzonen,
     List<Telemetrie>? telemetrie,
     List<Verkauf>? verkaeufe,
     DateTime? einschaltzeit,
@@ -25,6 +27,7 @@ class InMemoryRepository implements ParkautomatRepository {
        _verkaufszeiten = List<Verkaufszeit>.of(
          verkaufszeiten ?? SeedData.verkaufszeiten(),
        ),
+       _parkzonen = List<Parkzone>.of(parkzonen ?? SeedData.parkzonen()),
        _telemetrie = List<Telemetrie>.of(telemetrie ?? SeedData.telemetrie()),
        _verkaeufe = List<Verkauf>.of(verkaeufe ?? SeedData.verkaeufe()),
        _einschaltzeit = einschaltzeit ?? DateTime.now();
@@ -32,6 +35,7 @@ class InMemoryRepository implements ParkautomatRepository {
   final List<Maschine> _maschinen;
   final List<Preissetting> _preissettings;
   final List<Verkaufszeit> _verkaufszeiten;
+  final List<Parkzone> _parkzonen;
   final List<Telemetrie> _telemetrie;
   final List<Verkauf> _verkaeufe;
   final Map<int, BelegnummerGenerator> _generatoren =
@@ -58,6 +62,16 @@ class InMemoryRepository implements ParkautomatRepository {
   @override
   Future<List<Verkaufszeit>> getVerkaufszeiten() async =>
       List<Verkaufszeit>.unmodifiable(_verkaufszeiten);
+
+  @override
+  Future<List<Parkzone>> getParkzonen() async =>
+      List<Parkzone>.unmodifiable(_parkzonen);
+
+  @override
+  Future<List<Verkauf>> getVerkaeufeZuKennzeichen(String kennzeichen) async =>
+      List<Verkauf>.unmodifiable(
+        _verkaeufe.where((verkauf) => verkauf.kennzeichen == kennzeichen),
+      );
 
   @override
   Future<List<Telemetrie>> getTelemetrie({DateTime? von, DateTime? bis}) async {
@@ -92,6 +106,7 @@ class InMemoryRepository implements ParkautomatRepository {
   Future<Verkauf> createSale(VerkaufDraft draft) async {
     final geprueft = validateVerkaufDraft(draft);
     final maschine = _maschineMitId(geprueft.maschineId);
+    _pruefeDoppelkauf(geprueft);
     final verkauf = Verkauf(
       id: _naechsteVerkaufsId(),
       maschineId: maschine.id,
@@ -100,9 +115,25 @@ class InMemoryRepository implements ParkautomatRepository {
       betragCent: geprueft.betragCent,
       zahlungsart: geprueft.zahlungsart,
       belegnummer: _naechsteBelegnummer(maschine),
+      kennzeichen: geprueft.kennzeichen,
     );
     _verkaeufe.add(verkauf);
     return verkauf;
+  }
+
+  /// Verhindert einen zweiten Verkauf auf dasselbe, noch gueltige Kennzeichen.
+  void _pruefeDoppelkauf(VerkaufDraft draft) {
+    final kennzeichen = draft.kennzeichen;
+    if (kennzeichen == null) {
+      return;
+    }
+    final aktiv = aktivesTicket(_verkaeufe, kennzeichen, draft.timestamp);
+    if (aktiv != null) {
+      throw RepositoryException(
+        'Doppelkauf: Fuer $kennzeichen laeuft bereits ein Parkschein '
+        '(Belegnummer ${aktiv.belegnummer}).',
+      );
+    }
   }
 
   @override

@@ -440,7 +440,8 @@ class $VerkaeufeTable extends Verkaeufe
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL CHECK (zahlungsart IN (\'bar\', \'karte\'))',
+    $customConstraints:
+        'NOT NULL CHECK (zahlungsart IN (\'bar\', \'karte\', \'paypal\', \'google_wallet\', \'google_pay\'))',
   );
   static const VerificationMeta _belegnummerMeta = const VerificationMeta(
     'belegnummer',
@@ -454,6 +455,17 @@ class $VerkaeufeTable extends Verkaeufe
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
+  static const VerificationMeta _kennzeichenMeta = const VerificationMeta(
+    'kennzeichen',
+  );
+  @override
+  late final GeneratedColumn<String> kennzeichen = GeneratedColumn<String>(
+    'kennzeichen',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -463,6 +475,7 @@ class $VerkaeufeTable extends Verkaeufe
     betragCent,
     zahlungsart,
     belegnummer,
+    kennzeichen,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -536,6 +549,15 @@ class $VerkaeufeTable extends Verkaeufe
     } else if (isInserting) {
       context.missing(_belegnummerMeta);
     }
+    if (data.containsKey('kennzeichen')) {
+      context.handle(
+        _kennzeichenMeta,
+        kennzeichen.isAcceptableOrUnknown(
+          data['kennzeichen']!,
+          _kennzeichenMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -573,6 +595,10 @@ class $VerkaeufeTable extends Verkaeufe
         DriftSqlType.int,
         data['${effectivePrefix}belegnummer'],
       )!,
+      kennzeichen: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kennzeichen'],
+      ),
     );
   }
 
@@ -590,6 +616,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
   final int betragCent;
   final String zahlungsart;
   final int belegnummer;
+  final String? kennzeichen;
   const VerkaufRow({
     required this.id,
     required this.maschineId,
@@ -598,6 +625,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
     required this.betragCent,
     required this.zahlungsart,
     required this.belegnummer,
+    this.kennzeichen,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -609,6 +637,9 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
     map['betrag_cent'] = Variable<int>(betragCent);
     map['zahlungsart'] = Variable<String>(zahlungsart);
     map['belegnummer'] = Variable<int>(belegnummer);
+    if (!nullToAbsent || kennzeichen != null) {
+      map['kennzeichen'] = Variable<String>(kennzeichen);
+    }
     return map;
   }
 
@@ -621,6 +652,9 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
       betragCent: Value(betragCent),
       zahlungsart: Value(zahlungsart),
       belegnummer: Value(belegnummer),
+      kennzeichen: kennzeichen == null && nullToAbsent
+          ? const Value.absent()
+          : Value(kennzeichen),
     );
   }
 
@@ -637,6 +671,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
       betragCent: serializer.fromJson<int>(json['betragCent']),
       zahlungsart: serializer.fromJson<String>(json['zahlungsart']),
       belegnummer: serializer.fromJson<int>(json['belegnummer']),
+      kennzeichen: serializer.fromJson<String?>(json['kennzeichen']),
     );
   }
   @override
@@ -650,6 +685,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
       'betragCent': serializer.toJson<int>(betragCent),
       'zahlungsart': serializer.toJson<String>(zahlungsart),
       'belegnummer': serializer.toJson<int>(belegnummer),
+      'kennzeichen': serializer.toJson<String?>(kennzeichen),
     };
   }
 
@@ -661,6 +697,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
     int? betragCent,
     String? zahlungsart,
     int? belegnummer,
+    Value<String?> kennzeichen = const Value.absent(),
   }) => VerkaufRow(
     id: id ?? this.id,
     maschineId: maschineId ?? this.maschineId,
@@ -669,6 +706,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
     betragCent: betragCent ?? this.betragCent,
     zahlungsart: zahlungsart ?? this.zahlungsart,
     belegnummer: belegnummer ?? this.belegnummer,
+    kennzeichen: kennzeichen.present ? kennzeichen.value : this.kennzeichen,
   );
   VerkaufRow copyWithCompanion(VerkaeufeCompanion data) {
     return VerkaufRow(
@@ -689,6 +727,9 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
       belegnummer: data.belegnummer.present
           ? data.belegnummer.value
           : this.belegnummer,
+      kennzeichen: data.kennzeichen.present
+          ? data.kennzeichen.value
+          : this.kennzeichen,
     );
   }
 
@@ -701,7 +742,8 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
           ..write('parkdauerMinuten: $parkdauerMinuten, ')
           ..write('betragCent: $betragCent, ')
           ..write('zahlungsart: $zahlungsart, ')
-          ..write('belegnummer: $belegnummer')
+          ..write('belegnummer: $belegnummer, ')
+          ..write('kennzeichen: $kennzeichen')
           ..write(')'))
         .toString();
   }
@@ -715,6 +757,7 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
     betragCent,
     zahlungsart,
     belegnummer,
+    kennzeichen,
   );
   @override
   bool operator ==(Object other) =>
@@ -726,7 +769,8 @@ class VerkaufRow extends DataClass implements Insertable<VerkaufRow> {
           other.parkdauerMinuten == this.parkdauerMinuten &&
           other.betragCent == this.betragCent &&
           other.zahlungsart == this.zahlungsart &&
-          other.belegnummer == this.belegnummer);
+          other.belegnummer == this.belegnummer &&
+          other.kennzeichen == this.kennzeichen);
 }
 
 class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
@@ -737,6 +781,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
   final Value<int> betragCent;
   final Value<String> zahlungsart;
   final Value<int> belegnummer;
+  final Value<String?> kennzeichen;
   const VerkaeufeCompanion({
     this.id = const Value.absent(),
     this.maschineId = const Value.absent(),
@@ -745,6 +790,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
     this.betragCent = const Value.absent(),
     this.zahlungsart = const Value.absent(),
     this.belegnummer = const Value.absent(),
+    this.kennzeichen = const Value.absent(),
   });
   VerkaeufeCompanion.insert({
     this.id = const Value.absent(),
@@ -754,6 +800,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
     required int betragCent,
     required String zahlungsart,
     required int belegnummer,
+    this.kennzeichen = const Value.absent(),
   }) : maschineId = Value(maschineId),
        timestamp = Value(timestamp),
        parkdauerMinuten = Value(parkdauerMinuten),
@@ -768,6 +815,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
     Expression<int>? betragCent,
     Expression<String>? zahlungsart,
     Expression<int>? belegnummer,
+    Expression<String>? kennzeichen,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -777,6 +825,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
       if (betragCent != null) 'betrag_cent': betragCent,
       if (zahlungsart != null) 'zahlungsart': zahlungsart,
       if (belegnummer != null) 'belegnummer': belegnummer,
+      if (kennzeichen != null) 'kennzeichen': kennzeichen,
     });
   }
 
@@ -788,6 +837,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
     Value<int>? betragCent,
     Value<String>? zahlungsart,
     Value<int>? belegnummer,
+    Value<String?>? kennzeichen,
   }) {
     return VerkaeufeCompanion(
       id: id ?? this.id,
@@ -797,6 +847,7 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
       betragCent: betragCent ?? this.betragCent,
       zahlungsart: zahlungsart ?? this.zahlungsart,
       belegnummer: belegnummer ?? this.belegnummer,
+      kennzeichen: kennzeichen ?? this.kennzeichen,
     );
   }
 
@@ -824,6 +875,9 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
     if (belegnummer.present) {
       map['belegnummer'] = Variable<int>(belegnummer.value);
     }
+    if (kennzeichen.present) {
+      map['kennzeichen'] = Variable<String>(kennzeichen.value);
+    }
     return map;
   }
 
@@ -836,7 +890,8 @@ class VerkaeufeCompanion extends UpdateCompanion<VerkaufRow> {
           ..write('parkdauerMinuten: $parkdauerMinuten, ')
           ..write('betragCent: $betragCent, ')
           ..write('zahlungsart: $zahlungsart, ')
-          ..write('belegnummer: $belegnummer')
+          ..write('belegnummer: $belegnummer, ')
+          ..write('kennzeichen: $kennzeichen')
           ..write(')'))
         .toString();
   }
@@ -1670,6 +1725,194 @@ class VerkaufszeitenCompanion extends UpdateCompanion<VerkaufszeitRow> {
   }
 }
 
+class $ParkzonenTable extends Parkzonen
+    with TableInfo<$ParkzonenTable, ParkzoneRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ParkzonenTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'parkzonen';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ParkzoneRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ParkzoneRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ParkzoneRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $ParkzonenTable createAlias(String alias) {
+    return $ParkzonenTable(attachedDatabase, alias);
+  }
+}
+
+class ParkzoneRow extends DataClass implements Insertable<ParkzoneRow> {
+  final int id;
+  final String name;
+  const ParkzoneRow({required this.id, required this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    return map;
+  }
+
+  ParkzonenCompanion toCompanion(bool nullToAbsent) {
+    return ParkzonenCompanion(id: Value(id), name: Value(name));
+  }
+
+  factory ParkzoneRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ParkzoneRow(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  ParkzoneRow copyWith({int? id, String? name}) =>
+      ParkzoneRow(id: id ?? this.id, name: name ?? this.name);
+  ParkzoneRow copyWithCompanion(ParkzonenCompanion data) {
+    return ParkzoneRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ParkzoneRow(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ParkzoneRow && other.id == this.id && other.name == this.name);
+}
+
+class ParkzonenCompanion extends UpdateCompanion<ParkzoneRow> {
+  final Value<int> id;
+  final Value<String> name;
+  const ParkzonenCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  ParkzonenCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+  }) : name = Value(name);
+  static Insertable<ParkzoneRow> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  ParkzonenCompanion copyWith({Value<int>? id, Value<String>? name}) {
+    return ParkzonenCompanion(id: id ?? this.id, name: name ?? this.name);
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ParkzonenCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TelemetrienTable extends Telemetrien
     with TableInfo<$TelemetrienTable, TelemetrieRow> {
   @override
@@ -2462,6 +2705,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $VerkaeufeTable verkaeufe = $VerkaeufeTable(this);
   late final $PreissettingsTable preissettings = $PreissettingsTable(this);
   late final $VerkaufszeitenTable verkaufszeiten = $VerkaufszeitenTable(this);
+  late final $ParkzonenTable parkzonen = $ParkzonenTable(this);
   late final $TelemetrienTable telemetrien = $TelemetrienTable(this);
   late final $SchemaVersionenTable schemaVersionen = $SchemaVersionenTable(
     this,
@@ -2483,6 +2727,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     verkaeufe,
     preissettings,
     verkaufszeiten,
+    parkzonen,
     telemetrien,
     schemaVersionen,
     idxVerkaeufeMaschineZeit,
@@ -2891,6 +3136,7 @@ typedef $$VerkaeufeTableCreateCompanionBuilder =
       required int betragCent,
       required String zahlungsart,
       required int belegnummer,
+      Value<String?> kennzeichen,
     });
 typedef $$VerkaeufeTableUpdateCompanionBuilder =
     VerkaeufeCompanion Function({
@@ -2901,6 +3147,7 @@ typedef $$VerkaeufeTableUpdateCompanionBuilder =
       Value<int> betragCent,
       Value<String> zahlungsart,
       Value<int> belegnummer,
+      Value<String?> kennzeichen,
     });
 
 final class $$VerkaeufeTableReferences
@@ -2961,6 +3208,11 @@ class $$VerkaeufeTableFilterComposer
 
   ColumnFilters<int> get belegnummer => $composableBuilder(
     column: $table.belegnummer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kennzeichen => $composableBuilder(
+    column: $table.kennzeichen,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3027,6 +3279,11 @@ class $$VerkaeufeTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get kennzeichen => $composableBuilder(
+    column: $table.kennzeichen,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MaschinenTableOrderingComposer get maschineId {
     final $$MaschinenTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3083,6 +3340,11 @@ class $$VerkaeufeTableAnnotationComposer
 
   GeneratedColumn<int> get belegnummer => $composableBuilder(
     column: $table.belegnummer,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kennzeichen => $composableBuilder(
+    column: $table.kennzeichen,
     builder: (column) => column,
   );
 
@@ -3145,6 +3407,7 @@ class $$VerkaeufeTableTableManager
                 Value<int> betragCent = const Value.absent(),
                 Value<String> zahlungsart = const Value.absent(),
                 Value<int> belegnummer = const Value.absent(),
+                Value<String?> kennzeichen = const Value.absent(),
               }) => VerkaeufeCompanion(
                 id: id,
                 maschineId: maschineId,
@@ -3153,6 +3416,7 @@ class $$VerkaeufeTableTableManager
                 betragCent: betragCent,
                 zahlungsart: zahlungsart,
                 belegnummer: belegnummer,
+                kennzeichen: kennzeichen,
               ),
           createCompanionCallback:
               ({
@@ -3163,6 +3427,7 @@ class $$VerkaeufeTableTableManager
                 required int betragCent,
                 required String zahlungsart,
                 required int belegnummer,
+                Value<String?> kennzeichen = const Value.absent(),
               }) => VerkaeufeCompanion.insert(
                 id: id,
                 maschineId: maschineId,
@@ -3171,6 +3436,7 @@ class $$VerkaeufeTableTableManager
                 betragCent: betragCent,
                 zahlungsart: zahlungsart,
                 belegnummer: belegnummer,
+                kennzeichen: kennzeichen,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -3699,6 +3965,138 @@ typedef $$VerkaufszeitenTableProcessedTableManager =
         BaseReferences<_$AppDatabase, $VerkaufszeitenTable, VerkaufszeitRow>,
       ),
       VerkaufszeitRow,
+      PrefetchHooks Function()
+    >;
+typedef $$ParkzonenTableCreateCompanionBuilder =
+    ParkzonenCompanion Function({Value<int> id, required String name});
+typedef $$ParkzonenTableUpdateCompanionBuilder =
+    ParkzonenCompanion Function({Value<int> id, Value<String> name});
+
+class $$ParkzonenTableFilterComposer
+    extends Composer<_$AppDatabase, $ParkzonenTable> {
+  $$ParkzonenTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ParkzonenTableOrderingComposer
+    extends Composer<_$AppDatabase, $ParkzonenTable> {
+  $$ParkzonenTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ParkzonenTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ParkzonenTable> {
+  $$ParkzonenTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+}
+
+class $$ParkzonenTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ParkzonenTable,
+          ParkzoneRow,
+          $$ParkzonenTableFilterComposer,
+          $$ParkzonenTableOrderingComposer,
+          $$ParkzonenTableAnnotationComposer,
+          $$ParkzonenTableCreateCompanionBuilder,
+          $$ParkzonenTableUpdateCompanionBuilder,
+          (
+            ParkzoneRow,
+            BaseReferences<_$AppDatabase, $ParkzonenTable, ParkzoneRow>,
+          ),
+          ParkzoneRow,
+          PrefetchHooks Function()
+        > {
+  $$ParkzonenTableTableManager(_$AppDatabase db, $ParkzonenTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ParkzonenTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ParkzonenTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ParkzonenTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+              }) => ParkzonenCompanion(id: id, name: name),
+          createCompanionCallback:
+              ({Value<int> id = const Value.absent(), required String name}) =>
+                  ParkzonenCompanion.insert(id: id, name: name),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ParkzonenTable, ParkzoneRow>(table),
+                  BaseReferences<_$AppDatabase, $ParkzonenTable, ParkzoneRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ParkzonenTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ParkzonenTable,
+      ParkzoneRow,
+      $$ParkzonenTableFilterComposer,
+      $$ParkzonenTableOrderingComposer,
+      $$ParkzonenTableAnnotationComposer,
+      $$ParkzonenTableCreateCompanionBuilder,
+      $$ParkzonenTableUpdateCompanionBuilder,
+      (
+        ParkzoneRow,
+        BaseReferences<_$AppDatabase, $ParkzonenTable, ParkzoneRow>,
+      ),
+      ParkzoneRow,
       PrefetchHooks Function()
     >;
 typedef $$TelemetrienTableCreateCompanionBuilder =
@@ -4260,6 +4658,8 @@ class $AppDatabaseManager {
       $$PreissettingsTableTableManager(_db, _db.preissettings);
   $$VerkaufszeitenTableTableManager get verkaufszeiten =>
       $$VerkaufszeitenTableTableManager(_db, _db.verkaufszeiten);
+  $$ParkzonenTableTableManager get parkzonen =>
+      $$ParkzonenTableTableManager(_db, _db.parkzonen);
   $$TelemetrienTableTableManager get telemetrien =>
       $$TelemetrienTableTableManager(_db, _db.telemetrien);
   $$SchemaVersionenTableTableManager get schemaVersionen =>

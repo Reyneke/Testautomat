@@ -5,7 +5,7 @@ sie gelesen werden sollten. Alle Dokumente sind auf Deutsch und bauen aufeinande
 Basisdokument beschreibt das *Was*, die drei Detaildokumente das *Wie*, die beiden
 Steuerungsdokumente den Stand der Klärung und die Umsetzungsreihenfolge.
 
-Stand: 2026-09-22.
+Stand: 2026-09-23.
 
 ## Die Dokumente
 
@@ -18,6 +18,7 @@ Stand: 2026-09-22.
 | [`grundlagen/4_Offene_Fragen.md`](grundlagen/4_Offene_Fragen.md) | Steuerung | Fragenkatalog (`F-01`…`F-55`), Entscheidungslog (`E-01`…`E-55`), Dokumentationsabgleich, Risiken |
 | [`grundlagen/5_Umsetzungsplan.md`](grundlagen/5_Umsetzungsplan.md) | Steuerung | Meilensteine (`M0`–`M5`), Arbeitspakete (`U-01`…`U-73`) mit Status und Definition of Done |
 | [`grundlagen/6_Logging_und_Datenschutz.md`](grundlagen/6_Logging_und_Datenschutz.md) | Detail | Protokollierung nur mit Betriebsdaten, Rotation, Aufbewahrungs- und Purge-Konzept (E-48, E-54) |
+| [`grundlagen/7_Neue_Zahlmoeglichkeiten.md`](grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Detail | Neue Zahlungsarten (PayPal, Google Wallet, Google Pay), Parkticket als PDF, Kennzeicheneingabe und Parkzonen (E-56…E-59, U-74…U-77) |
 
 ## Empfohlene Lesereihenfolge
 
@@ -26,6 +27,7 @@ Stand: 2026-09-22.
 3. **[`4_Offene_Fragen.md`](grundlagen/4_Offene_Fragen.md)** — welche Frage wie und warum entschieden wurde.
 4. **[`5_Umsetzungsplan.md`](grundlagen/5_Umsetzungsplan.md)** — was in welcher Reihenfolge gebaut wird und wann ein Arbeitspaket fertig ist.
 5. **[`6_Logging_und_Datenschutz.md`](grundlagen/6_Logging_und_Datenschutz.md)** — was der Automat protokolliert und welche Aufbewahrungsregeln gelten.
+6. **[`7_Neue_Zahlmoeglichkeiten.md`](grundlagen/7_Neue_Zahlmoeglichkeiten.md)** — die nach dem Praxistest ergänzten Anforderungen (Zahlungsarten, PDF-Beleg, Kennzeichen, Parkzonen).
 
 ## Wo steht was?
 
@@ -38,6 +40,7 @@ Stand: 2026-09-22.
 | Datenmodell, Vertrag, Migrationen, Seeds | `2_Datenbank.md` |
 | Build, Release, Hosting, CI/CD | `3_Git_Shenanigans.md` |
 | Theme, Sprache, Layout, Barrierefreiheit | `1_Frontendstruktur.md` |
+| Zahlungsarten, PDF-Beleg, Kennzeichen, Parkzonen | `7_Neue_Zahlmoeglichkeiten.md` |
 
 ## Kennungen
 

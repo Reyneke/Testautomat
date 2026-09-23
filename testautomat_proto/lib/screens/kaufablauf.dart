@@ -6,6 +6,8 @@ class KaufAuswahl {
     required this.parkdauerMinuten,
     required this.betragCent,
     this.zahlungsart,
+    this.parkzone,
+    this.kennzeichen,
   });
 
   /// Gewaehlte Parkdauer in Minuten.
@@ -17,11 +19,19 @@ class KaufAuswahl {
   /// Gewaehlte Zahlungsart; `null`, solange sie noch nicht gewaehlt wurde.
   final Zahlungsart? zahlungsart;
 
+  /// Zuerst gewaehlte Parkzone (`7_Neue_Zahlmoeglichkeiten.md`).
+  final Parkzone? parkzone;
+
+  /// Optionales Kfz-Kennzeichen in Normalform.
+  final String? kennzeichen;
+
   /// Kopie mit gesetzter Zahlungsart.
   KaufAuswahl mitZahlungsart(Zahlungsart art) => KaufAuswahl(
     parkdauerMinuten: parkdauerMinuten,
     betragCent: betragCent,
     zahlungsart: art,
+    parkzone: parkzone,
+    kennzeichen: kennzeichen,
   );
 
   /// Liest die Auswahl aus den Routen-Argumenten.

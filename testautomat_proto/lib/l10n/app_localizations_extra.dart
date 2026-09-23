@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:testautomat_proto/data/dto.dart';
 import 'package:testautomat_proto/l10n/app_format.dart';
 import 'package:testautomat_proto/l10n/app_locale.dart';
 import 'package:testautomat_proto/l10n/generated/app_localizations.dart';
@@ -47,6 +48,15 @@ extension AppLocalizationsHelfer on AppLocalizations {
 
   /// Datum im lokalen Muster, z. B. `18.9.2026` bzw. `9/18/2026` (E-18).
   String formatDate(DateTime dateTime) => AppFormat.datum(dateTime, sprache);
+
+  /// Anzeigename einer Zahlungsart (`7_Neue_Zahlmoeglichkeiten.md`).
+  String zahlungsartName(Zahlungsart art) => switch (art) {
+    Zahlungsart.bar => zahlungsartBar,
+    Zahlungsart.karte => zahlungsartKarte,
+    Zahlungsart.paypal => zahlungsartPaypal,
+    Zahlungsart.googleWallet => zahlungsartGoogleWallet,
+    Zahlungsart.googlePay => zahlungsartGooglePay,
+  };
 
   /// Uhrzeitangemessene Begrüßung für den übergebenen Zeitpunkt.
   String greetingFor(DateTime dateTime) {

@@ -31,16 +31,33 @@ enum MaschinenStatus {
 }
 
 /// Zahlungsart der simulierten Zahlung (Werte der Spalte `verkaeufe.zahlungsart`).
+///
+/// Neben den urspruenglichen Arten `bar` und `karte` (E-51) enthaelt die
+/// Aufzaehlung die in `doc/plan/grundlagen/7_Neue_Zahlmoeglichkeiten.md`
+/// geforderten, ebenfalls nur simulierten Verfahren PayPal, Google Wallet und
+/// Google Pay. Der Datenbankwert ist explizit hinterlegt, weil die
+/// `CHECK`-Restriktion `snake_case` verlangt (`google_wallet`).
 enum Zahlungsart {
-  bar,
-  karte;
+  bar('bar'),
+  karte('karte'),
+  paypal('paypal'),
+  googleWallet('google_wallet'),
+  googlePay('google_pay');
 
-  /// Wandelt den Wert aus Datenbank oder JSON in den Enum-Wert.
-  static Zahlungsart fromDb(String value) =>
-      _enumFromName(values, value, 'Zahlungsart');
+  const Zahlungsart(this.dbValue);
 
   /// Wert, wie er in Datenbank und JSON steht.
-  String get dbValue => name;
+  final String dbValue;
+
+  /// Wandelt den Wert aus Datenbank oder JSON in den Enum-Wert.
+  static Zahlungsart fromDb(String value) {
+    for (final art in values) {
+      if (art.dbValue == value) {
+        return art;
+      }
+    }
+    throw RepositoryException('Unbekannte Zahlungsart: $value');
+  }
 }
 
 /// Automaten-Stammdaten (Tabelle `maschine`).
@@ -326,6 +343,7 @@ class Verkauf {
     required this.betragCent,
     required this.zahlungsart,
     required this.belegnummer,
+    this.kennzeichen,
   });
 
   factory Verkauf.fromJson(Map<String, dynamic> json) => Verkauf(
@@ -336,6 +354,7 @@ class Verkauf {
     betragCent: jsonInt(json, 'betrag_cent'),
     zahlungsart: Zahlungsart.fromDb(jsonString(json, 'zahlungsart')),
     belegnummer: jsonInt(json, 'belegnummer'),
+    kennzeichen: jsonStringOrNull(json, 'kennzeichen'),
   );
 
   final int id;
@@ -351,6 +370,13 @@ class Verkauf {
   /// Belegnummer des Parkscheins (E-16).
   final int belegnummer;
 
+  /// Optionales Kfz-Kennzeichen in Normalform (Grossbuchstaben, ohne Trenner);
+  /// `null`, wenn der Kunde keine Angabe gemacht hat.
+  final String? kennzeichen;
+
+  /// Ende der Parkzeit (UTC).
+  DateTime get gueltigBis => timestamp.add(Duration(minutes: parkdauerMinuten));
+
   Map<String, dynamic> toJson() => <String, dynamic>{
     'id': id,
     'maschine_id': maschineId,
@@ -359,6 +385,7 @@ class Verkauf {
     'betrag_cent': betragCent,
     'zahlungsart': zahlungsart.dbValue,
     'belegnummer': belegnummer,
+    if (kennzeichen != null) 'kennzeichen': kennzeichen,
   };
 
   @override
@@ -371,7 +398,8 @@ class Verkauf {
           other.parkdauerMinuten == parkdauerMinuten &&
           other.betragCent == betragCent &&
           other.zahlungsart == zahlungsart &&
-          other.belegnummer == belegnummer;
+          other.belegnummer == belegnummer &&
+          other.kennzeichen == kennzeichen;
 
   @override
   int get hashCode => Object.hash(
@@ -382,6 +410,7 @@ class Verkauf {
     betragCent,
     zahlungsart,
     belegnummer,
+    kennzeichen,
   );
 
   @override
@@ -398,6 +427,7 @@ class VerkaufDraft {
     required this.parkdauerMinuten,
     required this.betragCent,
     required this.zahlungsart,
+    this.kennzeichen,
   });
 
   factory VerkaufDraft.fromJson(Map<String, dynamic> json) => VerkaufDraft(
@@ -406,6 +436,7 @@ class VerkaufDraft {
     parkdauerMinuten: jsonInt(json, 'parkdauer_minuten'),
     betragCent: jsonInt(json, 'betrag_cent'),
     zahlungsart: Zahlungsart.fromDb(jsonString(json, 'zahlungsart')),
+    kennzeichen: jsonStringOrNull(json, 'kennzeichen'),
   );
 
   final int maschineId;
@@ -417,12 +448,16 @@ class VerkaufDraft {
   final int betragCent;
   final Zahlungsart zahlungsart;
 
+  /// Optionales Kfz-Kennzeichen in Normalform (Grossbuchstaben, ohne Trenner).
+  final String? kennzeichen;
+
   Map<String, dynamic> toJson() => <String, dynamic>{
     'maschine_id': maschineId,
     'timestamp': formatUtc(timestamp),
     'parkdauer_minuten': parkdauerMinuten,
     'betrag_cent': betragCent,
     'zahlungsart': zahlungsart.dbValue,
+    if (kennzeichen != null) 'kennzeichen': kennzeichen,
   };
 
   @override
@@ -433,7 +468,8 @@ class VerkaufDraft {
           other.timestamp == timestamp &&
           other.parkdauerMinuten == parkdauerMinuten &&
           other.betragCent == betragCent &&
-          other.zahlungsart == zahlungsart;
+          other.zahlungsart == zahlungsart &&
+          other.kennzeichen == kennzeichen;
 
   @override
   int get hashCode => Object.hash(
@@ -442,13 +478,14 @@ class VerkaufDraft {
     parkdauerMinuten,
     betragCent,
     zahlungsart,
+    kennzeichen,
   );
 
   @override
   String toString() =>
       'VerkaufDraft(maschineId: $maschineId, '
       'timestamp: ${formatUtc(timestamp)}, parkdauerMinuten: $parkdauerMinuten, '
-      'betragCent: $betragCent, zahlungsart: ${zahlungsart.name})';
+      'betragCent: $betragCent, zahlungsart: ${zahlungsart.dbValue})';
 }
 
 /// Umsatz eines UTC-Kalendertags (Ergebnis von `getTagesumsaetze`).
@@ -486,4 +523,33 @@ class Tagesumsatz {
 
   @override
   String toString() => 'Tagesumsatz(tag: $tag, umsatzCent: $umsatzCent)';
+}
+
+/// Verfuegbare Parkzone (Tabelle `parkzonen`).
+///
+/// Der Prototyp zeigt vier simulierte Zonen; in der Produktion liefert die
+/// Datenquelle sie ueber `getParkzonen()` (`7_Neue_Zahlmoeglichkeiten.md`).
+class Parkzone {
+  const Parkzone({required this.id, required this.name});
+
+  factory Parkzone.fromJson(Map<String, dynamic> json) =>
+      Parkzone(id: jsonInt(json, 'id'), name: jsonString(json, 'name'));
+
+  final int id;
+
+  /// Anzeigename der Zone, z. B. `Zone A`.
+  final String name;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'id': id, 'name': name};
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Parkzone && other.id == id && other.name == name;
+
+  @override
+  int get hashCode => Object.hash(id, name);
+
+  @override
+  String toString() => 'Parkzone(id: $id, name: $name)';
 }

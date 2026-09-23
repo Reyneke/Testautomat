@@ -3,7 +3,7 @@
 ## Worum geht es?
 
 Frontend für einen Parkautomaten. Der Prototyp bildet den Kaufablauf am Automaten ab
-(Begrüßung → Parkzeitauswahl → Zahlungsauswahl → Parkinformation → Verabschiedung) und läuft
+(Begrüßung → Parkzone und Parkzeit → Zahlungsauswahl → Parkinformation → Verabschiedung) und läuft
 auf Android, Windows, Linux und im Browser. Alle Zahlungen und Parkscheine werden
 ausschließlich simuliert.
 
@@ -14,7 +14,7 @@ Einstieg über die Übersichtsseite [`doc/plan/README.md`](doc/plan/README.md), 
 
 [![Build](https://github.com/Reyneke/Testautomat/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Reyneke/Testautomat/actions/workflows/build.yml)
 
-- **Umsetzungsstand:** [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) (Meilensteine M0–M4, Arbeitspakete U-01…U-73)
+- **Umsetzungsstand:** [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) (Meilensteine M0–M5, Arbeitspakete U-01…U-77)
 - **Letztes Release:** [Releases](https://github.com/Reyneke/Testautomat/releases/latest)
 - **Version:** aus `pubspec.yaml` (`1.0.0+1`), Tags nach `vX.Y.Z` (E-33)
 
@@ -93,15 +93,18 @@ erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
 | [`1_Frontendstruktur.md`](doc/plan/grundlagen/1_Frontendstruktur.md) | Theme, Mehrsprachigkeit, Aufbau der Bildschirme |
 | [`2_Datenbank.md`](doc/plan/grundlagen/2_Datenbank.md) | Schema, Repository-Vertrag, Migrationen, Seed-Daten |
 | [`3_Git_Shenanigans.md`](doc/plan/grundlagen/3_Git_Shenanigans.md) | Build, Release und Hosting (CI/CD) |
-| [`4_Offene_Fragen.md`](doc/plan/grundlagen/4_Offene_Fragen.md) | Fragenkatalog (F-01…F-55) und Entscheidungslog (E-01…E-55) |
+| [`4_Offene_Fragen.md`](doc/plan/grundlagen/4_Offene_Fragen.md) | Fragenkatalog (F-01…F-59) und Entscheidungslog (E-01…E-59) |
 | [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) | Arbeitspakete, Meilensteine, Definition of Done |
+| [`6_Logging_und_Datenschutz.md`](doc/plan/grundlagen/6_Logging_und_Datenschutz.md) | Protokollierung, Rotation und Aufbewahrung |
+| [`7_Neue_Zahlmoeglichkeiten.md`](doc/plan/grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Zahlungsarten, PDF-Beleg, Kennzeichen und Parkzonen |
 
-Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_` → `6_`.
+Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_` → `6_` → `7_`.
 
 ## Hinweise (DSGVO)
 
-- Es werden **keine personenbezogenen Daten** erhoben oder gespeichert; Verkäufe sind anonym
-  (Zeitstempel, Betrag, Zahlungsart, Belegnummer).
+- Verkäufe sind **anonym** (Zeitstempel, Betrag, Zahlungsart, Belegnummer), solange der Kunde kein
+  Kennzeichen angibt. Das **optionale Kennzeichen** ist personenbeziehbar: es wird nie protokolliert
+  und nur mit dem Verkaufsdatensatz gespeichert (E-58, E-54).
 - Alle **Zahlungen und Parkscheine werden simuliert** — es findet keine echte Zahlung statt.
 - Protokollierung, Rotation sowie das Aufbewahrungs- und Purge-Konzept sind in
   [`doc/plan/grundlagen/6_Logging_und_Datenschutz.md`](doc/plan/grundlagen/6_Logging_und_Datenschutz.md)

@@ -46,6 +46,10 @@ dependencies:
   sqlite3: ^3.5.2
   crypto: ^3.0.7
   timezone: ^0.11.1
+  # Parkschein als PDF auf dem Geraet erzeugen (E-57/U-75); reine Dart-Loesung.
+  pdf: ^3.13.1
+  # Browser-Download des Parkscheins (nur im Web-Build geladen, E-57/U-75).
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

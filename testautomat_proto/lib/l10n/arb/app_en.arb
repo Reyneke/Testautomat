@@ -75,5 +75,17 @@
   "debugKeineDaten": "No data available.",
   "debugLadefehler": "Data could not be loaded.",
   "debugSpeicherfehler": "Saving failed.",
-  "zahlungTimeout": "Payment timed out"
+  "zahlungTimeout": "Payment timed out",
+  "zahlungsartPaypal": "PayPal",
+  "zahlungsartGoogleWallet": "Google Wallet",
+  "zahlungsartGooglePay": "Google Pay",
+  "parkzoneWaehlen": "Choose parking zone",
+  "parkzeitZonenHinweis": "Please choose a parking zone first.",
+  "kennzeichen": "Licence plate",
+  "kennzeichenHinweis": "Licence plate (optional)",
+  "kennzeichenUngueltig": "Please enter a valid licence plate.",
+  "kennzeichenDoppelkauf": "A parking ticket is already running for this licence plate. Please wait until the parking time has expired.",
+  "parkscheinHerunterladen": "Download as PDF",
+  "parkscheinGespeichert": "Parking ticket saved",
+  "parkscheinFehler": "The parking ticket could not be saved."
 }

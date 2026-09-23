@@ -1,5 +1,6 @@
 import 'dto.dart';
 import 'repository_exception.dart';
+import '../logic/kennzeichen.dart';
 
 /// Prueft einen Verkaufsentwurf vor dem Schreiben (`2_Datenbank.md`, E-16).
 ///
@@ -16,6 +17,10 @@ VerkaufDraft validateVerkaufDraft(VerkaufDraft draft) {
   }
   if (draft.betragCent < 0) {
     throw const RepositoryException('betrag_cent darf nicht negativ sein.');
+  }
+  final kennzeichen = draft.kennzeichen;
+  if (kennzeichen != null && !istGueltigesKennzeichen(kennzeichen)) {
+    throw RepositoryException('Ungueltiges Kennzeichen: $kennzeichen');
   }
   return draft;
 }

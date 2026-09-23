@@ -45,6 +45,7 @@ void main() {
           'verkaeufe',
           'preissetting',
           'verkaufszeit',
+          'parkzonen',
           'telemetrie',
           'schema_version',
         ]),
@@ -87,6 +88,7 @@ void main() {
         expect(ersteZaehlung['maschine'], 1);
         expect(ersteZaehlung['preissetting'], 1);
         expect(ersteZaehlung['verkaufszeit'], 7);
+        expect(ersteZaehlung['parkzonen'], SeedData.parkzonen().length);
         expect(ersteZaehlung['telemetrie'], SeedData.telemetriePunkte);
         expect(ersteZaehlung['schema_version'], 1);
         expect(zweiteZaehlung, ersteZaehlung);
@@ -140,6 +142,7 @@ Future<Map<String, int>> _zaehle(AppDatabase db) async {
     'maschine',
     'preissetting',
     'verkaufszeit',
+    'parkzonen',
     'telemetrie',
     'schema_version',
   ]) {

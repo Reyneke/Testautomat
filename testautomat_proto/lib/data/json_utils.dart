@@ -25,6 +25,18 @@ String jsonString(Map<String, dynamic> json, String key) {
   throw FormatException('Feld "$key" ist kein Text: $value');
 }
 
+/// Liest ein optionales Feld vom Typ `String`; `null` und fehlend ergeben `null`.
+String? jsonStringOrNull(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value == null) {
+    return null;
+  }
+  if (value is String) {
+    return value;
+  }
+  throw FormatException('Feld "$key" ist kein Text: $value');
+}
+
 /// Liest ein Pflichtfeld als UTC-Zeitpunkt (ISO-8601).
 DateTime jsonUtcDateTime(Map<String, dynamic> json, String key) =>
     _parseUtc(jsonString(json, key), key);

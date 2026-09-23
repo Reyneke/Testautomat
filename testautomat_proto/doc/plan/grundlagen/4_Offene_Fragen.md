@@ -108,6 +108,15 @@ Diese Punkte verhindern, dass aus dem Skelett ein durchklickbarer Prototyp wird.
 | F-47 | Werden die gemischten Zeilenenden (CRLF in `0_`, `1_`, `3_`; LF in `2_`) per `.gitattributes` vereinheitlicht, damit Diffs sauber bleiben? | `doc/plan/grundlagen/` | Entschieden (E-36) |
 | F-48 | Erhält `doc/plan/` eine Übersichtsseite (Index mit Kurzbeschreibung und empfohlener Lesereihenfolge), damit Einsteiger die Dokumente in der richtigen Reihenfolge finden? | `doc/plan/` | Entschieden (E-37) |
 
+## Neue Zahlungsmöglichkeiten und Parkfunktionen (`7_Neue_Zahlmoeglichkeiten.md`)
+
+| ID | Frage | Bezug | Status |
+|---|---|---|---|
+| F-56 | Werden alle drei angeregten Zahlungsarten (PayPal, Google Wallet, Google Pay) umgesetzt, und bleiben sie bei der Simulation des Ablaufs ohne echten Zahlungsdienst? | `7_Neue_Zahlmoeglichkeiten.md` | Entschieden (E-56) |
+| F-57 | Was bedeutet „Parkticket in allen Varianten als PDF", und wie wird der Download im Web- und im Desktop-Build bereitgestellt? Der bisherige Beschluss E-51 schließt ein PDF ausdrücklich aus. | `7_Neue_Zahlmoeglichkeiten.md`, `start_screen.dart` | Entschieden (E-57) |
+| F-58 | Ist das Kennzeichen Pflicht oder optional, welches Format gilt, wann liegt ein Doppelkauf vor, und wie verträgt sich das mit der Anonymitätszusage (DSGVO)? | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md`, `6_Logging_und_Datenschutz.md` | Entschieden (E-58) |
+| F-59 | Woher kommen die Parkzonen im Prototyp, ist die Zone Voraussetzung für die Parkzeitwahl, wird sie am Verkauf gespeichert, und hat sie eigene Preise? | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` | Entschieden (E-59) |
+
 ## Entscheidungslog
 
 Bereits getroffene Entscheidungen, die dieses Dokument nur noch nachhält. Sie sind im Code bzw. in den Detaildokumenten belegt und gelten, bis sie hier ausdrücklich als *überholt* markiert werden.
@@ -164,11 +173,15 @@ Bereits getroffene Entscheidungen, die dieses Dokument nur noch nachhält. Sie s
 | E-48 | 2026-09-21 | Logs enthalten nur Betriebsdaten (Geräte-ID, UTC-Zeitstempel, Ereignistyp, Fehlercode, Betrag in Cent) und werden rotiert. | Erfüllt die DSGVO-Grenzen (keine personenbezogenen Daten) und genügt der Fehlersuche im Automatenbetrieb. | `0_Einfuehrung.md` |
 | E-49 | 2026-09-21 | Das Datenlayer verwendet `drift` statt `sqflite`. | Schema-Versionierung und Migrationen passen zur `schema_version`-Planung, typsichere Queries und eine In-Memory-Datenbank für Tests; der Web-Build braucht dank E-11 kein SQLite. | `2_Datenbank.md`, `pubspec.yaml` |
 | E-50 | 2026-09-21 | Migrationsskripte liegen im Datenlayer (`lib/data/migrations/`) und werden über die `schema_version`-Tabelle fortgeschrieben. | Nummerierte, transaktionale Schritte bleiben nachvollziehbar; umgesetzt über die Migrationsmechanik von Drift (E-49). | `2_Datenbank.md` |
-| E-51 | 2026-09-21 | Die Zahlung wird simuliert: Zahlungsart wählen, Verarbeitung mit Fortschritt und Timeout, Abbruch durch den Nutzer möglich, Beleg als Anzeige mit Belegnummer; kein PDF und kein Druck im Prototyp. | Bildet den Verkaufsablauf ohne echte Zahlungsdienste ab; die Belegnummer folgt aus E-16. | `0_Einfuehrung.md` |
+| E-51 | 2026-09-21 | Die Zahlung wird simuliert: Zahlungsart wählen, Verarbeitung mit Fortschritt und Timeout, Abbruch durch den Nutzer möglich, Beleg als Anzeige mit Belegnummer. **Der Zusatz „kein PDF und kein Druck im Prototyp" ist durch E-57 überholt.** | Bildet den Verkaufsablauf ohne echte Zahlungsdienste ab; die Belegnummer folgt aus E-16. | `0_Einfuehrung.md` |
 | E-52 | 2026-09-21 | Seed-Daten liegen im Datenlayer, sind idempotent und deterministisch und werden identisch für Tests und CI verwendet. | Gleiche Startwerte für Demo und Tests (vgl. E-11); Wiederholbarkeit bleibt nachvollziehbar. | `2_Datenbank.md` |
 | E-53 | 2026-09-21 | Das Datenmodell trägt mehrere Maschinen; der Prototyp betreibt genau eine aktive Maschine. `getMachine()` liefert die aktive Maschine, der REST-Pfad bleibt mit `{id}` erweiterbar. | Die 1:n-Beziehungen sind bereits angelegt; für den Prototyp genügt eine Maschine, der Vertrag bleibt produktionsfähig. | `2_Datenbank.md` |
 | E-54 | 2026-09-21 | Für Verkaufsdaten gilt kein Personenbezug; ein Aufbewahrungs- und Purge-Konzept wird dokumentiert, aber im Prototyp nicht implementiert. | Verkäufe sind anonym (vgl. die DSGVO-Grenzen in `0_Einfuehrung.md`); eine Löschfrist wird erst mit der Produktionsperspektive gebraucht. | `2_Datenbank.md`, `0_Einfuehrung.md` |
 | E-55 | 2026-09-21 | Automatennummer und Standort werden zentral beim App-Start über das Repository geladen (`getMachine()` → `Maschine`) und stehen als `ValueNotifier<Maschine?>` (`AppMachine.maschineNotifier`) global bereit; der `StartScreen` bezieht seine Debug-Angaben ausschließlich daraus. Schlägt das Laden fehl, greift der Fehlerbildschirm „Automat außer Betrieb" (E-23). | Ein Ladepunkt und ein Fehlerpfad; konsistent zur Zustandshaltung von Theme und Sprache (E-06/E-46); die Umsetzung erfolgt mit dem Datenlayer (E-49 bis E-52), da der Prototyp genau eine aktive Maschine hat (E-53). | `start_screen.dart:28-29`, `2_Datenbank.md`, `1_Frontendstruktur.md` |
+| E-56 | 2026-09-23 | Alle drei angeregten Zahlungsarten (PayPal, Google Wallet, Google Pay) werden aufgenommen und wie die bestehenden simuliert; es gibt keinen echten Zahlungsdienst. Datenbankwerte: `paypal`, `google_wallet`, `google_pay`. | Der Prototyp soll die Bedienung zeigen, nicht wirklich abbuchen; die Simulationstechnik aus E-51 trägt unverändert. | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` |
+| E-57 | 2026-09-23 | Der Parkschein wird in allen Varianten clientseitig als PDF erzeugt und herunterladbar gemacht (Web: Browser-Download, Desktop/Android: Ablage im Download-Verzeichnis). Damit ist der PDF-Ausschluss in E-51 überholt. | Erfüllt die Anforderung ohne serverseitige Ablage und ohne Netzzugriff (vgl. E-38); die PDF-Erzeugung bleibt eine reine Funktion. | `7_Neue_Zahlmoeglichkeiten.md`, `6_Logging_und_Datenschutz.md` |
+| E-58 | 2026-09-23 | Das Kennzeichen ist optional, wird in Normalform gespeichert (Großbuchstaben, ohne Trenner) und gegen ein großzügiges deutsches Muster geprüft. Läuft für dasselbe Kennzeichen noch eine Parkzeit, lehnen **beide** Repository-Implementierungen den zweiten Verkauf ab (Zeitbasis ist der Verkaufszeitpunkt). Das Kennzeichen wird nie protokolliert. | Vermeidet Doppelkäufe ohne zusätzliche Zustandshaltung; die Prüfung liegt im Datenlayer und greift damit unabhängig von der Oberfläche. | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` |
+| E-59 | 2026-09-23 | Der Prototyp zeigt vier Seed-Parkzonen über den neuen Vertragspunkt `getParkzonen()`; die Zone ist Voraussetzung für die Parkzeitwahl und wird bei einem Wechsel verworfen. Die Zone wird **nicht** am Verkauf gespeichert und hat keinen eigenen Preis. | Hält den Prototyp schlank und die spätere Datenquelle austauschbar; Zonenpreise und eine Zonenspalte bleiben als offener Punkt für die Produktionsdatenquelle (F-59). | `7_Neue_Zahlmoeglichkeiten.md`, `2_Datenbank.md` |
 
 ## Dokumentationsabgleich
 
@@ -176,6 +189,7 @@ Beim Schreiben dieses Dokuments aufgefallene Widersprüche zwischen Doku und Cod
 
 - Die am 2026-09-22 bereinigten Punkte sind erledigt und hier gestrichen: `flutter_localizations` und `ThemeMode.light` in `1_Frontendstruktur.md`, die doppelten Backlog-Einträge in `1_`/`3_`, der Widerspruch zu den Bauzielen in `0_Einfuehrung.md` und der Dateiname mit Leerzeichen (F-46).
 - `2_Datenbank.md` nennt die Platzhalter `'4711'` und `'Weiden i. d. OPf.'` im Startbildschirm — das trifft weiterhin zu (F-16).
+- Die Root-`README.md` sagt „Es werden keine personenbezogenen Daten erhoben oder gespeichert" bzw. „Verkäufe sind anonym". Mit dem optionalen Kennzeichen (E-58) gilt das nur noch für Verkäufe **ohne** Kennzeichen; die Formulierung ist zu präzisieren.
 
 ## Risiken
 

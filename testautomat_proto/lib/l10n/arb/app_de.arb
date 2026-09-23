@@ -75,5 +75,17 @@
   "debugKeineDaten": "Keine Daten vorhanden.",
   "debugLadefehler": "Daten konnten nicht geladen werden.",
   "debugSpeicherfehler": "Speichern fehlgeschlagen.",
-  "zahlungTimeout": "Zeitüberschreitung bei der Zahlung"
+  "zahlungTimeout": "Zeitüberschreitung bei der Zahlung",
+  "zahlungsartPaypal": "PayPal",
+  "zahlungsartGoogleWallet": "Google Wallet",
+  "zahlungsartGooglePay": "Google Pay",
+  "parkzoneWaehlen": "Parkzone wählen",
+  "parkzeitZonenHinweis": "Bitte wählen Sie zuerst eine Parkzone.",
+  "kennzeichen": "Kennzeichen",
+  "kennzeichenHinweis": "Kennzeichen (optional)",
+  "kennzeichenUngueltig": "Bitte geben Sie ein gültiges Kennzeichen ein.",
+  "kennzeichenDoppelkauf": "Für dieses Kennzeichen läuft bereits ein Parkschein. Bitte warten Sie, bis die Parkzeit abgelaufen ist.",
+  "parkscheinHerunterladen": "Als PDF herunterladen",
+  "parkscheinGespeichert": "Parkschein gespeichert",
+  "parkscheinFehler": "Der Parkschein konnte nicht gespeichert werden."
 }

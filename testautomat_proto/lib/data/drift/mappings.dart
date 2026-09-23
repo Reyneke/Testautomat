@@ -55,7 +55,12 @@ extension VerkaufRowMapper on VerkaufRow {
     betragCent: betragCent,
     zahlungsart: Zahlungsart.fromDb(zahlungsart),
     belegnummer: belegnummer,
+    kennzeichen: kennzeichen,
   );
+}
+
+extension ParkzoneRowMapper on ParkzoneRow {
+  Parkzone toDto() => Parkzone(id: id, name: name);
 }
 
 DateTime _utc(String value) => DateTime.parse(value).toUtc();

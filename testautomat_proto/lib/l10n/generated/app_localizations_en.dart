@@ -239,4 +239,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zahlungTimeout => 'Payment timed out';
+
+  @override
+  String get zahlungsartPaypal => 'PayPal';
+
+  @override
+  String get zahlungsartGoogleWallet => 'Google Wallet';
+
+  @override
+  String get zahlungsartGooglePay => 'Google Pay';
+
+  @override
+  String get parkzoneWaehlen => 'Choose parking zone';
+
+  @override
+  String get parkzeitZonenHinweis => 'Please choose a parking zone first.';
+
+  @override
+  String get kennzeichen => 'Licence plate';
+
+  @override
+  String get kennzeichenHinweis => 'Licence plate (optional)';
+
+  @override
+  String get kennzeichenUngueltig => 'Please enter a valid licence plate.';
+
+  @override
+  String get kennzeichenDoppelkauf =>
+      'A parking ticket is already running for this licence plate. Please wait until the parking time has expired.';
+
+  @override
+  String get parkscheinHerunterladen => 'Download as PDF';
+
+  @override
+  String get parkscheinGespeichert => 'Parking ticket saved';
+
+  @override
+  String get parkscheinFehler => 'The parking ticket could not be saved.';
 }

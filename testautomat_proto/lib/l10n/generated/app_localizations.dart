@@ -553,6 +553,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Zeitüberschreitung bei der Zahlung'**
   String get zahlungTimeout;
+
+  /// No description provided for @zahlungsartPaypal.
+  ///
+  /// In de, this message translates to:
+  /// **'PayPal'**
+  String get zahlungsartPaypal;
+
+  /// No description provided for @zahlungsartGoogleWallet.
+  ///
+  /// In de, this message translates to:
+  /// **'Google Wallet'**
+  String get zahlungsartGoogleWallet;
+
+  /// No description provided for @zahlungsartGooglePay.
+  ///
+  /// In de, this message translates to:
+  /// **'Google Pay'**
+  String get zahlungsartGooglePay;
+
+  /// No description provided for @parkzoneWaehlen.
+  ///
+  /// In de, this message translates to:
+  /// **'Parkzone wählen'**
+  String get parkzoneWaehlen;
+
+  /// No description provided for @parkzeitZonenHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wählen Sie zuerst eine Parkzone.'**
+  String get parkzeitZonenHinweis;
+
+  /// No description provided for @kennzeichen.
+  ///
+  /// In de, this message translates to:
+  /// **'Kennzeichen'**
+  String get kennzeichen;
+
+  /// No description provided for @kennzeichenHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Kennzeichen (optional)'**
+  String get kennzeichenHinweis;
+
+  /// No description provided for @kennzeichenUngueltig.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte geben Sie ein gültiges Kennzeichen ein.'**
+  String get kennzeichenUngueltig;
+
+  /// No description provided for @kennzeichenDoppelkauf.
+  ///
+  /// In de, this message translates to:
+  /// **'Für dieses Kennzeichen läuft bereits ein Parkschein. Bitte warten Sie, bis die Parkzeit abgelaufen ist.'**
+  String get kennzeichenDoppelkauf;
+
+  /// No description provided for @parkscheinHerunterladen.
+  ///
+  /// In de, this message translates to:
+  /// **'Als PDF herunterladen'**
+  String get parkscheinHerunterladen;
+
+  /// No description provided for @parkscheinGespeichert.
+  ///
+  /// In de, this message translates to:
+  /// **'Parkschein gespeichert'**
+  String get parkscheinGespeichert;
+
+  /// No description provided for @parkscheinFehler.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Parkschein konnte nicht gespeichert werden.'**
+  String get parkscheinFehler;
 }
 
 class _AppLocalizationsDelegate

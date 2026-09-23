@@ -82,3 +82,14 @@ Future<AppState> pumpeBildschirm(
 Future<void> beendeApp(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox.shrink());
 }
+
+/// Scrollt das Ziel in den sichtbaren Bereich und tippt darauf.
+///
+/// Die Bildschirme sind scrollbar (E-41); bei hohem Inhalt liegen Knoepfe in
+/// Tests unterhalb des sichtbaren Bereichs und waeren sonst nicht tippbar.
+Future<void> tippeSichtbar(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}

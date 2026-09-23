@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:sqlite3/sqlite3.dart' show SqliteException;
 
 import '../logic/belegnummer.dart';
+import '../logic/doppelkauf.dart';
 import 'drift/app_database.dart';
 import 'drift/connection.dart';
 import 'drift/mappings.dart';
@@ -77,6 +78,20 @@ class SqliteRepository implements ParkautomatRepository {
   }
 
   @override
+  Future<List<Parkzone>> getParkzonen() async {
+    final zeilen = await _db.select(_db.parkzonen).get();
+    return List<Parkzone>.unmodifiable(zeilen.map((z) => z.toDto()));
+  }
+
+  @override
+  Future<List<Verkauf>> getVerkaeufeZuKennzeichen(String kennzeichen) async {
+    final zeilen = await (_db.select(
+      _db.verkaeufe,
+    )..where((t) => t.kennzeichen.equals(kennzeichen))).get();
+    return List<Verkauf>.unmodifiable(zeilen.map((z) => z.toDto()));
+  }
+
+  @override
   Future<List<Telemetrie>> getTelemetrie({DateTime? von, DateTime? bis}) async {
     final abfrage = _db.select(_db.telemetrien)
       ..orderBy(<OrderClauseGenerator<$TelemetrienTable>>[
@@ -128,6 +143,7 @@ class SqliteRepository implements ParkautomatRepository {
           'Unbekannte Maschine: ${geprueft.maschineId}',
         );
       }
+      await _pruefeDoppelkauf(geprueft);
       final generator = _generatorFuer(
         maschine,
         startZaehler: await _zaehlerStand(maschine.id),
@@ -146,6 +162,7 @@ class SqliteRepository implements ParkautomatRepository {
                   betragCent: geprueft.betragCent,
                   zahlungsart: geprueft.zahlungsart.dbValue,
                   belegnummer: belegnummer,
+                  kennzeichen: Value<String?>(geprueft.kennzeichen),
                 ),
               );
           return Verkauf(
@@ -156,6 +173,7 @@ class SqliteRepository implements ParkautomatRepository {
             betragCent: geprueft.betragCent,
             zahlungsart: geprueft.zahlungsart,
             belegnummer: belegnummer,
+            kennzeichen: geprueft.kennzeichen,
           );
         } on SqliteException catch (fehler) {
           if (fehler.extendedResultCode != _sqliteConstraintUnique) {
@@ -169,6 +187,25 @@ class SqliteRepository implements ParkautomatRepository {
         'vergeben werden.',
       );
     });
+  }
+
+  /// Verhindert einen zweiten Verkauf auf dasselbe, noch gueltige Kennzeichen.
+  Future<void> _pruefeDoppelkauf(VerkaufDraft draft) async {
+    final kennzeichen = draft.kennzeichen;
+    if (kennzeichen == null) {
+      return;
+    }
+    final aktiv = aktivesTicket(
+      await getVerkaeufeZuKennzeichen(kennzeichen),
+      kennzeichen,
+      draft.timestamp,
+    );
+    if (aktiv != null) {
+      throw RepositoryException(
+        'Doppelkauf: Fuer $kennzeichen laeuft bereits ein Parkschein '
+        '(Belegnummer ${aktiv.belegnummer}).',
+      );
+    }
   }
 
   @override

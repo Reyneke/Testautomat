@@ -6,7 +6,7 @@ Bezugnehmend auf das Basisdokument (`0_Einfuehrung.md`) beschreibt dieses Dokume
 
 - **Datenquelle für die App:** Die Datenbank liefert alle Daten, die die Bildschirme aus `1_Frontendstruktur.md` benötigen: Verkäufe, Preissettings, Verkaufszeiten und Maschineninformationen (vgl. `0_Einfuehrung.md`).
 - **Contract first:** Alle Zugriffe laufen über eine Repository-Schnittstelle mit JSON-fähigen DTOs. Die App kennt nur diese Schnittstelle, nicht die konkrete Datenquelle (SQLite im Prototyp, REST in der Produktion). Kein Widget greift direkt auf die Datenbank zu — das gilt auch für den Debug-Bildschirm, Schreiben inklusive.
-- **DSGVO:** Es werden keine personenbezogenen Daten gespeichert. Verkäufe sind anonym (Zeitstempel, Betrag, Zahlungsart und Belegnummer).
+- **DSGVO:** Verkäufe sind anonym (Zeitstempel, Betrag, Zahlungsart und Belegnummer), solange kein Kennzeichen angegeben wird. Das **optionale** Kennzeichen (E-58) ist personenbeziehbar; es wird nie protokolliert und nur mit dem Verkaufsdatensatz aufbewahrt (E-54).
 - **Schema-Erweiterbarkeit:** Änderungen am Schema laufen über Migrationsskripte und eine `schema_version`-Tabelle, damit Seed- und Bestandsdaten nachvollziehbar bleiben.
 
 ## Konzept
@@ -18,9 +18,10 @@ Aufbau der Datenbank in Tabellen (Schemata), abgeleitet aus den vier Entitäten 
 | Tabelle | Inhalt | Wichtige Felder |
 |---|---|---|
 | `maschine` | Automateninformationen | `geraete_id` (UNIQUE), `standort`, `status`, `kundennummer` |
-| `verkaeufe` | simulierte Parkverkäufe | `timestamp` (UTC), `maschine_id` (FK), `parkdauer_minuten`, `betrag_cent`, `zahlungsart`, `belegnummer` |
+| `verkaeufe` | simulierte Parkverkäufe | `timestamp` (UTC), `maschine_id` (FK), `parkdauer_minuten`, `betrag_cent`, `zahlungsart`, `belegnummer`, `kennzeichen` (optional, E-58) |
 | `preissetting` | Preisregeln | `takt_minuten`, `preis_pro_takt_cent`, `waehrung`, `gueltig_von`/`gueltig_bis` |
 | `verkaufszeit` | Zeiten, in denen der Automat aktiv ist | `wochentag`, `beginn`, `ende`, `gueltig_von`/`gueltig_bis` (optional) |
+| `parkzonen` | verfügbare Parkzonen (E-59) | `name` (UNIQUE) |
 | `telemetrie` | Betriebsdaten des Automaten | `maschine_id` (FK), `timestamp` (UTC), `stromverbrauch_watt`, `batteriestand_prozent`, `signal_staerke_dbm`, `packetloss_prozent` |
 
 Beziehungen: `verkaeufe.maschine_id → maschine.id` (1:n); ebenso `telemetrie.maschine_id → maschine.id` (1:n). `preissetting` und `verkaufszeit` sind zeitlich gültig: `gueltig_von`/`gueltig_bis` begrenzen die Gültigkeit, `NULL` bedeutet „unbefristet". Beim `verkaufszeit`-Eintrag kommt der `wochentag` (ISO 8601, 1 = Montag) für die Wochenperiodik dazu; `gueltig_von`/`gueltig_bis` erlauben Ausnahmen wie einzelne Feiertage.
@@ -46,8 +47,9 @@ CREATE TABLE verkaeufe (
     timestamp         TEXT    NOT NULL,     -- ISO 8601, UTC
     parkdauer_minuten INTEGER NOT NULL CHECK (parkdauer_minuten > 0),
     betrag_cent       INTEGER NOT NULL CHECK (betrag_cent >= 0),
-    zahlungsart       TEXT    NOT NULL CHECK (zahlungsart IN ('bar', 'karte')),
-    belegnummer       INTEGER NOT NULL UNIQUE  -- Belegnummer für den Parkschein
+    zahlungsart       TEXT    NOT NULL CHECK (zahlungsart IN ('bar', 'karte', 'paypal', 'google_wallet', 'google_pay')),
+    belegnummer       INTEGER NOT NULL UNIQUE,  -- Belegnummer für den Parkschein
+    kennzeichen       TEXT                      -- optional, personenbeziehbar (E-58)
 );
 
 CREATE INDEX idx_verkaeufe_maschine_zeit ON verkaeufe (maschine_id, timestamp);
@@ -71,6 +73,11 @@ CREATE TABLE verkaufszeit (
     gueltig_bis TEXT,
     CHECK (ende > beginn),                   -- 0:00 bis 24:00 = ganzer Tag
     CHECK (gueltig_bis IS NULL OR gueltig_bis > gueltig_von)
+);
+
+CREATE TABLE parkzonen (
+    id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT    NOT NULL UNIQUE             -- z. B. 'Zone A'
 );
 
 CREATE TABLE telemetrie (
@@ -105,12 +112,12 @@ Hinweise:
 - **IDs:** `INTEGER PRIMARY KEY AUTOINCREMENT`; die Maschine trägt zusätzlich eine lesbare, eindeutige `geraete_id`.
 - **Geldbeträge:** immer ganze Cent als `INTEGER` (`betrag_cent`, `preis_pro_takt_cent`) — niemals `DOUBLE`, um Rundungsfehler zu vermeiden.
 - **Zeitstempel:** Speicherung in UTC als ISO-8601-Text mit `Z`, Anzeige lokal; `verkaufszeit.beginn`/`ende` als `HH:MM` (`00:00`–`24:00`).
-- **Constraints:** `NOT NULL` und `CHECK` verwenden, z. B. `parkdauer_minuten > 0` und `zahlungsart IN ('bar', 'karte')`; Fremdschlüssel explizit deklarieren (`REFERENCES` plus `PRAGMA foreign_keys`).
+- **Constraints:** `NOT NULL` und `CHECK` verwenden, z. B. `parkdauer_minuten > 0` und `zahlungsart IN ('bar', 'karte', 'paypal', 'google_wallet', 'google_pay')`; Fremdschlüssel explizit deklarieren (`REFERENCES` plus `PRAGMA foreign_keys`).
 - **Versionierung:** `schema_version`-Tabelle für Migrationsmanagement (s. u.).
 
 ### Migrationen und Seed
 
-1. Jede Schemaänderung ist ein eigenes, nummeriertes Skript (`0001_initial.sql`, `0002_seed.sql`, …).
+1. Jede Schemaänderung ist ein eigenes, nummeriertes Skript (`0001_initial.sql`, `0002_zahlungsarten_kennzeichen_parkzonen.sql`, …); den aktuellen Stand hält `lib/data/drift/schema_info.dart` fest (derzeit Version `2`).
 2. Beim Start gleicht das Datenlayer die höchste angewandte Version mit `schema_version` ab und wendet fehlende Skripte transaktional an (inkl. `checksum`).
 3. Seed-Daten sind idempotent (nur einfügen, wenn die Tabelle leer ist) oder Teil eines Migrationsskripts — so bleiben sie nachvollziehbar und wiederholbar.
 
@@ -121,6 +128,7 @@ Für Demozwecke enthält das Projekt Seed-Daten, die den bisherigen Platzhaltern
 - Maschine mit `geraete_id` `4711`, Standort `Weiden i. d. OPf.`, Status `aktiv`, `kundennummer` `K-0001`
 - Standard-Preissetting (z. B. Parktakt von 240 Minuten)
 - Verkaufszeiten für alle Wochentage
+- Vier Parkzonen (`Zone A`…`Zone D`, E-59)
 - Telemetrie-Zeitreihe für `4711` (z. B. Messwerte im 15-Minuten-Takt der letzten Stunden), damit der Debug-Bildschirm Stromverbrauch, Batteriestand, Signalstärke und Packetloss sofort anzeigen kann
 
 ## Handover
@@ -134,9 +142,11 @@ Die App verwendet ausschließlich ein Interface, z. B. `ParkautomatRepository`:
 - `Future<Maschine> getMachine()` — liefert die aktive Maschine (im Prototyp genau eine; das Datenmodell trägt bereits mehrere)
 - `Future<List<Preissetting>> getPreissettings()`
 - `Future<List<Verkaufszeit>> getVerkaufszeiten()`
+- `Future<List<Parkzone>> getParkzonen()` — verfügbare Parkzonen (Prototyp: vier Seed-Zonen; E-59)
 - `Future<List<Telemetrie>> getTelemetrie({DateTime? von, DateTime? bis})` — Betriebsdaten, nur lesend (in der Produktion schreibt die Firmware)
 - `Future<List<Tagesumsatz>> getTagesumsaetze(DateTime von, DateTime bis)` — Umsatz pro Tag für die Zeitreihe im Debug-Bildschirm
-- `Future<Verkauf> createSale(VerkaufDraft draft)` — atomar, vgl. *Mögliche Probleme*
+- `Future<Verkauf> createSale(VerkaufDraft draft)` — atomar, vgl. *Mögliche Probleme*; lehnt einen Doppelkauf auf ein noch gültiges Kennzeichen ab (E-58)
+- `Future<List<Verkauf>> getVerkaeufeZuKennzeichen(String kennzeichen)` — Grundlage der Doppelkauf-Prüfung (E-58)
 - `Future<void> updatePreissetting(Preissetting setting)` — für den Debug-Bildschirm
 - `Future<void> updateVerkaufszeit(Verkaufszeit zeit)` — für den Debug-Bildschirm
 
@@ -159,9 +169,11 @@ Hinweise:
 | `getMachine` | `GET /api/v1/maschine/{id}` (`{id}` = aktive Maschine) |
 | `getPreissettings` | `GET /api/v1/preissettings` |
 | `getVerkaufszeiten` | `GET /api/v1/verkaufszeiten` |
+| `getParkzonen` | `GET /api/v1/parkzonen` |
 | `getTelemetrie` | `GET /api/v1/maschine/{id}/telemetrie?von=…&bis=…` |
 | `getTagesumsaetze` | `GET /api/v1/verkaeufe/umsatz-pro-tag?von=…&bis=…` |
 | `createSale` | `POST /api/v1/verkaeufe` |
+| `getVerkaeufeZuKennzeichen` | `GET /api/v1/verkaeufe?kennzeichen=…` |
 | `updatePreissetting` | `PUT /api/v1/preissettings/{id}` |
 | `updateVerkaufszeit` | `PUT /api/v1/verkaufszeiten/{id}` |
 
@@ -179,7 +191,7 @@ Maschine:
 }
 ```
 
-Verkauf (Request für `createSale`):
+Verkauf (Request für `createSale`); `kennzeichen` ist optional und liegt dann in Normalform vor (E-58):
 
 ```json
 {
@@ -187,7 +199,8 @@ Verkauf (Request für `createSale`):
   "maschine_id": 1,
   "parkdauer_minuten": 240,
   "betrag_cent": 200,
-  "zahlungsart": "karte"
+  "zahlungsart": "karte",
+  "kennzeichen": "WENAB123"
 }
 ```
 
@@ -230,6 +243,9 @@ Akzeptanzkriterien:
 - **Telemetriedaten:** abgeschlossen — Tabelle `telemetrie` und `kundennummer` sind in Schema, Repository, REST-Mapping und Seed eingearbeitet (s. o.).
 - **Web-Entscheidung:** abgeschlossen — der Web-Build nutzt das `InMemoryRepository` (s. o.).
 - **Verkaufsgrafik:** abgeschlossen — Zeitreihe in Umsatz pro Tag, tabellarisch und graphisch (s. Debug-Bildschirm).
+- **Neue Zahlungsarten:** abgeschlossen — `zahlungsart` kennt neben `bar`/`karte` die Werte `paypal`, `google_wallet` und `google_pay` (E-56, Migration `0002`).
+- **Kennzeichen:** abgeschlossen — optionale Spalte `verkaeufe.kennzeichen` samt Doppelkauf-Prüfung (E-58).
+- **Parkzonen:** abgeschlossen für den Prototyp — Tabelle `parkzonen` mit vier Seed-Zonen und `getParkzonen()` (E-59). Offen bleibt, ob die Zone am Verkauf gespeichert und ob sie bepreist wird (Produktionsdatenquelle).
 
 ## Mögliche Probleme
 
@@ -237,6 +253,6 @@ Akzeptanzkriterien:
 - **Geldbeträge als `double`:** Fließkommazahlen verursachen Rundungsfehler; daher Beträge konsequent in Cent als `INTEGER` speichern.
 - **Zeitzonen:** Zeitstempel in lokaler Zeit sorgen für Fehler bei DST-Änderungen; in UTC speichern (ISO 8601 mit `Z`) und erst für die Anzeige lokalisieren.
 - **Migrationen:** Ohne Versionstabelle sind Schemaänderungen und Seed-Aktualisierungen nicht nachvollziehbar.
-- **Transaktionen:** `createSale` muss atomar sein (INSERT, Belegnummern-Vergabe, Validierung) — z. B. bei parallelem Zugriff auf denselben Automaten; ggf. `PRAGMA journal_mode = WAL` für bessere Nebenläufigkeit.
+- **Transaktionen:** `createSale` muss atomar sein (INSERT, Belegnummern-Vergabe, Validierung, Doppelkauf-Prüfung) — z. B. bei parallelem Zugriff auf denselben Automaten; ggf. `PRAGMA journal_mode = WAL` für bessere Nebenläufigkeit.
 - **Fremdschlüssel:** SQLite prüft `REFERENCES` nur, wenn pro Verbindung `PRAGMA foreign_keys = ON` gesetzt ist.
 - **Platzhalter im `StartScreen`:** `'4711'` und `'Weiden i. d. OPf.'` sind in `lib/screens/start_screen.dart` hart kodiert. Entscheidung E-55: Sie werden beim App-Start über `getMachine()` geladen und über `AppMachine.maschineNotifier` dargestellt; die Umsetzung erfolgt mit dem Datenlayer.

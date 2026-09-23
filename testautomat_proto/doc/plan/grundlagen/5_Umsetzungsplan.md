@@ -34,6 +34,7 @@ Alle Fragen aus `4_Offene_Fragen.md` sind entschieden (E-01…E-55); es gibt **k
 | E-43 | Anbieterwahl für gehostete Datenbank + REST-Schicht | Entscheidung **vor** dem ersten Release | `U-62` |
 | E-42 | Signierung Android/Windows/Linux | bewusst aufgeschoben (Nicht-Ziel, s. u.) | – |
 | E-54 | Aufbewahrungs-/Purge-Konzept | wird dokumentiert, nicht implementiert | `U-73` |
+| F-56…F-59 | Neue Zahlungsarten, PDF-Beleg, Kennzeichen und Parkzonen aus `7_Neue_Zahlmoeglichkeiten.md` | in Phase 8 umgesetzt | `U-74`…`U-77` |
 
 ## Mögliche, noch zu lösende Probleme
 
@@ -58,7 +59,7 @@ Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *
 
 ## Der Plan (tm)
 
-**Ziel:** Ein durchklickbarer Prototyp (sechs Bildschirme, simulierte Zahlung, Debug-Bildschirm, CI/CD, Web-Hosting), der die Entscheidungen E-01…E-55 nachweist.
+**Ziel:** Ein durchklickbarer Prototyp (sechs Bildschirme, simulierte Zahlung, Debug-Bildschirm, CI/CD, Web-Hosting), der die Entscheidungen E-01…E-59 nachweist.
 
 **Nicht-Ziele** (bewusst nicht im Prototyp): Store-Distribution (E-30), Signierung (E-42), macOS/iOS (E-01/E-28), Self-Update-Rollout (E-31), Kiosk-Betrieb (E-32), Löschung von Verkaufsdaten (E-54).
 
@@ -177,6 +178,17 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 **Stand 2026-09-22: erfüllt.** Der Web-Build enthält Poppins/Lato als Assets (im `FontManifest.json` nachgewiesen), die Texte liegen in ARB-Dateien und werden über `flutter gen-l10n` erzeugt (Gate und CI prüfen den Stand), und die gemessenen Kontrastverhältnisse stehen als Tabelle in `1_Frontendstruktur.md` samt Test. **Meilenstein M5 erreicht.**
 
+### Phase 8 — Neue Zahlungsmöglichkeiten und Parkfunktionen
+
+| ID | Arbeitspaket | E-IDs | Status |
+|---|---|---|---|
+| `U-74` | Zahlungsarten PayPal, Google Wallet und Google Pay: `enum Zahlungsart` mit explizitem Datenbankwert, erweitertes `CHECK`-Constraint, Migration `0002`, Auswahlliste aus `Zahlungsart.values`, i18n-Texte de/en; der simulierte Ablauf bleibt unverändert (Fortschritt, Timeout, Abbruch) | E-56, E-51, E-05 | Fertig |
+| `U-75` | Parkschein als PDF: reine Erzeugungsfunktion (`lib/logic/parkschein_pdf.dart`, Paket `pdf`), Download-Dienst mit Plattformtrennung (`lib/services/beleg_download*.dart`), Knopf im Beleg-Bildschirm; damit ist der PDF-Ausschluss aus E-51 überholt | E-57, E-38 | Fertig |
+| `U-76` | Kennzeicheneingabe: optionale, normalisierte Eingabe (`lib/logic/kennzeichen.dart`), Spalte `verkaeufe.kennzeichen`, Doppelkauf-Prüfung (`lib/logic/doppelkauf.dart` plus neuer Vertragspunkt `getVerkaeufeZuKennzeichen`) in beiden Repository-Implementierungen, Anzeige auf dem Beleg | E-58, E-04 | Fertig |
+| `U-77` | Parkzonen: Tabelle `parkzonen` mit vier Seed-Zonen, neuer Vertragspunkt `getParkzonen()`, Auswahl vor der Parkzeit, Zonenwechsel verwirft die Parkzeit, Zone im Zahlungsbildschirm | E-59, E-52 | Fertig |
+
+**Definition of Done:** Die neuen Zahlungsarten, der PDF-Beleg sowie Kennzeichen- und Zonenauswahl sind durchklickbar; Kennzeichen- und Zonenregeln sind durch Logik-, Vertrags- und Widget-Tests belegt; `tool/gate.ps1` läuft vollständig grün (Ergebnis: 178 Tests grün).
+
 ## Reihenfolge und Abhängigkeiten
 
 - Phase 1 vor Phase 2 (`U-23` benötigt `getMachine`), Phase 3 vor M2, Phase 4 vor M3.
@@ -189,6 +201,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-23 | Phase 8 umgesetzt (U-74…U-77) aus `7_Neue_Zahlmoeglichkeiten.md`: fünf Zahlungsarten (PayPal, Google Wallet, Google Pay zusätzlich) über explizite Datenbankwerte, Parkschein als PDF in allen Varianten mit plattformabhängigem Download, optionales Kennzeichen samt Doppelkauf-Prüfung in beiden Repository-Implementierungen und vier Seed-Parkzonen mit vorgeschalteter Zonenwahl; Schema-Version 2 (Migration `0002`) und neue Vertragspunkte `getParkzonen`/`getVerkaeufeZuKennzeichen`; E-51 ist im PDF-Teil überholt (E-57). |
 | 2026-09-23 | Lokaler Android-Build (Debug/Release Candidate) verifiziert: Die Meldung „kein Java SDK gefunden" bezog sich nur auf `PATH`/`JAVA_HOME` (beide leer, kein eigenständiges JDK); Flutter nutzt das in Android Studio gebündelte JBR (`…\Android Studio\jbr`, OpenJDK 25.0.3) automatisch. `flutter doctor --android-licenses` läuft mit Exit-Code 0 („The --licenses option is no longer needed", neue Android-CLI), der doctor-Hinweis `Android license status unknown` ist damit reine Anzeige und blockiert den Build nicht. Nachweis: `flutter build apk --debug` → 159,2 MB in 313 s, `flutter build apk --release` → 55,5 MB in 166 s, Signatur per `apksigner verify` bestätigt (APK Signature Scheme v2, Zertifikat „CN=Android Debug"); Font-/Asset-Manifest im APK enthalten (E-38, E-17). Signierung bleibt Nicht-Ziel (E-42). |
 | 2026-09-22 | Phase 7 umgesetzt (U-70…U-73): Schriften (Poppins/Lato, OFL-Lizenzen) als Assets gebündelt statt `google_fonts` (E-38, im Web-Build als `FontManifest.json` nachgewiesen); Datum und Uhrzeit über `intl` (E-18, Englisch 12 Stunden mit AM/PM), Systemsprache beim ersten Start (E-19), Theme und Sprache gemerkt (E-20), Texte auf ARB mit `flutter gen-l10n` migriert (E-17, Gate und CI prüfen den erzeugten Stand); Seed `Color(0xFF0D47A1)` mit Kontrastnachweis als Tabelle und Test (E-40), scrollbarer Mittelbereich belegt (E-41), „Bewegung reduzieren“ respektiert (E-24), Uhr pausiert im Hintergrund (E-27); DSGVO-Log- und Aufbewahrungskonzept in `6_Logging_und_Datenschutz.md` (E-48/E-54). 156 Tests grün (lokales Gate inklusive Texterzeugung, Formatierung und Analyse). **Meilenstein M5 erreicht.** |
 | 2026-09-22 | Pages-Deploy live verifiziert: Push-Lauf `35767538896` komplett grün (Gate, vier Builds, Deploy), alle Deploy-Schritte ausgeführt; `https://reyneke.github.io/Testautomat/` liefert HTTP 200 mit korrektem `<base href="/Testautomat/">` und allen Web-Assets (HTTP 200). Zwei CI-Fehler dabei behoben: die Vorprüfung über die Pages-API entfällt (der Actions-Token darf die Konfiguration nicht lesen und meldete fälschlich „nicht aktiv“; jetzt versucht der Job `actions/configure-pages` direkt und überspringt Upload/Deploy nur bei Misserfolg), und ein ungültiger Skalar (Doppelpunkt+Leerzeichen in `run:`) ist durch einen Block-Skalar ersetzt. Der Release-Job bleibt bei `main`-Pushes bewusst übersprungen (nur Tags `v*`). |

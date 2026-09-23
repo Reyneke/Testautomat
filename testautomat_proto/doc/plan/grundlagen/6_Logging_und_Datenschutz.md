@@ -27,6 +27,10 @@ lassen keine Rückschlüsse auf Personen zu.
 - keine Inhalte von Eingabefeldern (z. B. die Debug-PIN),
 - keine Standortdaten von Personen (der Standort des Automaten steht in den Stammdaten).
 
+> Das **optionale Kennzeichen** aus E-58 wird mit dem Verkaufsdatensatz gespeichert
+> (`verkaeufe.kennzeichen`), aber weiterhin **nicht protokolliert**: kein Log-Ereignis trägt es, und
+> der Beleg als PDF entsteht ausschließlich auf dem Gerät des Kunden.
+
 ## Format und Rotation (E-48)
 
 - **Format:** JSON-Zeilen (`*.jsonl`), UTF-8, eine Zeile je Ereignis.
@@ -45,7 +49,8 @@ automatischen Löschroutinen. Die Löschfristen gelten für die Produktionspersp
 | Datenart | Aufbewahrung | Begründung |
 |---|---|---|
 | Betriebsprotokolle (`*.jsonl`) | 14 Tage (Rotation) | Fehlersuche; danach kein Nutzen |
-| Verkaufsdaten (`verkaeufe`) | 10 Jahre | Belegnachweis; Verkauf ohne Personenbezug (E-54) |
+| Verkaufsdaten (`verkaeufe`) | 10 Jahre | Belegnachweis; ohne Kennzeichen kein Personenbezug (E-54) |
+| Kennzeichen (`verkaeufe.kennzeichen`) | wie der Verkaufsdatensatz | personenbeziehbar (E-58); mit dem Verkauf zu löschen, sobald die Aufbewahrungsfrist endet |
 | Telemetrie (`telemetrie`) | 90 Tage | Betriebsbeobachtung des Automaten |
 
 **Purge-Vorgehen (Perspektive):** ein nächtlicher Auftrag löscht abgelaufene Zeilen und schreibt
@@ -62,6 +67,8 @@ doch ein Bezug erhoben, ist dieses Dokument zu erweitern und die Fristen sind ne
 - **Keine Netzzugriffe für Schriften:** Poppins und Lato liegen als Assets bei (E-38, `U-72`), damit
   beim Start keine Verbindung zu Dritten aufgebaut wird (vgl. `F-44`).
 - Der Web-Client bezieht seine Daten aus dem `InMemoryRepository` (E-11) und legt nichts serverseitig ab.
+- Der Parkschein wird ausschließlich auf dem Gerät des Kunden als PDF erzeugt und dort abgelegt
+  (E-57); es gibt keine Übertragung an Dritte und keine serverseitige Ablage.
 
 ## Bezug zu den Entscheidungen
 
@@ -69,5 +76,7 @@ doch ein Bezug erhoben, ist dieses Dokument zu erweitern und die Fristen sind ne
 |---|---|---|
 | E-48 | Logs nur mit Betriebsdaten, rotiert | Abschnitte *Grenzen* und *Format und Rotation* |
 | E-54 | Aufbewahrungs-/Purge-Konzept dokumentiert, nicht implementiert | Abschnitt *Aufbewahrung und Purge* |
+| E-57 | Parkschein als PDF auf dem Gerät | Abschnitt *Was im Prototyp tatsächlich passiert* |
+| E-58 | Kennzeichen optional, gespeichert, nie protokolliert | Abschnitt *Grenzen der Protokollierung* und *Aufbewahrung und Purge* |
 | E-38, F-44 | Schriften gebündelt statt Laufzeitabruf | Abschnitt *Was im Prototyp tatsächlich passiert* |
 | E-11, E-43 | Web nutzt InMemory; Produktion später REST/Postgres | `2_Datenbank.md`, `3_Git_Shenanigans.md` |

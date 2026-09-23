@@ -23,6 +23,17 @@ abstract final class SeedData {
   /// Anzahl der Telemetrie-Messpunkte (24 Stunden im 15-Minuten-Takt).
   static const int telemetriePunkte = 96;
 
+  /// Vier simulierte Parkzonen (`7_Neue_Zahlmoeglichkeiten.md`).
+  ///
+  /// In der Produktion uebernimmt die Datenquelle diese Liste; der Prototyp
+  /// zeigt sie fest an, damit die Auswahl vor der Parkzeit geprueft werden kann.
+  static List<Parkzone> parkzonen() => const <Parkzone>[
+    Parkzone(id: 1, name: 'Zone A'),
+    Parkzone(id: 2, name: 'Zone B'),
+    Parkzone(id: 3, name: 'Zone C'),
+    Parkzone(id: 4, name: 'Zone D'),
+  ];
+
   /// Abstand zwischen zwei Telemetrie-Messpunkten.
   static const Duration telemetrieAbstand = Duration(minutes: 15);
 

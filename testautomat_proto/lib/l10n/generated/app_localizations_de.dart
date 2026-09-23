@@ -241,4 +241,43 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get zahlungTimeout => 'Zeitüberschreitung bei der Zahlung';
+
+  @override
+  String get zahlungsartPaypal => 'PayPal';
+
+  @override
+  String get zahlungsartGoogleWallet => 'Google Wallet';
+
+  @override
+  String get zahlungsartGooglePay => 'Google Pay';
+
+  @override
+  String get parkzoneWaehlen => 'Parkzone wählen';
+
+  @override
+  String get parkzeitZonenHinweis => 'Bitte wählen Sie zuerst eine Parkzone.';
+
+  @override
+  String get kennzeichen => 'Kennzeichen';
+
+  @override
+  String get kennzeichenHinweis => 'Kennzeichen (optional)';
+
+  @override
+  String get kennzeichenUngueltig =>
+      'Bitte geben Sie ein gültiges Kennzeichen ein.';
+
+  @override
+  String get kennzeichenDoppelkauf =>
+      'Für dieses Kennzeichen läuft bereits ein Parkschein. Bitte warten Sie, bis die Parkzeit abgelaufen ist.';
+
+  @override
+  String get parkscheinHerunterladen => 'Als PDF herunterladen';
+
+  @override
+  String get parkscheinGespeichert => 'Parkschein gespeichert';
+
+  @override
+  String get parkscheinFehler =>
+      'Der Parkschein konnte nicht gespeichert werden.';
 }

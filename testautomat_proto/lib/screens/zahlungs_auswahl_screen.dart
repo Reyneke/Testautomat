@@ -135,6 +135,7 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
             parkdauerMinuten: auswahl.parkdauerMinuten,
             betragCent: auswahl.betragCent,
             zahlungsart: auswahl.zahlungsart ?? Zahlungsart.bar,
+            kennzeichen: auswahl.kennzeichen,
           ),
         );
       }
@@ -229,6 +230,10 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
       style: textTheme.headlineSmall,
     ),
     const SizedBox(height: 8),
+    if (auswahl.parkzone != null) ...[
+      Text(auswahl.parkzone!.name, style: textTheme.titleMedium),
+      const SizedBox(height: 8),
+    ],
     Text(
       localizations.zahlungHinweis,
       style: textTheme.bodyLarge,
@@ -240,14 +245,11 @@ class _ZahlungsAuswahlScreenState extends State<ZahlungsAuswahlScreen> {
       runSpacing: 16,
       alignment: WrapAlignment.center,
       children: [
-        FilledButton(
-          onPressed: () => _waehle(Zahlungsart.bar, auswahl),
-          child: Text(localizations.zahlungsartBar),
-        ),
-        FilledButton(
-          onPressed: () => _waehle(Zahlungsart.karte, auswahl),
-          child: Text(localizations.zahlungsartKarte),
-        ),
+        for (final art in Zahlungsart.values)
+          FilledButton(
+            onPressed: () => _waehle(art, auswahl),
+            child: Text(localizations.zahlungsartName(art)),
+          ),
       ],
     ),
     const SizedBox(height: 24),

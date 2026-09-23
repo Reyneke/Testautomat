@@ -47,9 +47,24 @@ class Verkaeufe extends Table {
       .named('betrag_cent')
       .customConstraint('NOT NULL CHECK (betrag_cent >= 0)')();
   TextColumn get zahlungsart => text().customConstraint(
-    "NOT NULL CHECK (zahlungsart IN ('bar', 'karte'))",
+    "NOT NULL CHECK (zahlungsart IN "
+    "('bar', 'karte', 'paypal', 'google_wallet', 'google_pay'))",
   )();
   IntColumn get belegnummer => integer().unique()();
+  TextColumn get kennzeichen => text().nullable()();
+}
+
+/// Verfuegbare Parkzonen (Tabelle `parkzonen`).
+///
+/// Der Prototyp legt vier Seed-Zonen an; spaeter liefert die Datenquelle die
+/// Liste ueber `getParkzonen()` (`7_Neue_Zahlmoeglichkeiten.md`).
+@DataClassName('ParkzoneRow')
+class Parkzonen extends Table {
+  @override
+  String get tableName => 'parkzonen';
+
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text().unique()();
 }
 
 /// Preisregeln (Tabelle `preissetting`).
@@ -160,6 +175,7 @@ class SchemaVersionen extends Table {
     Verkaeufe,
     Preissettings,
     Verkaufszeiten,
+    Parkzonen,
     Telemetrien,
     SchemaVersionen,
   ],
@@ -176,6 +192,15 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) => m.createAll(),
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        // 0002: neue Zahlungsarten, Kennzeichen und Parkzonen.
+        // Die `CHECK`-Restriktion der Zahlungsart laesst sich nicht per
+        // ALTER TABLE aendern; die Tabelle wird deshalb neu aufgebaut.
+        await m.createTable(parkzonen);
+        await m.alterTable(TableMigration(verkaeufe));
+      }
+    },
     beforeOpen: (OpeningDetails details) async {
       await customStatement('PRAGMA foreign_keys = ON');
       await customSelect('PRAGMA journal_mode = WAL').get();
@@ -230,6 +255,9 @@ class AppDatabase extends _$AppDatabase {
     for (final zeit in SeedData.verkaufszeiten()) {
       await into(verkaufszeiten).insert(_verkaufszeitenCompanion(zeit));
     }
+    for (final zone in SeedData.parkzonen()) {
+      await into(parkzonen).insert(_parkzonenCompanion(zone));
+    }
     for (final messwert in SeedData.telemetrie()) {
       await into(telemetrien).insert(_telemetrienCompanion(messwert));
     }
@@ -264,6 +292,9 @@ VerkaufszeitenCompanion _verkaufszeitenCompanion(Verkaufszeit zeit) =>
       gueltigVon: Value<String?>(formatUtcOrNull(zeit.gueltigVon)),
       gueltigBis: Value<String?>(formatUtcOrNull(zeit.gueltigBis)),
     );
+
+ParkzonenCompanion _parkzonenCompanion(Parkzone zone) =>
+    ParkzonenCompanion.insert(id: Value<int>(zone.id), name: zone.name);
 
 TelemetrienCompanion _telemetrienCompanion(Telemetrie messwert) =>
     TelemetrienCompanion.insert(
