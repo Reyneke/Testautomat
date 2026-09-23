@@ -21,7 +21,7 @@ Regeln für die Pflege:
 - Wird ein `E-`-Eintrag überholt, kehrt das Arbeitspaket auf `In Arbeit` zurück; Begründung und Datum kommen in die *Änderungshistorie*.
 - Ein „Durchstich" ist ein durchklickbarer End-to-End-Verkauf (Start → … → Verabschiedung); er ist zugleich das maßgebliche Abnahmekriterium des Prototyps.
 
-Stand der letzten Durchsicht: **2026-09-22**.
+Stand der letzten Durchsicht: **2026-09-23**.
 
 ## Offene Fragen
 
@@ -49,6 +49,7 @@ Zusammengeführt aus den *Risiken* in `4_Offene_Fragen.md` und den Abschnitten *
 | Gemischte Zeilenenden CRLF/LF (E-36) | Rausch-Diffs in der Dokumentation | `U-02` | `.gitattributes` (`* text=auto`, `*.md text eol=lf`) ist angelegt; die Grundlagendokumente sind auf LF normalisiert (`git ls-files --eol`), der `git diff` ist rauschfrei. |
 | Gemischte Dateinamen, doppelte Backlogs in `1_`/`3_` (E-35) | Verweise brechen, Inhalte duplizieren | `U-01`, `U-03` | Dateiname an die übrigen Grundlagendokumente angeglichen (`git mv` → `4_Offene_Fragen.md`, E-35) und alle Verweise mitgezogen (Suche leer); doppelte Backlog-Einträge auf einen Verweis je F-/E-ID reduziert. |
 | `1_Frontendstruktur.md` behauptet, `flutter_localizations` fehle — ist vorhanden | veraltete Doku führt zu Fehlentscheidungen | `U-03` (Dokumentationsabgleich) | Punkt am 2026-09-22 in `1_Frontendstruktur.md` korrigiert (E-05: `Map` je Sprache; ARB-Migration folgt mit F-08/E-17) und im Dokumentationsabgleich von `4_Offene_Fragen.md` gestrichen. |
+| Lokaler Android-Build ohne eigenständiges Java (Anfrage 2026-09-23) | Fehlalarm „kein Java SDK" verunsichert vor dem Debug/Release Candidate | `U-60` | **Erledigt:** Kein eigenständiges JDK nötig — Flutter nutzt das in Android Studio gebündelte JBR (`…\Android Studio\jbr`, OpenJDK 25.0.3) automatisch (nur `PATH`/`JAVA_HOME` sind leer). `flutter doctor --android-licenses` läuft mit Exit-Code 0; der doctor-Hinweis „Android license status unknown" ist bei der neuen Android-CLI reine Anzeige. Debug- und Release-APK lokal gebaut und signaturgeprüft. |
 | CI-Runner ohne Android-SDK/Java (F-32) | Android-Build bricht | `U-60` | GitHub-Runner liefern das Android-SDK bereits; im Workflow `actions/setup-java@v4` (Temurin 17) vor `subosito/flutter-action@v2`, Lizenzen via `flutter doctor --android-licenses` akzeptieren. |
 | Flutter-Artefakte sind mehrere 10 MB groß | Repository bläht auf | `U-60` (Artefakte nur bei Tags) | Nichts committen (`build/` bleibt in `.gitignore`); bei `main` als Workflow-Artifact mit `retention-days: 90`, bei Tags als GitHub Release (`softprops/action-gh-release`). |
 | Fehlendes `--base-href` (E-44/F-38) | Web-Build lädt Ressourcen von falscher Wurzel | `U-62` | Im Deploy-Job `flutter build web --release --base-href` mit `/<repo>/` (Slug exakt, z. B. `/Testautomat/`; Wert dynamisch aus `github.event.repository.name`); danach `<base href>` in `build/web/index.html` prüfen. |
@@ -188,6 +189,7 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 
 | Datum | Änderung |
 |---|---|
+| 2026-09-23 | Lokaler Android-Build (Debug/Release Candidate) verifiziert: Die Meldung „kein Java SDK gefunden" bezog sich nur auf `PATH`/`JAVA_HOME` (beide leer, kein eigenständiges JDK); Flutter nutzt das in Android Studio gebündelte JBR (`…\Android Studio\jbr`, OpenJDK 25.0.3) automatisch. `flutter doctor --android-licenses` läuft mit Exit-Code 0 („The --licenses option is no longer needed", neue Android-CLI), der doctor-Hinweis `Android license status unknown` ist damit reine Anzeige und blockiert den Build nicht. Nachweis: `flutter build apk --debug` → 159,2 MB in 313 s, `flutter build apk --release` → 55,5 MB in 166 s, Signatur per `apksigner verify` bestätigt (APK Signature Scheme v2, Zertifikat „CN=Android Debug"); Font-/Asset-Manifest im APK enthalten (E-38, E-17). Signierung bleibt Nicht-Ziel (E-42). |
 | 2026-09-22 | Phase 7 umgesetzt (U-70…U-73): Schriften (Poppins/Lato, OFL-Lizenzen) als Assets gebündelt statt `google_fonts` (E-38, im Web-Build als `FontManifest.json` nachgewiesen); Datum und Uhrzeit über `intl` (E-18, Englisch 12 Stunden mit AM/PM), Systemsprache beim ersten Start (E-19), Theme und Sprache gemerkt (E-20), Texte auf ARB mit `flutter gen-l10n` migriert (E-17, Gate und CI prüfen den erzeugten Stand); Seed `Color(0xFF0D47A1)` mit Kontrastnachweis als Tabelle und Test (E-40), scrollbarer Mittelbereich belegt (E-41), „Bewegung reduzieren“ respektiert (E-24), Uhr pausiert im Hintergrund (E-27); DSGVO-Log- und Aufbewahrungskonzept in `6_Logging_und_Datenschutz.md` (E-48/E-54). 156 Tests grün (lokales Gate inklusive Texterzeugung, Formatierung und Analyse). **Meilenstein M5 erreicht.** |
 | 2026-09-22 | Pages-Deploy live verifiziert: Push-Lauf `35767538896` komplett grün (Gate, vier Builds, Deploy), alle Deploy-Schritte ausgeführt; `https://reyneke.github.io/Testautomat/` liefert HTTP 200 mit korrektem `<base href="/Testautomat/">` und allen Web-Assets (HTTP 200). Zwei CI-Fehler dabei behoben: die Vorprüfung über die Pages-API entfällt (der Actions-Token darf die Konfiguration nicht lesen und meldete fälschlich „nicht aktiv“; jetzt versucht der Job `actions/configure-pages` direkt und überspringt Upload/Deploy nur bei Misserfolg), und ein ungültiger Skalar (Doppelpunkt+Leerzeichen in `run:`) ist durch einen Block-Skalar ersetzt. Der Release-Job bleibt bei `main`-Pushes bewusst übersprungen (nur Tags `v*`). |
 | 2026-09-22 | Phase 6 abgeschlossen: Workflow im Repository-Root mit Gate, Build-Matrix (Android, Windows, Linux, Web) und Release-Job; Tag `v0.1.0` mit vier Artefakten (APK 54,8 MB, Windows-ZIP 13,4 MB, Linux-tar.gz 11,1 MB, Web-ZIP 14,0 MB) veröffentlicht; Web-Build mit `--base-href=/Testautomat/`; GitHub Pages aktiviert, der Pages-Deploy läuft bei jedem Push auf `main`. **Meilenstein M4 erreicht.** |
@@ -201,3 +203,26 @@ Diese Entscheidungen sind im aktuellen Stand bereits umgesetzt; sie benötigen k
 | 2026-09-22 | Phase 0 fortgesetzt: U-01 (Umbenennung und Verweise) und U-02 (`.gitattributes`, Zeilenenden) abgeschlossen; *Dokumentationsabgleich* bereinigt (`0_`, `1_`, `3_`, `4_`); U-03 teilweise erledigt (Übersichtsseite offen). |
 | 2026-09-22 | Problem-Tabelle um die Spalte *Lösungsansatz* ergänzt; alle „Lösungsvorschläge?“-Markierungen durch konkrete Ansätze ersetzt. |
 | 2026-09-21 | Dokument aus dem Stub `# Umsetzungsplan` aufgebaut: Ziel/Nicht-Ziele, Meilensteine M0–M4, Arbeitspakete U-01…U-73 nach Phasen, Zuordnung von Restfragen und Risiken, Abdeckung E-01…E-55. |
+
+## Lokaler Android-Build (Debug/Release Candidate)
+
+**Anfrage (2026-09-23):** „Ich habe gestern gesehen, dass kein Java SDK gefunden wurde. Ist das korrekt, denn ein Android Studio, was eigentlich bei der Entwicklung via Flutter nötig ist, wurde installiert und ist auf dem aktuellsten Stand." — **beantwortet.**
+
+**Befund:** Ja und nein — die Antwort hängt davon ab, wo man nachschaut.
+
+- **Ohne eigenständiges JDK (Ja):** Auf dem Entwicklungsrechner ist kein *eigenständiges* JDK registriert. `java` liegt nicht im `PATH`, `JAVA_HOME` ist leer, `where.exe java` findet nichts. Eine Prüfung allein über die Umgebung meldet daher tatsächlich „kein Java SDK".
+- **Mit Flutter (Nein):** Android Studio bringt sein eigenes JDK mit — die JetBrains Runtime unter `<Android Studio>\jbr` (hier OpenJDK 25.0.3). `flutter doctor -v` findet sie automatisch („This is the JDK bundled with the latest Android Studio installation on this machine") und nutzt sie für Gradle; `flutter config --jdk-dir` ist nicht gesetzt und nicht nötig. Ein eigenständiges JDK zu installieren ist also **nicht** erforderlich — Android Studio ist der von Flutter empfohlene Weg.
+- **Verbleibende Warnung:** `flutter doctor` meldet `X Android license status unknown`. `flutter doctor --android-licenses` läuft inzwischen mit Exit-Code 0 und meldet „The --licenses option is no longer needed" (die `sdkmanager`-CLI ist abgekündigt, `android sdk` ersetzt sie); die Lizenzdateien unter `%LOCALAPPDATA%\Android\sdk\licenses` tragen die gültigen Hashes (u. a. `android-sdk-license` = `24333f…`). Der Hinweis ist damit reine Anzeige und blockiert den Build nicht.
+
+**Nachweis (2026-09-23, lokal; Flutter 3.44.7, Gradle 9.1.0, AGP 9.0.1):**
+
+| Schritt | Ergebnis |
+|---|---|
+| `flutter doctor -v` | Android-Toolchain erkannt; Java = `C:\Program Files\Android\Android Studio\jbr\bin\java`, OpenJDK 25.0.3 |
+| `flutter doctor --android-licenses` | Exit-Code 0; „The --licenses option is no longer needed" |
+| `flutter build apk --debug` | Erfolg: `build\app\outputs\flutter-apk\app-debug.apk`, 159,2 MB, 313 s |
+| `flutter build apk --release` | Erfolg: `build\app\outputs\flutter-apk\app-release.apk`, 55,5 MB, 166 s |
+| `apksigner verify --print-certs` | APK Signature Scheme v2, Zertifikat `CN=Android Debug` (die projektseitig in `android/app/build.gradle.kts` vorgesehene Debug-Signierung, vgl. E-42) |
+| APK-Inhalt | `assets/flutter_assets/FontManifest.json`, `AssetManifest.bin`, `lib/arm64-v8a/libsqlite3.so` u. a. vorhanden |
+
+**Fazit:** Debug- und Release-Candidate-APK lassen sich auf diesem Rechner bauen; die Ursprungsmeldung war eine Fehlinterpretation der Umgebungsprüfung. Ein *signierter* Release (Play Store) bleibt bewusst Nicht-Ziel (E-42), Store-Distribution ebenfalls (E-30).
