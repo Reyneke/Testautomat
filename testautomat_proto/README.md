@@ -18,8 +18,8 @@ Einstieg über die Übersichtsseite [`doc/plan/README.md`](doc/plan/README.md), 
 - **Letztes Release:** [Releases](https://github.com/Reyneke/Testautomat/releases/latest)
 - **Version:** aus `pubspec.yaml` (`1.0.0+1`), Tags nach `vX.Y.Z` (E-33)
 
-> Die CI/CD-Pipeline (`.github/workflows/build.yml`) entsteht mit Arbeitspaket `U-60`; bis
-dahin zeigt das Badge noch keinen Status.
+> Die CI/CD-Pipeline (`.github/workflows/build.yml`, Arbeitspaket `U-60`) ist umgesetzt:
+> Pushes auf `main` bauen alle vier Plattformen und veröffentlichen den Web-Build auf GitHub Pages; Tags `v*` erzeugen die Release-Artefakte. Das Badge zeigt den Stand der letzten Läufe.
 
 ## Zielplattformen
 
@@ -69,7 +69,8 @@ Datenlayer (SQLite über `drift`), Navigation, Kaufablauf und Debug-Bildschirm f
 Fertige Builds hängen an den GitHub-Releases: [Releases](https://github.com/Reyneke/Testautomat/releases/latest).
 Artefakte entstehen nur bei Tags `v*` und liegen nicht im Repository (E-33). Sie sind im
 Prototyp **un-signiert**, daher ist bei der Installation eine Warnung des Betriebssystems zu
-erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
+erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite und ist dort direkt im
+Browser spielbar: <https://reyneke.github.io/Testautomat/>.
 
 ## Projektstruktur
 
@@ -97,8 +98,9 @@ erwarten (E-42). Der Web-Build läuft auf der GitHub-Pages-Projektseite.
 | [`5_Umsetzungsplan.md`](doc/plan/grundlagen/5_Umsetzungsplan.md) | Arbeitspakete, Meilensteine, Definition of Done |
 | [`6_Logging_und_Datenschutz.md`](doc/plan/grundlagen/6_Logging_und_Datenschutz.md) | Protokollierung, Rotation und Aufbewahrung |
 | [`7_Neue_Zahlmoeglichkeiten.md`](doc/plan/grundlagen/7_Neue_Zahlmoeglichkeiten.md) | Zahlungsarten, PDF-Beleg, Kennzeichen und Parkzonen |
+| [`8_Umbau_auf_DB.md`](doc/plan/grundlagen/8_Umbau_auf_DB.md) | Roadmap zum Umbau auf eine echte Datenbank und zur ersten echten Zahlungsart |
 
-Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_` → `6_` → `7_`.
+Empfohlene Lesereihenfolge: `0_` → `1_` → `2_` → `3_` → `4_` → `5_` → `6_` → `7_` → `8_`.
 
 ## Hinweise (DSGVO)
 
